@@ -7,7 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
 var hbs = require('express-handlebars');
-var db= require('./config/connection')
+var db= require('./config/connection');
+var session = require('express-session');
 
 var app = express();
 
@@ -21,6 +22,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({secret:"alsafab!@", cookie:{maxAge:6000000}}))
 
 db.connect((err)=>{
   if(err){

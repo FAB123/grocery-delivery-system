@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    {{{body}}}
+    <title>{{company_data.name}}</title>
+    {{#if admin}}
+       {{>admin-header}}    
+        {{{body}}}
+        {{#if login}}
+        {{>admin-footer}}
+        {{else}}
+        {{>admin-login-footer}}
+        {{/if}}    
+    {{/if}}
   </body>
 </html>
+    
