@@ -1,0 +1,67 @@
+{{>admin-sidebar}}
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- left column -->
+      <div class="col-md-12 center-block">
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Add New Store Form</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form class="form-horizontal" id="add_new_store" method="POST">
+            <div class="card-body">
+              <div class="form-group row">
+                <label for="storename" class="col-sm-2 col-form-label">Store Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="storename" placeholder="Store Name">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="company" class="col-sm-2 col-form-label">Company Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="companyname" placeholder="Company Name">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="address" class="col-sm-2 col-form-label">Address</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" name="address" rows="3" placeholder="Address ..."></textarea>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="mobile" class="col-sm-2 col-form-label">Mobile</label>
+                <div class="input-group col-sm-10">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  </div>
+                  <input type="text" name="mobile" class="form-control"
+                    data-inputmask="'mask': ['999-999-9999 [x99999]', '+099 99 99 9999[9]-9999']" data-mask>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="vat_number" class="col-sm-2 col-form-label">VAT Number</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="vat_number" placeholder="VAT Number">
+                </div>
+              </div>
+
+
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-info float-right">Save</button>
+            </div>
+            <!-- /.card-footer -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>

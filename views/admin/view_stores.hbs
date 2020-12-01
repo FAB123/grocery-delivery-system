@@ -1,0 +1,45 @@
+<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+{{>admin-sidebar}}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">DataTable with default features</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Store Name</th>
+                                    <th>Company</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>VAT Number</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each stores}}
+                                <tr>
+                                    <td>{{this.storename}}</td>
+                                    <td>{{this.companyname}}</td>
+                                    <td>{{this.mobile}}</td>
+                                    <td> {{this.address}}</td>
+                                    <td>{{this.vat_number}}</td>
+                                    <td><a href=""><ion-icon name="receipt-outline"></ion-icon> </a><a href=""><ion-icon name="trash-outline"></ion-icon></a></td>
+                                </tr>
+
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
