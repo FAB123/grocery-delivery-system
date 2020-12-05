@@ -13,22 +13,27 @@
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Store Name</th>
-                                    <th>Company</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
                                     <th>Phone</th>
-                                    <th>Address</th>
-                                    <th>VAT Number</th>
+                                    <th>Username</th>
+                                    <th>Store</th>
+                                    <th>Supper User</th>
+                                    <th>Active</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each stores}}
+                                {{#each users}}
                                 <tr>
-                                    <td>{{this.storename}}</td>
-                                    <td>{{this.companyname}}</td>
+                                    <td>{{this.firstname}}</td>
+                                    <td>{{this.lastname}}</td>
                                     <td>{{this.mobile}}</td>
-                                    <td> {{this.address}}</td>
-                                    <td>{{this.vat_number}}</td>
+                                    <td> {{this.username}}</td>
+                                    <td>{{this.store}}</td>
+                                    <td>{{this.supper_user}}</td>
+                                    <td><input type="checkbox" name="active" id="{{this._id}}" checked data-bootstrap-switch data-on-text="Active"
+                    data-off-text="Blocked" data-off-color="danger" data-on-color="success"></td>
                                     <td><a href="editStore/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a><a href="" class="pr-1"><ion-icon name="trash-outline"></ion-icon></a><a><span class="far fa-clock "></span></a></td>
                                 </tr>
 

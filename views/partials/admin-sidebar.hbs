@@ -39,7 +39,7 @@
             <a href="#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                <img src="/admin/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     Brad Diesel
@@ -55,7 +55,7 @@
             <a href="#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                <img src="/admin/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     John Pierce
@@ -71,7 +71,7 @@
             <a href="#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                <img src="/admin/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     Nora Silvester
@@ -132,7 +132,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="index3.html" class="brand-link">
-        <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        <img src="/admin/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
           style="opacity: .8">
         <span class="brand-text font-weight-light">Grocery Delivery System</span>
       </a>
@@ -142,10 +142,10 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+            <img src="/admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="profile" class="d-block">{{employee.firstname }} {{employee.lastname}}</a>
+            <a href="profile" class="d-block">{{employee_data.firstname }} {{employee_data.lastname}}</a>
           </div>
         </div>
 
@@ -174,17 +174,33 @@
             </li>
 
             <li class="nav-item {{#if products}}menu-open{{/if}}">
-              <a href="products" class="nav-link {{#if products}}active{{/if}}">
+              <a href="/admin/products" class="nav-link {{#if products}}active{{/if}}">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>Products</p>
               </a>
             </li>
 
+            {{#if employee_data.supper_user}}
+
             <li class="nav-item {{#if employee}}menu-open{{/if}}">
-              <a href="employees" class="nav-link" {{#if employee}}active{{/if}}>
+              <a href="/admin/employees" class="nav-link" {{#if employee}}active{{/if}}>
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>Employees</p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/view_employee" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>View employees</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/add_employee" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Add New employee</p>
+                  </a>
+                </li>
+              </ul>
             </li>
 
             <li class="nav-item {{#if store}}menu-open{{/if}}">
@@ -194,34 +210,46 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="view_stores" class="nav-link">
+                  <a href="/admin/add_store" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Add New Store</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="/admin/view_stores" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>View Stores</p>
                   </a>
                 </li>
+
                 <li class="nav-item">
-                  <a href="add_store" class="nav-link">
+                  <a href="/admin/view_blocked_stores" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>Add New Store</p>
+                    <p>Blocked Store</p>
                   </a>
                 </li>
               </ul>
             </li>
 
+
+
             <li class="nav-item">
-              <a href="settings" class="nav-link">
+              <a href="/admin/settings" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>Application Settings</p>
               </a>
             </li>
 
+            {{/if}}
+
 
 
 
 
 
             <li class="nav-item">
-              <a href="logout" class="nav-link">
+              <a href="/admin/logout" class="nav-link">
                 <i class="nav-icon far fa-circle text-warning"></i>
                 <p>Logout</p>
               </a>
@@ -234,21 +262,7 @@
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>DataTables</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">DataTables</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+
       <!-- /.content-header -->
