@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{company_data.name}}</title>
-    {{#if admin}}
-       {{>admin-header}}    
-        {{{body}}}
-        {{#if login}}
-        {{>admin-login-footer}}
-        {{else}}
-        {{>admin-footer}}
-        {{/if}}    
+
+<head>
+  <title>{{company_data.name}}</title>
+  {{#if admin}}
+    {{>admin-header}}
+    {{{body}}}
+    {{#if login}}
+      {{>admin-login-footer}}
+    {{else}}
+      {{>admin-footer}}
     {{/if}}
+  {{else}}
+    {{>user-header}}
+    <body>
+    {{{body}}}
+    {{>user-footer}}
+    </body>
+  {{/if}}
   </body>
+
 </html>
-    

@@ -81,7 +81,7 @@ $(function () {
         success: (response) => {
           if (response.otp) {
             $("#otp_validater").modal("show");
-            alert("your Otp is "+ response.data)
+            alert("your Otp is " + response.data);
           } else {
             alert("unknown eRROR!");
           }
@@ -99,26 +99,26 @@ $(function () {
       },
       username: {
         required: true,
-        remote:{
-          url:'/admin/validate_registration',
-          type:'POST',
-          dataType: 'json',
-        }
+        remote: {
+          url: "/admin/validate_registration",
+          type: "POST",
+          dataType: "json",
+        },
       },
       password: {
         required: true,
       },
       confirm_password: {
         required: true,
-        equalTo: "#password"
+        equalTo: "#password",
       },
       mobile: {
         required: true,
-        remote:{
-          url:'/admin/validate_registration',
-          type:'POST',
-          dataType: 'json',
-        }
+        remote: {
+          url: "/admin/validate_registration",
+          type: "POST",
+          dataType: "json",
+        },
       },
     },
     messages: {
@@ -130,19 +130,19 @@ $(function () {
       },
       mobile: {
         required: "Please provide a mobile number",
-        remote: 'mobile number found on database'
+        remote: "mobile number found on database",
       },
-      username:{
-        required:'username is requierd',
-        remote:'username alredy used'
+      username: {
+        required: "username is requierd",
+        remote: "username alredy used",
       },
-      password:{
-        requierd:'password must be required',
+      password: {
+        requierd: "password must be required",
       },
-      confirm_password:{
-        requierd:'password must be required',
-        equalTo:'password not match'
-      }
+      confirm_password: {
+        requierd: "password must be required",
+        equalTo: "password not match",
+      },
     },
     errorElement: "span",
     errorPlacement: function (error, element) {
@@ -158,36 +158,127 @@ $(function () {
   });
 });
 
-function validateOtp(){
-  otp = $('#otp').val();
+function validateOtp() {
+  otp = $("#otp").val();
   $("#otp").attr("disabled", "disabled");
   $.ajax({
-    url:'/admin/validate_otp',
-    data:{'otp':otp},
-    method:'POST',
-    datatype:'JSON',
-    success:(response)=>{
-       if(response.data){
-          $("#otp_validater").modal("hide");
+    url: "/admin/validate_otp",
+    data: { otp: otp },
+    method: "POST",
+    datatype: "JSON",
+    success: (response) => {
+      if (response.data) {
+        $("#otp_validater").modal("hide");
+        $(document).Toasts("create", {
+          autohide: true,
+          class: "bg-info",
+          delay: 750,
+          title: "Emplyee Creation",
+          body: "Employee Created Successfully",
+        });
+        $("#add_employee").trigger("reset");
+      } else {
+        $("#otp").removeAttr("disabled", "disabled");
+        $("#otp").val("");
+        $("#error_text").text("Invalid OTP");
+      }
+    },
+  });
+}
+
+$('input[name="active"]').on(
+  "switchChange.bootstrapSwitch",
+  function (event, state) {
+    alert($(this).attr("id"));
+  }
+);
+
+function changeImage(event) {
+  $("#show_image").attr("src", URL.createObjectURL(event.target.files[0]));
+  $("#choosefile").text(event.target.files[0].name);
+  $("#show_image").removeAttr("style");
+}
+
+function changecarouselImage(event) {
+  $("#choosecarouselImage").text(event.target.files[0].name);
+}
+
+$("#product_carousel_upload").submit(function (e) {
+  e.preventDefault();
+  var form = $(this);
+  var url = form.attr("action");
+  $.ajax({
+    type: "POST",
+    url: url,
+    cache: false,
+    contentType: false,
+    processData: false,
+    data: new FormData(this),
+    dataType: "JSON",
+    success: function (data) {
+      if (data.loginError) {
+        window.location = "/admin/login";
+      } else {
+        if (data.result) {
           $(document).Toasts("create", {
             autohide: true,
             class: "bg-info",
-            delay: 750,
-            title: "Emplyee Creation",
-            body: "Employee Created Successfully",
+            delay: 1550,
+            title: "New carousel Added",
+            body: "New carousel image uploaded Successfully",
           });
-          $('#add_employee').trigger("reset");
-       }
-       else{
-        $("#otp").removeAttr("disabled", "disabled");
-        $("#otp").val("");
-        $('#error_text').text("Invalid OTP")
-       }
-    }
-  })
-  
+          $("#product_carousel_upload").trigger("reset");
+          $("#choosecarouselImage").text("");
+          setTimeout(location.reload(), 1600);
+        }
+      }
+    },
+  });
+});
+
+function removeProductCarousel(image) {
+  $.ajax({
+    type: "POST",
+    url: "/admin/remove-product-carousel/",
+    data: { image: image },
+    dataType: "JSON",
+    success: function (data) {
+      if (data.loginError) {
+        window.location = "/admin/login";
+      } else {
+        if (data.result) {
+          $(document).Toasts("create", {
+            autohide: true,
+            class: "bg-info",
+            delay: 1550,
+            title: "New carousel Deleted",
+            body: "New carousel image Deleted Successfully",
+          });
+          setTimeout(location.reload(), 1600);
+        }
+      }
+    },
+  });
 }
 
-$('input[name="active"]').on('switchChange.bootstrapSwitch', function(event, state) {
-  alert($(this).attr('id'));
-});
+function deleteProduct(id) {
+  $.ajax({
+    type: "POST",
+    url: "/admin/deleteProduct",
+    data: { id: id },
+    success: (result) => {
+      if (result.loginError) {
+        window.location = "/admin/login";
+      } else {
+        $(document).Toasts("create", {
+          autohide: true,
+          class: "bg-info",
+          delay: 1550,
+          title: "Product Deleted",
+          body: "Product Deleted Successfully",
+        });
+        setTimeout(location.reload(), 1600);
+      }
+    },
+  });
+}

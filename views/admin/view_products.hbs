@@ -1,0 +1,46 @@
+<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+{{>admin-sidebar}}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">DataTable with default features</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Catogary</th>
+                                    <th>Short Description</th>
+                                    <th>Description</th>
+                                    <th>Active</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each data}}
+                                <tr>
+                                    <td>{{this.product_name}}</td>
+                                    <td>{{this.category}}</td>
+                                    <td>{{this.shortdescription}}</td>
+                                    <td> {{this.description}}</td>
+                                    <td><input type="checkbox" name="active" id="{{this._id}}" checked data-bootstrap-switch data-on-text="Active"
+                    data-off-text="Blocked" data-off-color="danger" data-on-color="success"></td>
+                                    <td><a href="edit_product/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a><ion-icon onclick="deleteProduct('{{this._id}}')" name="trash-outline"></ion-icon></td>
+                                </tr>
+
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>

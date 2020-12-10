@@ -1,0 +1,140 @@
+{{>admin-sidebar}}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Product</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Product</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- left column -->
+      <div class="col-md-7">
+        <!-- general form elements -->
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Add New Product</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form method="POST" action="/admin/add_product" enctype="multipart/form-data">
+            <div class="card-body">
+              <input type="hidden" name="id" value="{{id}}">
+              <div class="form-group">
+                <label for="product_name">Product Name</label>
+                <input type="text" class="form-control" value="{{product.product_name}}" id="product_name"
+                  name="product_name" placeholder="Product Name" required>
+              </div>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" class="form-control" value="{{product.category}}" id="category" name="category"
+                  placeholder="Category" required>
+              </div>
+
+              <div class="form-group">
+                <label for="shortdescription">Short Description</label>
+                <input type="text" class="form-control" id="shortdescription" value="{{product.shortdescription}}"
+                  name="shortdescription" placeholder="Description" required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputFile">File input</label>
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image" name="image" accept="image/*"
+                      onchange="changeImage(event)" value="" >
+                    <label class="custom-file-label" for="image" id="choosefile">Choose file</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" cols="30" rows="10" class="form-control"
+                  required>{{product.description}}</textarea>
+              </div>
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
+
+      </div>
+
+      <div class="col-md-5">
+        <!-- Form Element sizes -->
+        <div class="card card-danger">
+          <div class="card-header">
+            <h3 class="card-title">Product Image</h3>
+          </div>
+          <div class="card-body">
+            <img src="/product-images/thumbnails/{{product._id}}.jpg" alt="" id="show_image" width="100%" height="100%">
+          </div>
+          <!-- /.card-body -->
+        </div>
+
+        {{#if edit}}
+        <div class="card card-warning">
+          <div class="card-header">
+            <h3 class="card-title">Carousel Images</h3>
+          </div>
+
+          <div class="card-body">
+            <form action="/admin/upload_product_carousel" id="product_carousel_upload" method="post"
+              enctype="multipart/form-data">
+              <input type="hidden" name="id" value="{{product._id}}">
+              <div class="form-group">
+                <div class="input-group">
+
+                  <div class="custom-file">
+
+                    <input type="file" class="custom-file-input" name="cimage" name="cimage"
+                      onchange="changecarouselImage(event)" required>
+
+                    <label class="custom-file-label" id="choosecarouselImage" for="cimage">Choose file</label>
+                  </div>
+
+                  <div class="input-group-append">
+                    <button class="input-group-text" type="submit">Upload</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              {{#each files}}
+              <div class="col-md-4">
+                <div class="card" style="width: 100%">
+                  <img class="card-img-top" src="/product-carousel-images/thumbnails/{{this}}" alt="Card image cap">
+                  <div class="card-body">
+                    <button class="btn btn-danger"
+                      onclick="removeProductCarousel('{{this}}')"><span>Delete</span></button>
+                  </div>
+                </div>
+              </div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+</div>

@@ -176,8 +176,22 @@
             <li class="nav-item {{#if products}}menu-open{{/if}}">
               <a href="/admin/products" class="nav-link {{#if products}}active{{/if}}">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>Products</p>
+                <p> Products <i class="fas fa-angle-right right"></i></p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/view_products" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>View Products</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/add_product" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Add New Products</p>
+                  </a>
+                </li>
+              </ul>
             </li>
 
             {{#if employee_data.supper_user}}
@@ -185,7 +199,7 @@
             <li class="nav-item {{#if employee}}menu-open{{/if}}">
               <a href="/admin/employees" class="nav-link" {{#if employee}}active{{/if}}>
                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>Employees</p>
+                <p> Employees <i class="fas fa-angle-right right"></i></p>
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
@@ -206,7 +220,7 @@
             <li class="nav-item {{#if store}}menu-open{{/if}}">
               <a href="#" class="nav-link {{#if store}}active{{/if}}">
                 <i class="nav-icon fas fa-table"></i>
-                <p> Stores <i class="fas fa-angle-left right"></i></p>
+                <p> Stores <i class="fas fa-angle-right right"></i></p>
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">

@@ -1,0 +1,37 @@
+<div class="container">
+	<div class="check-out">
+		<h1>Checkout</h1>
+		<table>
+			<tr>
+				<th>Item</th>
+				<th>Prices</th>
+				<th>Qty</th>
+				<th>Delery Detials</th>
+				<th>Subtotal</th>
+			</tr>
+
+			{{#each cartItems}}
+			<tr>
+				
+				<td class="ring-in"><a href="single.html" class="at-in"><img
+							src="/product-images/thumbnails/{{this.product._id}}.jpg" class="img-responsive" alt=""></a>
+					<div class="sed">
+						<h5>{{this.product.name}}</h5>
+						<p>{{this.product.description}} </p>
+					</div>
+					<div class="clearfix"> </div>
+				</td>
+				<td>{{this.price}}</td>
+				
+				<td class="check"><input type="text" id="cart_qty_{{this.item}}" value="{{this.quantity}}" onchange="changeQty('{{this.item}}','{{this._id}}')"</td>
+
+				<td>FREE SHIPPING</td>
+				<td>$150.00</td>
+			</tr>
+
+			{{/each}}
+		</table>
+		<a href="place_order" class=" to-buy">PROCEED TO BUY</a>
+		<div class="clearfix"> </div>
+	</div>
+</div>
