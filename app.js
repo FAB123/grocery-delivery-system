@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(fileUpload())
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({secret:"alsafab!@", cookie:{maxAge:6000000}}))
+app.use(session({secret:"alsafab!@",  resave: false, saveUninitialized: true, cookie:{maxAge:6000000}}))
 
 db.connect((err)=>{
   if(err){

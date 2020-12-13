@@ -5,8 +5,11 @@ var store_helper = require("../helpers/store-helper");
 var otpGenerator = require("otp-generator");
 var productHelper = require("../helpers/product-helpers");
 var imageHelper = require("../helpers/image-helpers");
-var sharp = require("sharp");
-const e = require("express");
+var fileSaver = require("file-saver");
+//var sharp = require("sharp");
+var Jimp = require("jimp");
+var fs = require("fs");
+
 
 var company_data = { name: "Test Company" };
 
@@ -17,6 +20,7 @@ const varifyLogin = (req, res, next) => {
     if (currentTime - req.session.lastExetime > 300000) {
       res.redirect("/admin/lockscreen");
     } else {
+      req.session.lastExetime = Date.now();
       next();
     }
   } else {
@@ -177,6 +181,7 @@ router.get("/view_blocked_stores", varifyLogin, (req, res) => {
 });
 
 router.get("/employees", varifyLogin, (req, res) => {
+  req.session.lastExetime = Date.now();
   res.render("/admin/employees", {
     admin: true,
     employee: true,
@@ -185,6 +190,7 @@ router.get("/employees", varifyLogin, (req, res) => {
 });
 
 router.get("/add_employee", varifyLogin, (req, res) => {
+  req.session.lastExetime = Date.now();
   store_helper.getAllstorename().then((data) => {
     res.render("admin/add_employee", {
       admin: true,
@@ -261,36 +267,47 @@ router.post("/add_product", varifyLogin, (req, res, next) => {
     });
   } else {
     productHelper.addProduct(req.body, (id) => {
-      let image = req.files.image;
-      image.mv("./public/product-images/" + id + ".jpg", (err, done) => {
-        if (!err) {
-          let product = req.body;
-          res.render("admin/add_product", {
-            employee_data,
-            product,
-            id,
-            admin: true,
-            edit: true,
-          });
-          sharp("./public/product-images/" + id + ".jpg")
-            .resize({ width: 200, height: 200, fit: "inside" })
-            .toFormat("jpeg")
-            .toFile(
-              "./public/product-images/thumbnails/" + id + ".jpg",
-              (err, newfile) => {
-                if (err) console.log(err);
-                else console.log(newfile);
-              }
-            );
-        } else {
-          console.log(err);
-        }
+      let image = req.body.prodIm;
+      var base64Data = image.replace(/^data:image\/png;base64,/, "");
+      let filename = "./public/product-images/" + id + ".png";
+
+      fs.writeFile(filename, base64Data, "base64", function (err) {
+        console.log(err);
       });
+      let product = req.body;
+      res.render("admin/add_product", {
+        employee_data,
+        product,
+        id,
+        admin: true,
+        edit: true,
+      });
+      console.log("./public/product-images/" + id + ".png");
+
+      Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
+        if (err) throw err;
+        lenna
+          .resize(200, 200) // resize
+          .quality(60) // set JPEG quality
+          .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
+      });
+
+      // sharp("./public/product-images/" + id + ".png")
+      //   .resize({ width: 200, height: 200, fit: "inside" })
+      //   .toFormat("jpeg")
+      //   .toFile(
+      //     "./public/product-images/thumbnails/" + id + ".jpg",
+      //     (err, newfile) => {
+      //       if (err) console.log(err);
+      //       else console.log(newfile);
+      //     }
+      //   );
     });
   }
 });
 
 router.post("/deleteProduct", (req, res) => {
+  req.session.lastExetime = Date.now();
   if (req.session.empLoggedin) {
     productHelper.deleteProduct(req.body.id).then((data) => {
       console.log("test");
@@ -325,31 +342,46 @@ router.get("/edit_product/:id", varifyLogin, (req, res) => {
 });
 
 router.post("/upload_product_carousel", (req, res) => {
+  req.session.lastExetime = Date.now();
   let image = req.files.cimage;
   let id = req.body.id;
-  if (req.session.empLoggedin) {
+  if (!req.session.empLoggedin) {
     res.json({ loginError: true });
   } else {
     image.mv(
       "./public/product-carousel-images/" + image.name + "." + id,
       (err, done) => {
         if (!err) {
-          sharp("./public/product-carousel-images/" + image.name + "." + id)
-            .resize({ width: 200, height: 200, fit: "inside" })
-            .toFormat("jpeg")
-            .toFile(
-              "./public/product-carousel-images/thumbnails/" +
-                image.name +
-                "." +
-                id,
-              (err, newfile) => {
-                if (err) {
-                  res.json({ loginError: false, result: false });
-                } else {
-                  res.json({ loginError: false, result: true });
-                }
+          Jimp.read(
+            "./public/product-carousel-images/" + image.name + "." + id,
+            (err, lenna) => {
+              if (err) res.json({ loginError: false, result: false });
+              else {
+                lenna
+                  .resize(200, 200) // resize
+                  .quality(60) // set JPEG quality
+                  .write("./public/product-carousel-images/thumbnails/" + image.name + "." + id); // save
               }
-            );
+              res.json({ loginError: false, result: true });
+            }
+          );
+
+          // sharp("./public/product-carousel-images/" + image.name + "." + id)
+          //   .resize({ width: 200, height: 200, fit: "inside" })
+          //   .toFormat("jpeg")
+          //   .toFile(
+          //     "./public/product-carousel-images/thumbnails/" +
+          //       image.name +
+          //       "." +
+          //       id,
+          //     (err, newfile) => {
+          //       if (err) {
+          //         res.json({ loginError: false, result: false });
+          //       } else {
+          //         res.json({ loginError: false, result: true });
+          //       }
+          //     }
+          //   );
         } else {
           res.json({ loginError: false, result: false });
         }
@@ -359,6 +391,7 @@ router.post("/upload_product_carousel", (req, res) => {
 });
 
 router.post("/remove-product-carousel", (req, res) => {
+  req.session.lastExetime = Date.now();
   let image = req.body.image;
   if (req.session.empLoggedin) {
     res.json({ loginError: true });

@@ -30,7 +30,6 @@ module.exports = {
           { description: 1, shortdescription: 0 }
         )
         .then((data) => {
-          console.log(data);
           resolve(data);
         });
     });
