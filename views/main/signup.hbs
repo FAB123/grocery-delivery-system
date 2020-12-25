@@ -1,18 +1,23 @@
 <div class="container">
     <div class="register">
         <h1>Register</h1>
-        <form action="signup" method="post">
-            <div class="col-md-6  register-top-grid">
+        <form action="signup" method="post" id="signup">
+            <div class="col-md-6 register-top-grid">
 
                 <div class="mation">
-                    <span>First Name</span>
-                    <input type="text" name="first_name" id="first_name">
+                    <div class="form-group">
+                        <span>First Name</span>
+                        <input type="text" name="first_name" id="first_name">
+                    </div>
 
-                    <span>Last Name</span>
-                    <input type="text" name="last_name" id="last_name">
-
-                    <span>Mobile</span>
-                    <input type="tel" name="mobile" id="mobile">
+                    <div class="form-group">
+                        <span>Last Name</span>
+                        <input type="text" name="last_name" id="last_name">
+                    </div>
+                    <div class="form-group">
+                        <span>Mobile</span>
+                        <input type="tel" name="mobile" id="mobile">
+                    </div>
                 </div>
                 <div class="clearfix"> </div>
                 <a class="news-letter" href="#">
@@ -22,10 +27,18 @@
             <div class=" col-md-6 register-bottom-grid">
 
                 <div class="mation">
-                    <span>Password</span>
-                    <input type="password" name="password" id="password">
-                    <span>Confirm Password</span>
-                    <input type="password" name="confirm_password" id="confirm_password">
+                    <div class="form-group">
+                        <span>Username</span>
+                        <input type="text" name="username" id="username">
+                    </div>
+                    <div class="form-group">
+                        <span>Password</span>
+                        <input type="password" name="password" id="password">
+                    </div>
+                    <div class="form-group">
+                        <span>Confirm Password</span>
+                        <input type="password" name="confirm_password" id="confirm_password">
+                    </div>
                 </div>
             </div>
             <div class="clearfix"> </div>
@@ -38,4 +51,29 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" id="otp_validater">
+    <div class="modal-dialog">
+        <div class="modal-content bg-danger">
+            <div class="modal-header">
+                <h4 class="modal-title">Validate OTP</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="otp" placeholder="OTP">
+                </div>
+                <div class="col-sm-10">
+                    <p id="error_text"></p>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" onclick="validateOtp()" class="btn btn-outline-light">Validate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>

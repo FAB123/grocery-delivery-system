@@ -1,8 +1,10 @@
 module.exports={
     EMPLOYEE_COLLECTION:'employees',
-    USER_COLLECTION:'users',
+    USER_COLLECTIONS:'users',
     PRODUCT_COLLECTION:'products',
-    CART_COLLECTION:'carts',
+    PRODUCT_COLLECTION_BY_STORE:'stores_products',
+    CART_COLLECTIONS:'carts',
     ORDER_COLLECTION:'orders',
-    STORE_COLLECTION:'stores'
+    STORE_COLLECTION:'stores',
+    USER_ADDRESS_COLLECTION:'user_address'
 }

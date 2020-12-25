@@ -6,7 +6,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">DataTable with default features</h3>
+                        <h3 class="card-title">All Stores</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -18,6 +18,7 @@
                                     <th>Phone</th>
                                     <th>Address</th>
                                     <th>VAT Number</th>
+                                    <th>Active</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -29,7 +30,15 @@
                                     <td>{{this.mobile}}</td>
                                     <td> {{this.address}}</td>
                                     <td>{{this.vat_number}}</td>
-                                    <td><a href="editStore/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a><a href="" class="pr-1"><ion-icon name="trash-outline"></ion-icon></a><a><span class="far fa-clock "></span></a></td>
+                                    <td class="d-inline"><input type="checkbox" name="storecontrol" id="{{this._id}}" {{#if
+                                            this.active}} checked {{/if}}data-bootstrap-switch data-on-text="Active"
+                                            data-off-text="Blocked" data-off-color="danger" data-on-color="success">
+                                    </td>
+                                    <td><a href="editStore/{{this._id}}" class="pl-1 pr-1">
+                                            <ion-icon name="receipt-outline"></ion-icon>
+                                        </a><a href="" class="pr-1">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </a></td>
                                 </tr>
 
                                 {{/each}}

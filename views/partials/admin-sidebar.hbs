@@ -7,26 +7,16 @@
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="index3.html" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Contact</a>
-        </li>
       </ul>
+      <ul class="navbar-nav ml-auto">
+        <div class="d-flex justify-content-center text-info">
+          <h6>
+            <b>Store : </b> {{#if employee_data.storedata.storename}} {{employee_data.storedata.storename}} {{else}}
+            Supper User {{/if}}
+          </h6>
 
-      <!-- SEARCH FORM -->
-      <form class="form-inline ml-3">
-        <div class="input-group input-group-sm">
-          <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-navbar" type="submit">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
         </div>
-      </form>
-
+      </ul>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
         <!-- Messages Dropdown Menu -->
@@ -194,7 +184,7 @@
               </ul>
             </li>
 
-            {{#if employee_data.supper_user}}
+
 
             <li class="nav-item {{#if employee}}menu-open{{/if}}">
               <a href="/admin/employees" class="nav-link" {{#if employee}}active{{/if}}>
@@ -216,6 +206,8 @@
                 </li>
               </ul>
             </li>
+
+            {{#if employee_data.supper_user}}
 
             <li class="nav-item {{#if store}}menu-open{{/if}}">
               <a href="#" class="nav-link {{#if store}}active{{/if}}">
@@ -266,6 +258,8 @@
         </nav>
         <!-- /.sidebar-menu -->
       </div>
+
+
       <!-- /.sidebar -->
     </aside>
 

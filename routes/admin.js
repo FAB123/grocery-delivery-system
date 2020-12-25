@@ -9,30 +9,16 @@ var fileSaver = require("file-saver");
 //var sharp = require("sharp");
 var Jimp = require("jimp");
 var fs = require("fs");
-
+const { updateProduct } = require("../helpers/product-helpers");
+const { handlebars } = require("hbs");
 
 var company_data = { name: "Test Company" };
-
-const varifyLogin = (req, res, next) => {
-  if (req.session.empLoggedin) {
-    let currentTime = Date.now();
-    // activate lock screen while inactive 5 minutes
-    if (currentTime - req.session.lastExetime > 300000) {
-      res.redirect("/admin/lockscreen");
-    } else {
-      req.session.lastExetime = Date.now();
-      next();
-    }
-  } else {
-    res.redirect("/admin/login");
-  }
-};
 
 /* GET root router. */
 router.get("/", function (req, res, next) {
   res.redirect("dashboard");
 });
-router.get("/dashboard", varifyLogin, function (req, res) {
+router.get("/dashboard", varifyLogin("/admin/dashboard"), function (req, res) {
   res.render("admin/dashboard", {
     admin: true,
     company_data,
@@ -88,7 +74,12 @@ router.post("/lockscreen", function (req, res) {
       req.session.employee = response.employee;
       req.session.adminLoginErr = false;
       req.session.lastExetime = Date.now();
-      res.redirect("dashboard");
+      if (req.session.route) {
+        res.redirect(req.session.route);
+        req.session.route = false;
+      } else {
+        res.redirect("dashboard");
+      }
     } else {
       req.session.adminLoginErr = true;
       req.session.adminLoginErrMessage = response.message;
@@ -106,9 +97,15 @@ router.post("/login", function (req, res) {
       if (response.status) {
         req.session.empLoggedin = true;
         req.session.employee = response.employee;
+
         req.session.adminLoginErr = false;
         req.session.lastExetime = Date.now();
-        res.redirect("dashboard");
+        if (req.session.route) {
+          res.redirect(req.session.route);
+          req.session.route = false;
+        } else {
+          res.redirect("dashboard");
+        }
       } else {
         req.session.adminLoginErr = true;
         req.session.adminLoginErrMessage = response.message;
@@ -118,19 +115,23 @@ router.post("/login", function (req, res) {
   }
 });
 
-router.get("/view_stores", varifyLogin, function (req, res) {
-  req.session.lastExetime = Date.now();
-  store_helper.getAllstores().then((data) => {
-    res.render("admin/view_stores", {
-      admin: true,
-      store: true,
-      employee_data: req.session.employee,
-      stores: data,
+router.get(
+  "/view_stores",
+  varifyLogin("/admin/view_stores"),
+  function (req, res) {
+    req.session.lastExetime = Date.now();
+    store_helper.getAllstores().then((data) => {
+      res.render("admin/view_stores", {
+        admin: true,
+        store: true,
+        employee_data: req.session.employee,
+        stores: data,
+      });
     });
-  });
-});
+  }
+);
 
-router.get("/add_store", varifyLogin, function (req, res) {
+router.get("/add_store", varifyLogin("/admin/add_store"), function (req, res) {
   req.session.lastExetime = Date.now();
   res.render("admin/add_store", {
     admin: true,
@@ -139,48 +140,70 @@ router.get("/add_store", varifyLogin, function (req, res) {
   });
 });
 
-router.post("/add_store", varifyLogin, function (req, res) {
+router.post("/add_store", varifyLogin("/admin/dashboard"), function (req, res) {
   req.session.lastExetime = Date.now();
   store_helper.addStore(req.body).then((data) => {
     console.log(data);
   });
-  res.json({ message: "hello" });
+  res.json({ message: "New Store Created or Updated" });
 });
 
-router.get("/editStore/:storeId", varifyLogin, (req, res) => {
-  req.session.lastExetime = Date.now();
-  store_helper.getStoreDetails(req.params.storeId).then((storeData) => {
-    res.render("admin/edit_store", {
-      admin: true,
-      store: true,
-      employee_data: req.session.employee,
-      storeData,
+router.get(
+  "/editStore/:storeId",
+  varifyLogin("/admin/editStore/:storeId"),
+  (req, res) => {
+    req.session.lastExetime = Date.now();
+    store_helper.getStoreDetails(req.params.storeId).then((storeData) => {
+      res.render("admin/edit_store", {
+        admin: true,
+        store: true,
+        employee_data: req.session.employee,
+        storeData,
+      });
     });
-  });
-});
+  }
+);
 
-router.post("/editStore/:storeId", varifyLogin, (req, res) => {
-  req.session.lastExetime = Date.now();
-  store_helper
-    .updateStoreDetailes(req.params.storeId, req.body)
-    .then((data) => {
-      res.redirect("/admin/view_stores");
+router.post(
+  "/editStore/:storeId",
+  varifyLogin("/admin/dashboard"),
+  (req, res) => {
+    req.session.lastExetime = Date.now();
+    store_helper
+      .updateStoreDetailes(req.params.storeId, req.body)
+      .then((data) => {
+        res.redirect("/admin/view_stores");
+      });
+  }
+);
+
+router.get(
+  "/view_blocked_stores",
+  varifyLogin("/admin/view_blocked_stores"),
+  (req, res) => {
+    req.session.lastExetime = Date.now();
+    store_helper.getBlockedstores().then((data) => {
+      res.render("admin/view_stores", {
+        admin: true,
+        store: true,
+        employee_data: req.session.employee,
+        stores: data,
+      });
     });
-});
+  }
+);
 
-router.get("/view_blocked_stores", varifyLogin, (req, res) => {
-  req.session.lastExetime = Date.now();
-  store_helper.getBlockedstores().then((data) => {
-    res.render("admin/view_stores", {
-      admin: true,
-      store: true,
-      employee_data: req.session.employee,
-      stores: data,
+router.post("/enable_store", (req, res) => {
+  if (!req.session.empLoggedin) {
+    res.json({ loginError: true });
+  } else {
+    store_helper.controlStore(req.body.storeId, req.body.state).then((data) => {
+      res.json({ loginError: false, status: true });
     });
-  });
+  }
 });
 
-router.get("/employees", varifyLogin, (req, res) => {
+router.get("/employees", varifyLogin("/admin/employees"), (req, res) => {
   req.session.lastExetime = Date.now();
   res.render("/admin/employees", {
     admin: true,
@@ -189,7 +212,7 @@ router.get("/employees", varifyLogin, (req, res) => {
   });
 });
 
-router.get("/add_employee", varifyLogin, (req, res) => {
+router.get("/add_employee", varifyLogin("/admin/add_employee"), (req, res) => {
   req.session.lastExetime = Date.now();
   store_helper.getAllstorename().then((data) => {
     res.render("admin/add_employee", {
@@ -236,81 +259,139 @@ router.post("/validate_otp", (req, res) => {
   }
 });
 
-router.get("/view_employee", varifyLogin, (req, res) => {
-  let employee_data = req.session.employee;
-  if (employee_data.supper_user) {
-    employeeHelper.getAllemployee().then((data) => {
-      res.render("admin/view_employee", {
-        admin: true,
-        employee: true,
-        employee_data,
-        users: data,
+router.get(
+  "/view_employee",
+  varifyLogin("/admin/view_employee"),
+  (req, res) => {
+    let employee_data = req.session.employee;
+    if (employee_data.supper_user) {
+      employeeHelper.getAllemployee().then((data) => {
+        res.render("admin/view_employee", {
+          admin: true,
+          employee: true,
+          employee_data,
+          users: data,
+        });
       });
-    });
+    } else {
+      res.render("admin/no_access", { employee_data, admin: true });
+    }
+  }
+);
+
+router.get(
+  "/editEmployee/:employeeId",
+  varifyLogin("/admin/editEmployee/:employeeId"),
+  async (req, res) => {
+    req.session.lastExetime = Date.now();
+    let stores = await store_helper.getAllstorename();
+    employeeHelper
+      .getEmployeeDetails(req.params.employeeId)
+      .then((employee) => {
+        res.render("admin/edit_employee", {
+          admin: true,
+          employee: true,
+          employee_data: req.session.employee,
+          employee,
+          stores,
+        });
+      });
+  }
+);
+
+router.post(
+  "/editEmployee/:employeeId",
+  varifyLogin("/admin/dashboard"),
+  (req, res) => {
+    req.session.lastExetime = Date.now();
+    employeeHelper
+      .updateEmployeeDetailes(req.params.employeeId, req.body)
+      .then((data) => {
+        res.redirect("/admin/view_employee");
+      });
+  }
+);
+
+router.post("/enable_employee", (req, res) => {
+  if (!req.session.empLoggedin) {
+    res.json({ loginError: true });
   } else {
-    res.render("admin/no_access", { employee_data, admin: true });
+    employeeHelper
+      .controlEmployee(req.body.employeeId, req.body.state)
+      .then((data) => {
+        res.json({ loginError: false, status: true });
+      });
   }
 });
 
-router.get("/add_product", varifyLogin, (req, res) => {
+router.get("/add_product", varifyLogin("/admin/add_product"), (req, res) => {
   let employee_data = req.session.employee;
   res.render("admin/add_product", { employee_data, admin: true, edit: false });
 });
 
-router.post("/add_product", varifyLogin, (req, res, next) => {
-  let employee_data = req.session.employee;
-  if (req.body.id) {
-    //console.log("updating")
-    let id = req.body.id;
-    productHelper.updateProduct(req.body).then((data) => {
-      res.redirect("/admin/edit_product/" + id);
-    });
-  } else {
-    productHelper.addProduct(req.body, (id) => {
+router.post(
+  "/add_product",
+  varifyLogin("/admin/add_product"),
+  (req, res, next) => {
+    let employee_data = req.session.employee;
+    if (req.body.id) {
+      //console.log("updating")
+      let id = req.body.id;
+      productHelper.updateProduct(req.body).then((data) => {
+        res.redirect("/admin/edit_product/" + id);
+      });
+    } else {
       let image = req.body.prodIm;
-      var base64Data = image.replace(/^data:image\/png;base64,/, "");
-      let filename = "./public/product-images/" + id + ".png";
+      delete req.body.id;
+      delete req.body.prodIm;
 
-      fs.writeFile(filename, base64Data, "base64", function (err) {
-        console.log(err);
-      });
-      let product = req.body;
-      res.render("admin/add_product", {
-        employee_data,
-        product,
-        id,
-        admin: true,
-        edit: true,
-      });
-      console.log("./public/product-images/" + id + ".png");
+      productHelper.addProduct(req.body, (id) => {
+        if (image) {
+          var base64Data = image.replace(/^data:image\/png;base64,/, "");
+          let filename = "./public/product-images/" + id + ".png";
 
-      Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
-        if (err) throw err;
-        lenna
-          .resize(200, 200) // resize
-          .quality(60) // set JPEG quality
-          .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
-      });
+          fs.writeFile(filename, base64Data, "base64", function (err) {
+            console.log(err);
+          });
+        }
 
-      // sharp("./public/product-images/" + id + ".png")
-      //   .resize({ width: 200, height: 200, fit: "inside" })
-      //   .toFormat("jpeg")
-      //   .toFile(
-      //     "./public/product-images/thumbnails/" + id + ".jpg",
-      //     (err, newfile) => {
-      //       if (err) console.log(err);
-      //       else console.log(newfile);
-      //     }
-      //   );
-    });
+        let product = req.body;
+        res.render("admin/add_product", {
+          employee_data,
+          product,
+          id,
+          admin: true,
+          edit: false,
+        });
+        if (image) {
+          Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
+            if (err) throw err;
+            lenna
+              .resize(200, 200) // resize
+              .quality(60) // set JPEG quality
+              .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
+          });
+        }
+
+        // sharp("./public/product-images/" + id + ".png")
+        //   .resize({ width: 200, height: 200, fit: "inside" })
+        //   .toFormat("jpeg")
+        //   .toFile(
+        //     "./public/product-images/thumbnails/" + id + ".jpg",
+        //     (err, newfile) => {
+        //       if (err) console.log(err);
+        //       else console.log(newfile);
+        //     }
+        //   );
+      });
+    }
   }
-});
+);
 
 router.post("/deleteProduct", (req, res) => {
   req.session.lastExetime = Date.now();
   if (req.session.empLoggedin) {
     productHelper.deleteProduct(req.body.id).then((data) => {
-      console.log("test");
       res.json({ loginError: false, result: true });
     });
   } else {
@@ -318,28 +399,71 @@ router.post("/deleteProduct", (req, res) => {
   }
 });
 
-router.get("/view_products", varifyLogin, (req, res) => {
-  productHelper.getAllProduct().then((data) => {
-    let employee_data = req.session.employee;
-    res.render("admin/view_products", { data, employee_data, admin: true });
+router.get(
+  "/view_products",
+  varifyLogin("/admin/view_products"),
+  (req, res) => {
+    storeid =
+      req.session.employee.supper_user == "yes"
+        ? "none"
+        : req.session.employee.store;
+    productHelper.getAllProduct20(req.session.employee.store).then((data) => {
+      //console.log(data)
+      let employee_data = req.session.employee;
+      let dealerUser = employee_data.supper_user == "yes" ? false : true;
+      res.render("admin/view_products", {
+        data,
+        employee_data,
+        admin: true,
+        dealerUser,
+      });
+    });
+  }
+);
+
+router.get("/edit_price/:id", varifyLogin("/edit_price/:id"), (req, res) => {
+  let prodId = req.params.id;
+  let employee_data = req.session.employee;
+  if(employee_data.supper_user){
+    res.redirect("/admin/view_product")
+  }
+  else{
+    productHelper.getProductdetailesbyStore(prodId, employee_data.store).then((product)=>{
+      console.log(product)
+      res.render("admin/edit_price", { admin: true, prodId, employee_data, product });
+    })
+  }
+});
+
+router.post("/edit_price/:id", (req, res) => {
+  let prodId = req.params.id;
+  let body = req.body;
+  let employee_data = req.session.employee;
+  body.storeId = employee_data.store;
+  productHelper.updatePrice(body, prodId).then(() => {
+    res.redirect("/admin/edit_price/" + prodId);
   });
 });
 
-router.get("/edit_product/:id", varifyLogin, (req, res) => {
-  let employee_data = req.session.employee;
-  let id = req.params.id;
-  productHelper.getProductdetailes(id).then(async (product) => {
-    let productCarouselimages = await imageHelper.productcarouselImages(id);
-    res.render("admin/add_product", {
-      employee_data,
-      product,
-      files: productCarouselimages,
-      id,
-      admin: true,
-      edit: true,
+router.get(
+  "/edit_product/:id",
+  varifyLogin("/admin/edit_product/:id"),
+  (req, res) => {
+    let employee_data = req.session.employee;
+    let id = req.params.id;
+    productHelper.getProductdetailes(id).then(async (product) => {
+      let productCarouselimages = await imageHelper.productcarouselImages(id);
+      res.render("admin/add_product", {
+        employee_data,
+        product,
+        files: productCarouselimages,
+        id,
+        admin: true,
+        edit: true,
+      });
     });
-  });
-});
+  }
+);
 
 router.post("/upload_product_carousel", (req, res) => {
   req.session.lastExetime = Date.now();
@@ -360,7 +484,12 @@ router.post("/upload_product_carousel", (req, res) => {
                 lenna
                   .resize(200, 200) // resize
                   .quality(60) // set JPEG quality
-                  .write("./public/product-carousel-images/thumbnails/" + image.name + "." + id); // save
+                  .write(
+                    "./public/product-carousel-images/thumbnails/" +
+                      image.name +
+                      "." +
+                      id
+                  ); // save
               }
               res.json({ loginError: false, result: true });
             }
@@ -404,14 +533,62 @@ router.post("/remove-product-carousel", (req, res) => {
   }
 });
 
+router.post("/enable_product", (req, res) => {
+  if (!req.session.empLoggedin) {
+    res.json({ loginError: true });
+  } else {
+    updateData = {
+      store: req.session.employee.store,
+      prodId: req.body.prodId,
+      state: req.body.state,
+    };
+    productHelper.updateProdStatus(updateData).then((data) => {
+      res.json({ loginError: false, status: true });
+    });
+  }
+});
+
+router.get("/settings", varifyLogin("/admin/settings"), (req, res) => {
+  let employee_data = req.session.employee;
+  res.render("admin/settings", { employee_data, admin: true, edit: false });
+});
+
 router.get("/logout", function (req, res) {
   req.session.destroy();
   res.redirect("/admin/dashboard");
 });
+
 router.get("/clear", function (req, res) {
   employeeHelper.clearDb().then((data) => {
     console.log(data);
   });
 });
+
+function varifyLogin(route) {
+  return function (req, res, next) {
+    if (route) {
+      req.session.route = route;
+    }
+    // if (req.session.empLoggedin) {
+    //   let currentTime = Date.now();
+    //   next()
+    // }
+    // else {
+    //   res.redirect('/login')
+    // }
+    if (req.session.empLoggedin) {
+      let currentTime = Date.now();
+      // activate lock screen while inactive 5 minutes
+      if (currentTime - req.session.lastExetime > 300000) {
+        res.redirect("/admin/lockscreen");
+      } else {
+        req.session.lastExetime = Date.now();
+        next();
+      }
+    } else {
+      res.redirect("/admin/login");
+    }
+  };
+}
 
 module.exports = router;

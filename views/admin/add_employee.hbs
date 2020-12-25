@@ -47,7 +47,9 @@
                 <div class="col-sm-10">
                   <select class="form-control select2bs4" name="store" style="width: 100%;">
                     {{#each data}}
-                    <option value="{{this._id}}">{{this.storename}} - {{this.companyname}}</option>
+                    <option value="{{this._id}}" {{#elseIf this._id ../employee_data.store}} selected {{/elseIf}}
+                      {{#ifnot ../employee_data.supper_user}} disabled {{/ifnot}}>{{this.storename}} -
+                      {{this.companyname}}</option>
                     {{/each}}
                   </select>
                 </div>
@@ -83,7 +85,8 @@
               <div class="form-group row">
                 <label for="confirm_password" class="col-sm-2 col-form-label">Confirm Password</label>
                 <div class="col-sm-10">
-                  <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
+                  <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                    placeholder="Confirm Password">
                 </div>
               </div>
 

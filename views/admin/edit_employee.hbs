@@ -1,0 +1,105 @@
+{{>admin-sidebar}}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-1">
+      <div class="col-sm-6">
+        <h1>Add Employee</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">add_employee</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- left column -->
+      <div class="col-md-12 center-block">
+        <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Edit Employee</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form class="form-horizontal" id="edit_employee" method="POST">
+            <div class="card-body">
+              <div class="form-group row">
+                <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="firstname" value="{{employee.firstname}}" placeholder="First Name">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="lastname" class="col-sm-2 col-form-label">Last Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="lastname" value="{{employee.lastname}}" placeholder="Last Name">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="storename" class="col-sm-2 col-form-label">Store Name</label>
+                <div class="col-sm-10">
+                  <select class="form-control select2bs4" name="store" style="width: 100%;">
+                    {{#each stores}}
+                    <option value="{{this._id}}" {{#elseIf ../employee.store ../employee_data.store}} selected {{/elseIf}}
+                      {{#ifnot ../employee_data.supper_user}} disabled {{/ifnot}}>{{this.storename}} -
+                      {{this.companyname}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="mobile" class="col-sm-2 col-form-label">Mobile</label>
+                <div class="input-group col-sm-10">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">00966</span>
+                  </div>
+                  <input type="text" id="mobile" name="mobile" value="{{employee.mobile}}" class="form-control">
+                  <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="username" class="col-sm-2 col-form-label">User Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="username" value="{{employee.username}}" placeholder="User Name">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="confirm_password" class="col-sm-2 col-form-label">Confirm Password</label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                    placeholder="Confirm Password">
+                </div>
+              </div>
+
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-info float-right">Save</button>
+            </div>
+            <!-- /.card-footer -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>

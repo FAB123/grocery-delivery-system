@@ -8,6 +8,8 @@
 	<script src="/assets/js/jquery.min.js"></script>
 	<!-- Custom Theme files -->
 	<!--theme-style-->
+	<link rel="stylesheet" href="/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+	 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
 	<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
 	<!--//theme-style-->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +22,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<link href="/assets/css/memenu.css" rel="stylesheet" type="text/css" media="all" />
 	<script type="text/javascript" src="/assets/js/memenu.js"></script>
 	<script>$(document).ready(function () { $(".memenu").memenu(); });</script>
-	{{!-- <script src="assets/js/simpleCar.min1.js"> </script> --}}
+	{{!--
+	<script src="assets/js/simpleCar.min1.js"> </script> --}}
 	<!-- slide -->
 	<script src="/assets/js/responsiveslides.min.js"></script>
 	<script>
@@ -38,42 +41,55 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <body>
 	<div class="header">
 		<div class="header-top">
-			<div class="container">
+			<div class="container1">
 				<div class="col-sm-4 world">
 					<ul>
 						<li>
-							<select class="in-drop">
+							<select class="lang in-drop selectpicker show-tick" data-width="fit">
 								<option> English </option>
 								<option> Arabic </option>
 							</select>
 						</li>
-						<li class="ml-3">
-							<select class="in-drop">
-								<option> List </option>
-								<option> Arabic </option>
+						<li class="ml-2">
+							<select id="store_selector" class="store in-drop selectpicker show-tick" data-width="fit" data-show-subtext="true" data-live-search="true">
+								
+								{{#each storeNames}}
+								<option value="{{this._id}}" data-tokens="{{this.storename}} {{this.companyname}}" {{#elseIf this._id ../defaultStore}} selected {{/elseIf}}>
+									{{this.storename}} [{{this.companyname}}] </option>
+								{{/each}}
 							</select>
+							<a href="javascript:setGeostore();" class="geo"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+									height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+									<path fill-rule="evenodd"
+										d="M12.166 8.94C12.696 7.867 13 6.862 13 6A5 5 0 0 0 3 6c0 .862.305 1.867.834 2.94.524 1.062 1.234 2.12 1.96 3.07A31.481 31.481 0 0 0 8 14.58l.208-.22a31.493 31.493 0 0 0 1.998-2.35c.726-.95 1.436-2.008 1.96-3.07zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+									<path fill-rule="evenodd"
+										d="M8 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+								</svg></a>
 						</li>
 					</ul>
 				</div>
 				<div class="col-sm-4 logo">
-					<a href="index.html"><span class="company-head">{{company}}</span></a>
+					<a href="/"><span class="company-head">{{company}}</span></a>
 				</div>
 
 				<div class="col-sm-4 header-left">
 					{{#if user.status}}
 					<p class="log"><span>{{user.userName}}</span>
-						<a href="logout">Logout</a></p>
+						<a href="/logout">Logout</a>
+					</p>
 					{{else}}
-					<p class="log"><a href="login">Login</a>
-						<span>or</span><a href="signup">Signup</a></p>
+					<p class="log"><a href="/login">Login</a>
+						<span>or</span><a href="/signup">Signup</a>
+					</p>
 					{{/if}}
 
 					<div class="cart box_1">
-						<a href="cart">
+						<a href="/cart">
 							<h3>
 								<div class="total">
-									<span class="simpleCart_total"></span></div>
-								<img src="assets/images/cart.png" alt="" />
+									<span class="simpleCart_total" id="simpleCart_total"></span>
+								</div>
+								<img src="/assets/images/cart.png" alt="" />
 							</h3>
 						</a>
 						<p><a href="javascript:;" class="simpleCart_empty">Empty Cart</a></p>
@@ -92,7 +108,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<div class="col-sm-8 h_menu4">
 					<ul class="memenu skyblue">
 						<li class=" grid"><a href="/">Home</a></li>
-						<li><a href="#">Men</a>
+						{{!-- <li><a href="#">Men</a>
 							<div class="mepanel">
 								<div class="row">
 									<div class="col1">
@@ -207,8 +223,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									</div>
 								</div>
 							</div>
-						</li>
-						<li><a href="typo.html">Blog</a></li>
+						</li>--}}
+						<li><a href="typo.html">Blog</a></li> 
 						<li><a class="color6" href="contact">Conact</a></li>
 					</ul>
 				</div>

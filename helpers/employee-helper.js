@@ -2,6 +2,7 @@ var db = require("../config/connection");
 var collection = require("../config/collection");
 var bcrypt = require("bcrypt");
 const { response } = require("express");
+const { ObjectID } = require("mongodb");
 
 module.exports = {
   clearDb: () => {
@@ -26,6 +27,7 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       delete employeeData.confirm_password;
       employeeData.mobile = employeeData.mobile.replace("-", "");
+      employeeData.active = employeeData.active == "on" ? true : false;
       employeeData.password = await bcrypt.hash(employeeData.password, 10);
       resolve();
       db.get()
@@ -69,13 +71,17 @@ module.exports = {
         .get()
         .collection(collection.EMPLOYEE_COLLECTION)
         .findOne({
-          $or: [{ mobile: userData.mobile }, { username: userData.mobile }],
+          $or: [{ mobile: userData.mobile, active:true }, { username: userData.mobile, active:true }],
         });
       if (employee) {
-        bcrypt.compare(userData.password, employee.password).then((status) => {
+        bcrypt.compare(userData.password, employee.password).then(async(status) => {
           if (status) {
             response.status = true;
             response.employee = employee;
+            if(response.employee.store){
+              storedata = await db.get().collection(collection.STORE_COLLECTION).findOne({_id:ObjectID(response.employee.store)})
+              response.employee.storedata = storedata;
+            }
             resolve(response);
           } else {
             response.status = false;
@@ -85,9 +91,69 @@ module.exports = {
         });
       } else {
         response.status = false;
-        response.message = "invalid Mobile Number";
+        response.message = "User Blocked or invalid Mobile Number/Username";
         resolve(response);
       }
+    });
+  },
+
+  getEmployeeDetails: (employeeId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.EMPLOYEE_COLLECTION)
+        .findOne({ _id: ObjectID(employeeId) })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  updateEmployeeDetailes: (employeeId, employeeData) => {
+    return new Promise(async(resolve, reject) => {
+      employeeData.password = await bcrypt.hash(employeeData.password, 10);
+      // if (!employeeData.active) {
+      //   employeeData.active = false;
+      // }
+      // else
+      // {
+      //   employeeData.active = true;
+      // }
+      //employeeData.active = employeeData.active == "on" ? true : false;
+      db.get()
+        .collection(collection.EMPLOYEE_COLLECTION)
+        .updateOne(
+          { _id: ObjectID(employeeId) },
+          {
+            $set: {
+              username: employeeData.username,
+              password: employeeData.password,
+              firstname: employeeData.firstname,
+              lastname: employeeData.lastname,
+              mobile: employeeData.mobile,
+              store: employeeData.store,
+            },
+          }
+        )
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  controlEmployee: (employeeId, type) => {
+    return new Promise((resolve, reject) => {
+      type = type == "true" ? true : false;
+      db.get()
+        .collection(collection.EMPLOYEE_COLLECTION)
+        .updateOne(
+          { _id: ObjectID(employeeId) },
+          {
+            $set: {
+              active: type,
+            },
+          }
+        )
+        .then((data) => {
+          resolve(data);
+        });
     });
   },
 };

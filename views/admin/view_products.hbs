@@ -16,8 +16,10 @@
                                     <th>Product Name</th>
                                     <th>Catogary</th>
                                     <th>Short Description</th>
-                                    <th>Description</th>
+                                    {{#if dealerUser}}
+                                    <th>Price</th>
                                     <th>Active</th>
+                                    {{/if}}
                                     <th></th>
                                 </tr>
                             </thead>
@@ -27,12 +29,24 @@
                                     <td>{{this.product_name}}</td>
                                     <td>{{this.category}}</td>
                                     <td>{{this.shortdescription}}</td>
-                                    <td> {{this.description}}</td>
-                                    <td><input type="checkbox" name="active" id="{{this._id}}" checked data-bootstrap-switch data-on-text="Active"
-                    data-off-text="Blocked" data-off-color="danger" data-on-color="success"></td>
-                                    <td><a href="edit_product/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a><ion-icon onclick="deleteProduct('{{this._id}}')" name="trash-outline"></ion-icon></td>
+                                    {{#if ../dealerUser}}
+                                    <td> {{this.price}}</td>
+                                    <td><input type="checkbox" name="active" id="{{this._id}}" {{#if this.active }}
+                                            checked {{/if}} data-bootstrap-switch data-on-text="Active"
+                                            data-off-text="Blocked" data-off-color="danger" data-on-color="success">
+                                    </td>
+                                    {{/if}}
+                                    <td class="d-inline"><a href="edit_product/{{this._id}}" class="m-1 btn btn-info">
+                                            <span class="far fa-circ">Update</span>
+                                        </a>
+                                        <button class="m-1 btn btn-danger" onclick="deleteProduct('{{this._id}}')">
+                                            <span class="far fa-circle">Delete</span>
+                                        </button>
+                                        {{#if ../dealerUser}}<a href="/admin/edit_price/{{this._id}}"
+                                            class="m-1 btn btn-warning"><span class="far fa-circle">Price</span></a>
+                                        {{/if}}
+                                    </td>
                                 </tr>
-
                                 {{/each}}
                             </tbody>
                         </table>

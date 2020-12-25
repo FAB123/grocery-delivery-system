@@ -5,9 +5,6 @@ const { ObjectID } = require('mongodb');
 module.exports={
     addStore:(storeData)=>{
         return new Promise((resolve,reject)=>{
-            if(!storeData.active){
-                storeData.active='off'; 
-            }
             db.get().collection(collection.STORE_COLLECTION).insertOne(storeData).then((data)=>{
                 resolve(data.ops[0])
             })
@@ -15,23 +12,22 @@ module.exports={
     },
     getAllstores:()=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection(collection.STORE_COLLECTION).find({active:'on'}).toArray().then((data)=>{
+            db.get().collection(collection.STORE_COLLECTION).find().toArray().then((data)=>{
                 resolve(data)
             })
         })
     },
     getBlockedstores:()=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection(collection.STORE_COLLECTION).find({active:'off'}).toArray().then((data)=>{
+            db.get().collection(collection.STORE_COLLECTION).find({active:false}).toArray().then((data)=>{
                 resolve(data)
             })
         })
     },
     getAllstorename:()=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.STORE_COLLECTION).find({},{storename: 1 , address: 0}).toArray().then((data)=>{
-                resolve(data)
-            })
+        return new Promise(async(resolve,reject)=>{
+            let stores = await db.get().collection(collection.STORE_COLLECTION).find({active:true},{projection:{ active: 0, vat_number: 0 }}).toArray()
+            resolve(stores)         
         })
     },
     getStoreDetails:(storeId)=>{
@@ -43,9 +39,6 @@ module.exports={
     },
     updateStoreDetailes:(storeId, storeData)=>{
         return new Promise((resolve,reject)=>{
-            if(!storeData.active){
-                storeData.active='off'; 
-            }
             db.get().collection(collection.STORE_COLLECTION).updateOne({_id:ObjectID(storeId)},{
             $set:{
                 storename:storeData.storename,
@@ -53,7 +46,6 @@ module.exports={
                 address:storeData.address,
                 mobile:storeData.mobile,
                 vat_number:storeData.vat_number,
-                active:storeData.active,
             }}).then((data)=>{
                 resolve(data)
             })
@@ -61,6 +53,7 @@ module.exports={
     },
     controlStore:(storeId, type)=>{
         return new Promise((resolve, reject)=>{
+            type = type == "true" ? true : false;
            db.get().collection(collection.STORE_COLLECTION).updateOne({_id:ObjectID(storeId)},{
                $set:{
                    active:type
@@ -69,5 +62,11 @@ module.exports={
                resolve(data)
            })
         })
-    }
+    },
+    getAllstorenamebylocation:()=>{
+        return new Promise(async(resolve,reject)=>{
+            let stores = await db.get().collection(collection.STORE_COLLECTION).find({active:true},{projection: { active: 0, address: 0, mobile: 0,vat_number: 0 }}).toArray()
+            resolve(stores)         
+        })
+    },
 }

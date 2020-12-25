@@ -21,6 +21,7 @@
     </div>
     <div class="clearfix"> </div>
 </div>
+
 <!--//banner-->
 <!--content-->
 <div class="content">
@@ -30,14 +31,18 @@
             <div class="content-top1">
                 {{#each products}}
                 <div class="col-md-3 col-md2">
+                    {{#if this.ribbon}}
                     <div class="ribbon-wrapper ribbon-xl">
-                        <div class="ribbon bg-info text-xl">
-                            New
+                        <div class="ribbon bg-{{this.ribbonstyle}} text-xl">
+                            {{this.ribbon}}
                         </div>
                     </div>
+                    {{/if}}
                     <div class="col-md1 simpleCart_shelfItem">
                         <a href="detailes/{{this._id}}">
-                            <img class="img-responsive" src="/product-images/thumbnails/{{this._id}}.jpg" alt="" />
+                            <img class="img-responsive"
+                                onerror="if (this.src != '/admin/img/error.png') this.src = '/admin/img/error.png';"
+                                src="/product-images/thumbnails/{{this._id}}.jpg" alt="" />
                         </a>
                         <h3><a href="detailes/{{this._id}}">{{this.product_name}}</a></h3>
                         <h3>{{this.shortdescription}}</h3>

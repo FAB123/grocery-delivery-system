@@ -5,8 +5,8 @@
                 <div class="flexslider">
                     <ul class="slides">
                         {{#each carouselImages}}
-                        <li data-thumb="/product-carousel-images/thumbnails/{{this}}.jpg">
-                            <div class="thumb-image"> <img src="/product-carousel-images/thumbnails/{{this}}.jpg"
+                        <li data-thumb="/product-carousel-images/thumbnails/{{this}}">
+                            <div class="thumb-image"> <img src="/product-carousel-images/thumbnails/{{this}}"
                                     data-imagezoom="true" class="img-responsive"> </div>
                         </li>
                         {{/each}}
@@ -16,7 +16,7 @@
             <div class="col-md-7 single-top-in">
                 <div class="single-para simpleCart_shelfItem">
                     <h1>{{data.product_name}}</h1>
-                    <p>{{data.description}}</p>
+                    <p>{{{data.description}}}</p>
                     <div class="star-on">
                         <ul>
                             <li><a href="#"><i class="glyphicon glyphicon-star"> </i></a></li>
@@ -33,7 +33,7 @@
                     </div>
 
                     <label class="add-to item_price">{{data.price}}</label>
-                    <a href="#" class="cart item_add">More details</a>
+                    <button onclick="addTocart('{{this._id}}')" class="cart item_add">Add To Cart</button>                
                 </div>
             </div>
             <div class="clearfix"> </div>

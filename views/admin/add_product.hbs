@@ -48,12 +48,12 @@
                 <input type="text" class="form-control" id="shortdescription" value="{{product.shortdescription}}"
                   name="shortdescription" placeholder="Description" required>
               </div>
+
               <div class="form-group">
                 <label for="exampleInputFile">File input</label>
                 <div class="input-group">
                   <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="input" name="image" accept="image/*"
-                       value="">
+                    <input type="file" class="custom-file-input" id="input" name="image" accept="image/*" value="">
                     <label class="custom-file-label" for="image" id="choosefile">Choose file</label>
                   </div>
                 </div>
@@ -82,7 +82,7 @@
             <h3 class="card-title">Product Image</h3>
           </div>
           <div class="card-body">
-            <img src="/product-images/thumbnails/{{product._id}}.jpg" alt="" id="show_image" width="100%" height="100%">
+            <img src="/product-images/thumbnails/{{product._id}}.jpg" onerror="if (this.src != '/admin/img/error.png') this.src = '/admin/img/error.png';" alt="Product Image" id="show_image" width="100%" height="100%">
           </div>
           <!-- /.card-body -->
         </div>
@@ -158,9 +158,4 @@
     </div>
   </div>
 </div>
-
-
-
-
-
 </div>

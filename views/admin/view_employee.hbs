@@ -32,9 +32,9 @@
                                     <td> {{this.username}}</td>
                                     <td>{{this.store}}</td>
                                     <td>{{this.supper_user}}</td>
-                                    <td><input type="checkbox" name="active" id="{{this._id}}" checked data-bootstrap-switch data-on-text="Active"
+                                    <td class="d-inline"><input type="checkbox" name="employeecontrol" id="{{this._id}}" {{#if this.active}} checked {{/if}}data-bootstrap-switch data-on-text="Active"
                     data-off-text="Blocked" data-off-color="danger" data-on-color="success"></td>
-                                    <td><a href="editStore/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a><a href="" class="pr-1"><ion-icon name="trash-outline"></ion-icon></a><a><span class="far fa-clock "></span></a></td>
+                                    <td><a href="editEmployee/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a></td>
                                 </tr>
 
                                 {{/each}}

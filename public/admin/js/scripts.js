@@ -13,17 +13,16 @@ $(function () {
         data: $("#add_new_store").serialize(),
         datatype: "JSON",
         success: (response) => {
-          alert(response.message);
+          $("#add_new_store").trigger("reset");
           $(document).Toasts("create", {
             autohide: true,
             class: "bg-info",
-            delay: 750,
-            title: "Toast Title",
+            delay: 4750,
+            title: "New Store Added",
             body: response.message,
           });
         },
       });
-      alert("Form successful submitted!");
     },
   });
   $("#add_new_store").validate({
@@ -189,7 +188,120 @@ function validateOtp() {
 $('input[name="active"]').on(
   "switchChange.bootstrapSwitch",
   function (event, state) {
-    alert($(this).attr("id"));
+   // state = state == 'true' ? true : false
+    $.ajax({
+      url:'/admin/enable_product',
+      type:'POST',
+      datatype:'JSON',
+      data:{'state':state, 'prodId':$(this).attr("id")},
+      success:function(response){
+        if(response.loginError){
+          window.location = "/admin/login";
+        }
+        else{
+          if(response.status)
+          {
+            $(document).Toasts("create", {
+              autohide: true,
+              class: "bg-info",
+              delay: 3550,
+              title: "Pdoduct Status Changed",
+              body: "Pdoduct Status uploaded Successfully",
+            });
+            setTimeout(location.reload(), 3600);
+          }
+          else{
+            $(document).Toasts("create", {
+              autohide: true,
+              class: "bg-danger",
+              delay: 3550,
+              title: "Pdoduct Status Change Error Occuered",
+              body: "Error Changing Product Status",
+            });
+          }
+        }
+      }
+    })
+  }
+);
+
+$('input[name="employeecontrol"]').on(
+  "switchChange.bootstrapSwitch",
+  function (event, state) {
+   // state = state == 'true' ? true : false
+    $.ajax({
+      url:'/admin/enable_employee',
+      type:'POST',
+      datatype:'JSON',
+      data:{'state':state, 'employeeId':$(this).attr("id")},
+      success:function(response){
+        if(response.loginError){
+          window.location = "/admin/login";
+        }
+        else{
+          if(response.status)
+          {
+            $(document).Toasts("create", {
+              autohide: true,
+              class: "bg-info",
+              delay: 3550,
+              title: "Employee Status Changed",
+              body: "Employee Status uploaded Successfully",
+            });
+            setTimeout(location.reload(), 3600);
+          }
+          else{
+            $(document).Toasts("create", {
+              autohide: true,
+              class: "bg-danger",
+              delay: 3550,
+              title: "Employee Status Change Error Occuered",
+              body: "Error Changing Employee Status",
+            });
+          }
+        }
+      }
+    })
+  }
+);
+
+$('input[name="storecontrol"]').on(
+  "switchChange.bootstrapSwitch",
+  function (event, state) {
+   // state = state == 'true' ? true : false
+    $.ajax({
+      url:'/admin/enable_store',
+      type:'POST',
+      datatype:'JSON',
+      data:{'state':state, 'storeId':$(this).attr("id")},
+      success:function(response){
+        if(response.loginError){
+          window.location = "/admin/login";
+        }
+        else{
+          if(response.status)
+          {
+            $(document).Toasts("create", {
+              autohide: true,
+              class: "bg-info",
+              delay: 3550,
+              title: "Store Status Changed",
+              body: "Store Status uploaded Successfully",
+            });
+            setTimeout(location.reload(), 3600);
+          }
+          else{
+            $(document).Toasts("create", {
+              autohide: true,
+              class: "bg-danger",
+              delay: 3550,
+              title: "Store Status Change Error Occuered",
+              body: "Error Changing Store Status",
+            });
+          }
+        }
+      }
+    })
   }
 );
 
@@ -262,23 +374,27 @@ function removeProductCarousel(image) {
 }
 
 function deleteProduct(id) {
-  $.ajax({
-    type: "POST",
-    url: "/admin/deleteProduct",
-    data: { id: id },
-    success: (result) => {
-      if (result.loginError) {
-        window.location = "/admin/login";
-      } else {
-        $(document).Toasts("create", {
-          autohide: true,
-          class: "bg-info",
-          delay: 1550,
-          title: "Product Deleted",
-          body: "Product Deleted Successfully",
-        });
-        setTimeout(location.reload(), 1600);
-      }
-    },
-  });
+  if (confirm('Are you sure you want to Delete?')) {
+    $.ajax({
+      type: "POST",
+      url: "/admin/deleteProduct",
+      data: { id: id },
+      success: (result) => {
+        if (result.loginError) {
+          window.location = "/admin/login";
+        } else {
+          $(document).Toasts("create", {
+            autohide: true,
+            class: "bg-info",
+            delay: 1550,
+            title: "Product Deleted",
+            body: "Product Deleted Successfully",
+          });
+          setTimeout(location.reload(), 1600);
+        }
+      },
+    });
+  }
 }
+
+

@@ -1,0 +1,73 @@
+{{>admin-sidebar}}
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- left column -->
+      <div class="col-md-12 center-block">
+        <div class="card card-info  mt-4">
+          <div class="card-header">
+            <h3 class="card-title">Add or Edit Product Detailes</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form class="form-horizontal" action="/admin/edit_price/{{prodId}}" id="edit_price" method="POST">
+            <div class="card-body">
+              <div class="form-group row">
+                <label for="price" class="col-sm-2 col-form-label">Price</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="price" placeholder="Price" value="{{product.price}}"
+                    required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="qty" class="col-sm-2 col-form-label">Quantity</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="qty" value="{{product.qty}}" placeholder="Quantity"
+                    required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="vat" class="col-sm-2 col-form-label">VAT %</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" name="vat" value="{{product.vat}}" placeholder="VAT %"
+                    required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="ribbon" class="col-sm-2 col-form-label">Ribbon Text</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" value="{{product.ribbon}}" id="ribbon" name="ribbon"
+                    placeholder="Text On Product Ribbon">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="ribbon" class="col-sm-2 col-form-label">Ribbon Color</label>
+                <div class="col-sm-10">
+                  <select class="form-control select2bs4" name="ribbonstyle" style="width: 100%;">
+                    <option value="info" {{#elseIf 'info' product.ribbonstyle}} selected {{/elseIf}}>Info</option>
+                    <option value="warning" {{#elseIf 'warning' product.ribbonstyle}} selected {{/elseIf}}>Warning
+                    </option>
+                    <option value="success" {{#elseIf 'success' product.ribbonstyle}} selected {{/elseIf}}>Success
+                    </option>
+                    <option value="primary" {{#elseIf 'primary' product.ribbonstyle}} selected {{/elseIf}}>Primary
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-info float-right">Save</button>
+            </div>
+            <!-- /.card-footer -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>

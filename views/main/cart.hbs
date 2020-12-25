@@ -1,37 +1,42 @@
 <div class="container">
 	<div class="check-out">
 		<h1>Checkout</h1>
-		<table>
+		{{#each cartItems}}
+		<table class="table table-striped table-bordered">
+			<tr>
+				<th colspan="4" style="text-align: center;">
+					<h4>{{this.cartItems.0.storename}}</h4>
+				</th>
+			</tr>
 			<tr>
 				<th>Item</th>
 				<th>Prices</th>
 				<th>Qty</th>
-				<th>Delery Detials</th>
 				<th>Subtotal</th>
 			</tr>
-
-			{{#each cartItems}}
+			{{#each this.cartItems}}
 			<tr>
-				
-				<td class="ring-in"><a href="single.html" class="at-in"><img
-							src="/product-images/thumbnails/{{this.product._id}}.jpg" class="img-responsive" alt=""></a>
+				<td class="ring-in"><a href="/detailes/{{this.product.item}}" class="at-in"><img
+							src="/product-images/thumbnails/{{this.product.item}}.jpg" class="img-responsive"
+							alt=""></a>
 					<div class="sed">
-						<h5>{{this.product.name}}</h5>
-						<p>{{this.product.description}} </p>
+						<h5>{{this.product.product_name}}</h5>
+						<p>{{{this.product.product_description}}} </p>
 					</div>
 					<div class="clearfix"> </div>
 				</td>
-				<td>{{this.price}}</td>
-				
-				<td class="check"><input type="text" id="cart_qty_{{this.item}}" value="{{this.quantity}}" onchange="changeQty('{{this.item}}','{{this._id}}')"</td>
+				<td>{{this.product.price}}</td>
 
-				<td>FREE SHIPPING</td>
-				<td>$150.00</td>
+				<td class="check"><input type="text" id="cart_qty_{{this.product.item}}" value="{{this.product.quantity}}"
+						onchange="changeQty('{{this.product.item}}','{{this.cartID}}')" </td>
+				<td>{{this.product.total}}</td>
 			</tr>
-
 			{{/each}}
+			<div class="d-flex">
+				<a href="/place_order/{{this.cartItems.0.cartID}}" class="to-buy">PROCEED TO CHECKOUT</a>
+			</div>
 		</table>
-		<a href="place_order" class=" to-buy">PROCEED TO BUY</a>
-		<div class="clearfix"> </div>
+
+		{{/each}}
 	</div>
 </div>
