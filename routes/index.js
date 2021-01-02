@@ -464,9 +464,13 @@ function commonData() {
             req.session.defaultStore
           );
         } else {
-          storeData = "null";
+          storeData = [];
         }
       }
+    }
+    else
+    {
+      storeData = [];
     }
     if (req.session.loggedIn) {
       total = await cartHelper.calculateCarttotalbystore(
