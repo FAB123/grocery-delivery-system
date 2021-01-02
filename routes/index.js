@@ -14,7 +14,6 @@ const cartHelpers = require("../helpers/cart/cart-helpers");
 const orderTransactions = require("../helpers/payment/order-transactions");
 const siteUrl = "http://localhost:3000/";
 
-
 const company = "Balsam Laundary";
 
 var userData;
@@ -269,17 +268,29 @@ router.get(
   }
 );
 
-router.get("/moyasar_payment", commonData(), varifyLogin("/moyasar_payment"), async(req, res) => {
-  if(req.session.OrderId){
-    let total = await orderTransactions.calculateOrdertotalbyorderID(req.session.OrderId);
-    total = total * 100
-    let orderId = req.session.OrderId
-    res.render("main/moyasar_form", { admin: false, siteUrl, total, orderId, user: req.session.dataTouser,});
+router.get(
+  "/moyasar_payment",
+  commonData(),
+  varifyLogin("/moyasar_payment"),
+  async (req, res) => {
+    if (req.session.OrderId) {
+      let total = await orderTransactions.calculateOrdertotalbyorderID(
+        req.session.OrderId
+      );
+      total = total * 100;
+      let orderId = req.session.OrderId;
+      res.render("main/moyasar_form", {
+        admin: false,
+        siteUrl,
+        total,
+        orderId,
+        user: req.session.dataTouser,
+      });
+    } else {
+      res.redirect("/orders");
+    }
   }
-  else{
-    res.redirect("/orders")
-  }
-});
+);
 
 router.get(
   "/moyasar_payments_redirect",
@@ -448,9 +459,13 @@ function commonData() {
     if (storeNames.length > 0) {
       if (!req.session.defaultStore) {
         req.session.defaultStore = storeNames[0]._id;
-        storeData = await store_helper.getStoreDetails(
-          req.session.defaultStore
-        );
+        if (req.session.defaultStore) {
+          storeData = await store_helper.getStoreDetails(
+            req.session.defaultStore
+          );
+        } else {
+          storeData = "null";
+        }
       }
     }
     if (req.session.loggedIn) {
