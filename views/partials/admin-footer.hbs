@@ -24,11 +24,12 @@
 
 <script src="/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
 <script src="/admin/plugins/cropper/cropper.js"></script>
+<link rel="stylesheet" href="/admin/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" type="text/css"
+  media="all" />
+<script type="text/javascript"
+  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="/admin/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <!-- Program Scripts -->
-
-
-
-
 
 
 <script src="/admin/js/scripts.js"></script>
@@ -50,10 +51,22 @@
 
 <script>
   $(function () {
+    $("#view_product").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["excel", "pdf", "print", "colvis", {
+        text: 'New Category',
+        className: "btn btn-danger text-white",
+        action: function (e, dt, node, config) {
+          $("#add-category").modal({ backdrop: "static" });
+        }
+      }]
+    }).buttons().container().appendTo('#view_product_wrapper .col-md-6:eq(0)');
+
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,
@@ -67,12 +80,31 @@
 </script>
 
 
+<script>
+  (function ($) {
+    $(function () {
+      $('#id_opening_time').datetimepicker({
+        "allowInputToggle": true,
+        "showClose": true,
+        "showClear": true,
+        "showTodayButton": true,
+        "format": "hh:mm:ss A",
+      });
+      $('#id_end_time').datetimepicker({
+        "allowInputToggle": true,
+        "showClose": true,
+        "showClear": true,
+        "showTodayButton": true,
+        "format": "hh:mm:ss A",
+      });
+    });
+  })(jQuery);
+</script>
+
 
 
 <script>
-
-
-$(function(){
+  $(function () {
     var show_image = document.getElementById('show_image');
     var image = document.getElementById('image');
     var input = document.getElementById('input');
@@ -81,72 +113,67 @@ $(function(){
     var cropper;
 
     input.addEventListener('change', function (e) {
-        var files = e.target.files;
-        var done = function (url) {
-          input.value = '';
-          image.src = url;
-          $alert.hide();
-          $modal.modal('show');
-        };
-        var reader;
-        var file;
-        var url;
+      var files = e.target.files;
+      var done = function (url) {
+        input.value = '';
+        image.src = url;
+        $alert.hide();
+        $modal.modal('show');
+      };
+      var reader;
+      var file;
+      var url;
 
-        if (files && files.length > 0) {
-          file = files[0];
+      if (files && files.length > 0) {
+        file = files[0];
 
-          if (URL) {
-            done(URL.createObjectURL(file));
-          } else if (FileReader) {
-            reader = new FileReader();
-            reader.onload = function (e) {
-              done(reader.result);
-            };
-            reader.readAsDataURL(file);
-          }
+        if (URL) {
+          done(URL.createObjectURL(file));
+        } else if (FileReader) {
+          reader = new FileReader();
+          reader.onload = function (e) {
+            done(reader.result);
+          };
+          reader.readAsDataURL(file);
         }
-      });
+      }
+    });
 
-      $modal.on('shown.bs.modal', function () {
-        cropper = new Cropper(image, {
-          viewMode: 1,
-          responsive: true,
+    $modal.on('shown.bs.modal', function () {
+      cropper = new Cropper(image, {
+        viewMode: 2,
+        responsive: false,
+        rotatable: true,
+        minCanvasWidth: 0,
+        minCanvasHeight: 0
+      });
+    }).on('hidden.bs.modal', function () {
+      cropper.destroy();
+      cropper = null;
+    });
+
+    document.getElementById('crop').addEventListener('click', function () {
+      var initialAvatarURL;
+      var canvas;
+      $modal.modal('hide');
+      if (cropper) {
+        canvas = cropper.getCroppedCanvas({
+          width: 160,
+          height: 160,
+          imageSmoothingQuality: 'high',
         });
-      }).on('hidden.bs.modal', function () {
-        cropper.destroy();
-        cropper = null;
-      });
+        initialAvatarURL = show_image.src;
+        show_image.src = canvas.toDataURL();
+        $('#prodIm').val(canvas.toDataURL())
+        canvas.toDataURL(function (blob) {
+          var formData = new FormData();
+          formData.append('proImage', blob, 'proImage.jpg');
+          //$('#prodIm').val(blob)
+        })
+      }
+    });
+  });
 
 
-
-     document.getElementById('crop').addEventListener('click', function () {
-        var initialAvatarURL;
-        var canvas;
-
-        $modal.modal('hide');
-
-        if (cropper) {
-          canvas = cropper.getCroppedCanvas({
-            width: 160,
-            height: 160,
-            imageSmoothingQuality: 'high',
-          });
-          initialAvatarURL = show_image.src;
-          show_image.src = canvas.toDataURL();
-          $('#prodIm').val(canvas.toDataURL())
-          canvas.toDataURL(function (blob) {
-            var formData = new FormData();
-            formData.append('proImage', blob, 'proImage.jpg');
-            //$('#prodIm').val(blob)
-          })
-        }
-     });
-
-
-
-
-});
-
-   
 
 </script>

@@ -2,14 +2,22 @@
 <html>
 
 <head>
-	<title>{{company}} - Shopping Cart</title>
-	<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<title>{{user.storeData.storename}}  - Shopping Cart</title>
+	<!--<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+	 jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
 	<script src="/assets/js/jquery.min.js"></script>
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 	<!-- Custom Theme files -->
 	<!--theme-style-->
 	<link rel="stylesheet" href="/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-	 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
+	<link rel="stylesheet"
+		href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
 	<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
 	<!--//theme-style-->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,15 +59,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</select>
 						</li>
 						<li class="ml-2">
-							<select id="store_selector" class="store in-drop selectpicker show-tick" data-width="fit" data-show-subtext="true" data-live-search="true">
-								
-								{{#each storeNames}}
-								<option value="{{this._id}}" data-tokens="{{this.storename}} {{this.companyname}}" {{#elseIf this._id ../defaultStore}} selected {{/elseIf}}>
-									{{this.storename}} [{{this.companyname}}] </option>
+							<select id="store_selector" class="store in-drop selectpicker show-tick" data-width="fit"
+								data-show-subtext="true" data-live-search="true">
+
+								{{#each user.storeNames}}
+								<option value="{{this._id}}" data-tokens="{{this.storename}} {{this.companyname}}"
+									{{#elseIf this._id ../user.defaultStore}} selected {{/elseIf}}>
+									{{this.storename}} {{#getStorestatus this.opening_time this.closingtime}}{{/getStorestatus}}</option>
 								{{/each}}
 							</select>
-							<a href="javascript:setGeostore();" class="geo"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-									height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+							<a href="javascript:setGeostore();" class="geo"><svg xmlns="http://www.w3.org/2000/svg"
+									width="16" height="16" fill="currentColor" class="bi bi-geo-alt"
+									viewBox="0 0 16 16">
 									<path fill-rule="evenodd"
 										d="M12.166 8.94C12.696 7.867 13 6.862 13 6A5 5 0 0 0 3 6c0 .862.305 1.867.834 2.94.524 1.062 1.234 2.12 1.96 3.07A31.481 31.481 0 0 0 8 14.58l.208-.22a31.493 31.493 0 0 0 1.998-2.35c.726-.95 1.436-2.008 1.96-3.07zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
 									<path fill-rule="evenodd"
@@ -69,12 +80,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</ul>
 				</div>
 				<div class="col-sm-4 logo">
-					<a href="/"><span class="company-head">{{company}}</span></a>
+					<a href="/"><span class="company-head">{{user.storeData.storename}} </span></a>
 				</div>
 
 				<div class="col-sm-4 header-left">
-					{{#if user.status}}
-					<p class="log"><span>{{user.userName}}</span>
+					{{#if user.userData.status}}
+					<p class="log"><span>{{user.userData.userName}}</span>
 						<a href="/logout">Logout</a>
 					</p>
 					{{else}}
@@ -84,16 +95,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					{{/if}}
 
 					<div class="cart box_1">
-						<a href="/cart">
-							<h3>
-								<div class="total">
-									<span class="simpleCart_total" id="simpleCart_total"></span>
-								</div>
-								<img src="/assets/images/cart.png" alt="" />
-							</h3>
-						</a>
-						<p><a href="javascript:;" class="simpleCart_empty">Empty Cart</a></p>
-
+						<a href="/orders" class="order"><span class="glyphicon glyphicon-gift"></span></a>
+						<div>
+							<a href="/cart">
+								<h3>
+									<div class="total">
+										<span class="simpleCart_total"
+											id="simpleCart_total">{{user.userData.totalCart}}</span>
+									</div>
+									<img src="/assets/images/cart.png" alt="" />
+								</h3>
+							</a>
+							<p><a href="javascript:clearCart();" class="simpleCart_empty">Empty Cart</a></p>
+						</div>
 					</div>
 					<div class="clearfix"> </div>
 				</div>
@@ -224,7 +238,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								</div>
 							</div>
 						</li>--}}
-						<li><a href="typo.html">Blog</a></li> 
+						<li><a href="typo.html">Blog</a></li>
 						<li><a class="color6" href="contact">Conact</a></li>
 					</ul>
 				</div>

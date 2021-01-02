@@ -8,30 +8,19 @@ var store_helper = require("../helpers/store-helper");
 var sms_helper = require("../helpers/messaging_helper");
 var geoHelper = require("../helpers/geo_helper");
 var cartHelper = require("../helpers/cart/cart-helpers");
-var addressHelpers = require('../helpers/cart/address_helper');
-var paymentHelpers = require("../helpers/payment/payment-method")
+var addressHelpers = require("../helpers/cart/address_helper");
+var paymentHelpers = require("../helpers/payment/payment-method");
+const cartHelpers = require("../helpers/cart/cart-helpers");
+const orderTransactions = require("../helpers/payment/order-transactions");
+const siteUrl = "http://localhost:3000/";
+
 
 const company = "Balsam Laundary";
 
 var userData;
 
 /* GET home page. */
-router.get("/", async function (req, res, next) {
-  if (req.session.loggedIn) {
-    userData = {
-      userName: req.session.user.first_name + " " + req.session.user.last_name,
-      id: req.session.user._id,
-      status: true,
-    };
-  }
-
-  let storeNames = await store_helper.getAllstorename();
-  if (storeNames.length > 0) {
-    if (!req.session.defaultStore) {
-      req.session.defaultStore = storeNames[0]._id;
-    }
-  }
-
+router.get("/", commonData(), async function (req, res, next) {
   let carousel = await imageHelpers.carouselImages();
   productHelpers
     .getAllProductbyStore(req.session.defaultStore)
@@ -41,14 +30,14 @@ router.get("/", async function (req, res, next) {
         products,
         admin: false,
         carousel,
-        storeNames,
-        defaultStore: req.session.defaultStore,
-        user: userData,
+        // storeNames,
+        // defaultStore: req.session.defaultStore,
+        user: req.session.dataTouser,
       });
     });
 });
 
-router.get("/detailes/:id", (req, res) => {
+router.get("/detailes/:id", commonData(), (req, res) => {
   productHelpers.getProductdetailes(req.params.id).then(async (data) => {
     let carouselImages = await imageHelpers.productcarouselImages(
       req.params.id
@@ -57,18 +46,18 @@ router.get("/detailes/:id", (req, res) => {
       company: "Balsam Laundary",
       data,
       admin: false,
-      user: userData,
+      user: req.session.dataTouser,
       carouselImages,
     });
   });
 });
 
-router.get("/login", function (req, res) {
+router.get("/login", commonData(), function (req, res) {
   if (req.session.loggedIn) {
-    route = req.session.route ? req.session.route : "/";
-    res.redirect(route);
+    route = req.session.userRoute ? req.session.userRoute : "/";
+    res.redirect(userRoute);
   } else {
-    res.render("main/login", { admin: false });
+    res.render("main/login", { admin: false, user: req.session.dataTouser });
   }
 });
 
@@ -77,17 +66,29 @@ router.post("/login", function (req, res) {
     if (response.status) {
       req.session.loggedIn = true;
       req.session.user = response.user;
-      response.route = req.session.route ? req.session.route : "/";
+      response.userRoute = req.session.userRoute ? req.session.userRoute : "/";
       res.json(response);
-      req.session.route = false;
+      req.session.userRoute = false;
     } else {
       res.json(response);
     }
   });
 });
 
-router.get("/signup", function (req, res) {
-  res.render("main/signup", { admin: false });
+router.post("/change_store", async (req, res) => {
+  req.session.defaultStore = req.body.store;
+  if (req.session.defaultStore == req.body.store) {
+    req.session.dataTouser = { defaultStore: req.session.defaultStore };
+    storeData = await store_helper.getStoreDetails(req.session.defaultStore);
+    req.session.dataTouser = { storeData: storeData };
+    res.json({ response: true });
+  } else {
+    res.json({ response: false });
+  }
+});
+
+router.get("/signup", commonData(), function (req, res) {
+  res.render("main/signup", { admin: false, user: req.session.dataTouser });
 });
 
 router.post("/signup", (req, res) => {
@@ -129,16 +130,6 @@ router.post("/validate_registration", (req, res) => {
   });
 });
 
-router.post("/change_store", (req, res) => {
-  req.session.defaultStore = req.body.store;
-  console.log(req.session.defaultStore);
-  if (req.session.defaultStore == req.body.store) {
-    res.json({ response: true });
-  } else {
-    res.json({ response: false });
-  }
-});
-
 router.post("/geo_locator", async (req, res) => {
   let storeNames = await store_helper.getAllstorenamebylocation();
   for (i = 0; i < storeNames.length; i++) {
@@ -151,7 +142,6 @@ router.post("/geo_locator", async (req, res) => {
     storeNames[i].distence = distence;
   }
   storeNames.sort((a, b) => (a.distence > b.distence ? 1 : -1));
-  console.log(storeNames);
   res.json({ stores: storeNames });
 });
 
@@ -204,7 +194,7 @@ router.post("/edit-cart", (req, res) => {
   }
 });
 
-router.get("/cart", varifyLogin("/cart"), (req, res) => {
+router.get("/cart", commonData(), varifyLogin("/cart"), (req, res) => {
   if (req.session.loggedIn) {
     userData = {
       userName: req.session.user.first_name + " " + req.session.user.last_name,
@@ -218,52 +208,231 @@ router.get("/cart", varifyLogin("/cart"), (req, res) => {
       company,
       admin: false,
       cartItems,
-      user: userData,
+      user: req.session.dataTouser,
     });
   });
 });
 
-router.get("/place_order/:id", varifyLogin("/place_order"), (req, res) => {
-  cartHelper.calculateCarttotalbycartID(req.params.id).then(async(cartTotal) => {
-    console.log(cartTotal)
-    let paymentMethods = await paymentHelpers.getPaymentmethods()
-    console.log(paymentMethods)
-    let address = await addressHelpers.getAlladdressbyuser(req.session.user._id);
-    res.render("main/place_order", {
-      company,
-      address,
-      admin: false,
-      paymentMethods,
-      cartTotal,
-      user: userData,
+router.post("/clear_cart", (req, res) => {
+  if (req.session.loggedIn) {
+    cartHelper.clearAllcartItem(req.session.user._id).then((data) => {
+      res.json({ login: true, result: true });
     });
-  });
+  } else {
+    res.json({ login: false });
+  }
 });
 
-//save user address to database
-router.post("/save_address", (req,res)=>{
-  if(!req.session.loggedIn){
-    res.json({login:false})
+router.get(
+  "/place_order/:id",
+  commonData(),
+  varifyLogin("/place_order"),
+  (req, res) => {
+    cartHelper
+      .calculateCarttotalbycartID(req.params.id)
+      .then(async (cartTotal) => {
+        let paymentMethods = await paymentHelpers.getPaymentmethods();
+        console.log(paymentMethods);
+        let address = await addressHelpers.getAlladdressbyuser(
+          req.session.user._id
+        );
+        res.render("main/place_order", {
+          company,
+          address,
+          cartID: req.params.id,
+          admin: false,
+          paymentMethods,
+          cartTotal,
+          user: req.session.dataTouser,
+        });
+      });
+  }
+);
+
+router.get(
+  "re-payment:/id",
+  commonData(),
+  varifyLogin("/orders"),
+  (req, res) => {
+    cartHelper
+      .calculateCarttotalbycartID(req.params.id)
+      .then(async (cartTotal) => {
+        let paymentMethods = await paymentHelpers.getPaymentmethods();
+        res.render("main/re-payment", {
+          cartID: req.params.id,
+          admin: false,
+          paymentMethods,
+          cartTotal,
+          user: req.session.dataTouser,
+        });
+      });
+  }
+);
+
+router.get("/moyasar_payment", commonData(), varifyLogin("/moyasar_payment"), async(req, res) => {
+  if(req.session.OrderId){
+    let total = await orderTransactions.calculateOrdertotalbyorderID(req.session.OrderId);
+    total = total * 100
+    let orderId = req.session.OrderId
+    res.render("main/moyasar_form", { admin: false, siteUrl, total, orderId, user: req.session.dataTouser,});
   }
   else{
-    console.log(req.body)
-    req.body.user = req.session.user._id
-    addressHelpers.saveAddress(req.body).then((data)=>{
-      data ? res.json({login:true, success:true, message:"New Address Saved Successfully"}) : res.json({login:true, success:false, message:"Unknown Error"})
-    })   
+    res.redirect("/orders")
   }
-})
+});
 
-router.post("/do-payment",(req,res)=>{
-  console.log(req.body)
-})
+router.get(
+  "/moyasar_payments_redirect",
+  commonData(),
+  varifyLogin("/orders"),
+  (req, res) => {
+    let data = req.query;
+    if (data.status === "paid") {
+      paymentHelpers.varifyMoyasar(data.id).then((response) => {
+        console.log(response);
+        if (response.status === "paid") {
+          orderTransactions
+            .updateOrderstatus(req.session.OrderId, "Payment Success")
+            .then(() => {
+              req.session.orderStatus =
+                "Moyasar Payment Compleeted Successfuly";
+              res.redirect("/orders");
+            });
+        } else {
+          req.session.orderStatus = "Moyasar Payment Failed";
+          res.redirect("/orders");
+        }
+      });
+    } else {
+      orderTransactions
+        .updateOrderstatus(req.session.OrderId, "Payment Failed")
+        .then(() => {
+          req.session.orderStatus = "Moyasar Payment Failed";
+          res.redirect("/orders");
+        });
+    }
+  }
+);
 
-function varifyLogin(route) {
+//save user address to database
+router.post("/save_address", (req, res) => {
+  if (!req.session.loggedIn) {
+    res.json({ login: false });
+  } else {
+    console.log(req.body);
+    req.body.user = req.session.user._id;
+    addressHelpers.saveAddress(req.body).then((data) => {
+      data
+        ? res.json({
+            login: true,
+            success: true,
+            message: "New Address Saved Successfully",
+          })
+        : res.json({ login: true, success: false, message: "Unknown Error" });
+    });
+  }
+});
+
+router.post("/place_order", async (req, res) => {
+  if (req.session.loggedIn) {
+    let cartID = req.body.cartID;
+    let products = await cartHelpers.getProductfromCart(cartID);
+    let total = await cartHelper.calculateCarttotalbycartID(cartID);
+    orderTransactions.placeOrder(req.body, products, total).then((data) => {
+      if (req.body.paymentMethod === "cod") {
+        req.session.orderStatus = "New Order Placed Successfully";
+        res.json({ login: true, method: "cod" });
+      } else {
+        if (req.body.paymentMethod === "razorpay") {
+          let razamount = total * 100;
+          req.session.razpayOrderId = data;
+          paymentHelpers.generateRazorpay(data, razamount).then((data) => {
+            //let options = paymentHelpers.razorpayClientoption(razamount, data.id, req.session.user);
+            let options = {
+              razamount: razamount,
+              orderid: data.id,
+              user: req.session.user,
+              key_id: "rzp_test_zt63z5Weu5i5fx",
+            };
+            res.json({ login: true, method: "razorPay", options: options });
+          });
+        } else if (req.body.paymentMethod === "moyasar") {
+          req.session.OrderId = data;
+          console.log("order is setted " + req.session.OrderId);
+          res.json({ login: true, method: "moyasar" });
+        }
+      }
+    });
+  } else {
+    res.json({ login: false });
+  }
+});
+
+router.post("/varify-razorpay", (req, res) => {
+  if (req.session.loggedIn) {
+    paymentHelpers
+      .razorpayVarifypayment(req.body)
+      .then(() => {
+        orderTransactions
+          .updateOrderstatus(req.session.razpayOrderId, "Payment Success")
+          .then(() => {
+            res.json({ login: true, payment: true });
+          });
+      })
+      .catch((err) => {
+        orderTransactions
+          .updateOrderstatus(req.session.razpayOrderId, "Payment Failed")
+          .then(() => {
+            res.json({ login: true, payment: false });
+          });
+      });
+  } else {
+    res.json({ login: false });
+  }
+});
+
+router.get("/orders", commonData(), varifyLogin("/orders"), (req, res) => {
+  orderTransactions.getAllorderItem(req.session.user._id).then((orderItems) => {
+    console.log(orderItems);
+    let orderStatus = req.session.orderStatus ? req.session.orderStatus : false;
+    res.render("main/orders", {
+      company,
+      orderStatus,
+      admin: false,
+      orderItems,
+      user: req.session.dataTouser,
+    });
+  });
+});
+
+router.post("/get_ordered_products", (req, res) => {
+  console.log(req.body.orederId);
+  if (req.session.loggedIn) {
+    orderTransactions.getProductdetailes(req.body.orederId, (items) => {
+      console.log(items);
+      res.json({ login: true, items: items });
+    });
+  } else {
+    res.json({ login: false });
+  }
+});
+
+router.get("/get_ordered_status/:id", async (req, res) => {
+  if (req.session.loggedIn) {
+    orderTransactions.getOrderedProductStatus(req.params.id, (tracks) => {
+      res.render("main/order_shipping_status", { tracks, layout: false });
+    });
+  } else {
+    res.json({ login: false });
+  }
+});
+
+function varifyLogin(userRoute) {
   return function (req, res, next) {
-    if (route) {
+    if (userRoute) {
       req.params.id
-        ? (req.session.route = route + "/" + req.params.id)
-        : (req.session.route = route);
+        ? (req.session.userRoute = userRoute + "/" + req.params.id)
+        : (req.session.userRoute = userRoute);
     }
     if (req.session.loggedIn) {
       next();
@@ -273,4 +442,39 @@ function varifyLogin(route) {
   };
 }
 
+function commonData() {
+  return async function (req, res, next) {
+    let storeNames = await store_helper.getAllstorename();
+    if (storeNames.length > 0) {
+      if (!req.session.defaultStore) {
+        req.session.defaultStore = storeNames[0]._id;
+        storeData = await store_helper.getStoreDetails(
+          req.session.defaultStore
+        );
+      }
+    }
+    if (req.session.loggedIn) {
+      total = await cartHelper.calculateCarttotalbystore(
+        req.session.user._id,
+        req.session.defaultStore
+      );
+      userData = {
+        userName:
+          req.session.user.first_name + " " + req.session.user.last_name,
+        id: req.session.user._id,
+        status: true,
+        totalCart: total,
+      };
+    }
+
+    req.session.dataTouser = {
+      defaultStore: req.session.defaultStore,
+      storeNames: storeNames,
+      userData: userData,
+      storeData: storeData,
+    };
+    //console.log(req.session.dataTouser.storeData)
+    next();
+  };
+}
 module.exports = router;

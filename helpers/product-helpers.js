@@ -2,6 +2,7 @@ var db = require("../config/connection");
 var collections = require("../config/collection");
 const { ObjectID } = require("mongodb");
 const { response } = require("express");
+const { getStoreDetails } = require("./store-helper");
 
 module.exports = {
   addProduct: (product, callback) => {
@@ -23,31 +24,47 @@ module.exports = {
   //     resolve(products);
   //   });
   // },
-  getAllProductbyStore: (store_id) => {
-    console.log(store_id)
+
+  getAllProductbyStore: (storeId) => {
+    console.log(storeId);
     return new Promise((resolve, reject) => {
       db.get()
-        .collection(collections.PRODUCT_COLLECTION)
+        .collection(collections.PRODUCT_COLLECTION_BY_STORE)
         .aggregate([
           {
-            $match: { deleted: { $ne: "yes" } },
+            $match: {
+              deleted: { $ne: true },
+              price: { $ne: null },
+              qty: { $ne: null },
+              store: ObjectID(storeId),
+              active: true,
+            },
           },
           {
             $project: {
-              category: 1,
-              shortdescription: 1,
-              product_name: 1,
-              description: 1,
-              ribbon: 1,
-              active: 1,
               _id: "$_id",
+              store: 1,
+              prodID: 1,
+              price: 1,
+              qty: 1,
+              vat: 1,
+              ribbon: 1,
+              ribbonstyle: 1,
             },
           },
           {
             $lookup: {
-              from: collections.PRODUCT_COLLECTION_BY_STORE,
-              localField: "_id",
-              foreignField: "prodID",
+              from: collections.PRODUCT_COLLECTION,
+              let: { prodID: "$prodID" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [{ $eq: ["$_id", "$$prodID"] }],
+                    },
+                  },
+                },
+              ],
               as: "details",
             },
           },
@@ -56,29 +73,27 @@ module.exports = {
           },
           {
             $project: {
-              _id: 1,
-              category: 1,
-              shortdescription: 1,
-              product_name: 1,
-              active: "$details.active",
-              store: "$details.store",
-              price: "$details.price",
-              qty: "$details.qty",
-              ribbon: "$details.ribbon",
-              ribbonstyle: "$details.ribbonstyle",
+              _id: "$details._id",
+              category: "$details.category",
+              shortdescription: "$details.shortdescription",
+              product_name: "$details.product_name",
+              store: 1,
+              prodID: 1,
+              price: 1,
+              qty: 1,
+              vat: 1,
+              ribbon: 1,
+              ribbonstyle: 1,
             },
-          },
-          {
-            $match: { store: ObjectID(store_id), active: true },
           },
         ])
         .toArray()
         .then((data) => {
-          console.log(data);
           resolve(data);
         });
     });
   },
+
   // getAllProduct: (current_storeId) => {
   //   return new Promise(async (resolve, reject) => {
   //     db.get()
@@ -135,13 +150,14 @@ module.exports = {
   //   });
   // },
 
-  getAllProduct20: (current_storeId) => {
+  getAllProduct20: (current_storeId, superUser) => {
     return new Promise(async (resolve, reject) => {
       db.get()
         .collection(collections.PRODUCT_COLLECTION)
         .aggregate([
           {
-            $match: { deleted: { $ne: true } },
+            //$match: { deleted: { $ne: true }, dealerId: getStoreDetailsbyuser(superUser, current_storeId)},
+            $match: { deleted: { $ne: true }},
           },
           {
             $unwind: { path: "$products", preserveNullAndEmptyArrays: true },
@@ -152,7 +168,7 @@ module.exports = {
               shortdescription: "$shortdescription",
               product_name: "$product_name",
               description: "$description",
-              _id: "$_id"
+              _id: "$_id",
             },
           },
           {
@@ -165,8 +181,8 @@ module.exports = {
                     $expr: {
                       $and: [
                         { $eq: ["$prodID", "$$id"] },
-                        { $eq: ['$store', "$$stores_id"] }
-                      ]
+                        { $eq: ["$store", "$$stores_id"] },
+                      ],
                     },
                   },
                 },
@@ -193,7 +209,7 @@ module.exports = {
         ])
         .toArray()
         .then((data) => {
-          console.log(data)
+          console.log(data);
           resolve(data);
         });
     });
@@ -320,11 +336,51 @@ module.exports = {
         });
     });
   },
-  getProductdetailesbyStore:(prodId, storeId)=>{
-    return new Promise((resolve, reject)=>{
-      db.get().collection(collections.PRODUCT_COLLECTION_BY_STORE).findOne({prodID:ObjectID(prodId), store:ObjectID(storeId)}).then((data)=>{
-        resolve(data)
-      })
-    })
-  }
+  getProductdetailesbyStore: (prodId, storeId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collections.PRODUCT_COLLECTION_BY_STORE)
+        .findOne({ prodID: ObjectID(prodId), store: ObjectID(storeId) })
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  addCategory: (category, user) => {
+    catObj = {
+      category: category,
+      store: addCustomer(user),
+    };
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collections.CATEGORY_COLLECTION)
+        .insertOne(catObj)
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  },
+  getAllCategory: (store) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collections.CATEGORY_COLLECTION)
+        .find({ store: checkCustomer(store) })
+        .toArray()
+        .then((category) => {
+          resolve(category);
+        });
+    });
+  },
 };
+
+function checkCustomer(store) {
+  return store == "null" ? { $ne: "null" } : ObjectID(store);
+}
+
+function addCustomer(customer){
+  return customer == "null" ? false : ObjectID(customer);
+}
+
+function getStoreDetailsbyuser(superUser, dealerId){
+  return superUser == 'yes' ? { $ne: "null" } : dealerId;
+}

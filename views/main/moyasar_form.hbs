@@ -1,0 +1,132 @@
+<div class="container">
+    <div class="check-out">
+        <h1>Moyasar Payment Gateway</h1>
+        <div class="clearfix"> </div>
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="border-address">
+                    <div class="form-check m-5 selectpayment">
+                        <input class="form-check-input" type="radio" name="moyasar-type" id="moyasar-type" value="card"
+                            checked>
+                        <label class="form-check-label" for="moyasar-type">
+                            Debit/Credit Card
+                        </label>
+                    </div>
+                    <div class="form-check m-5 selectpayment">
+                        <input class="form-check-input" type="radio" name="moyasar-type" id="moyasar-type" value="sadad"
+                            disabled>
+                        <label class="form-check-label" for="moyasar-type">
+                            Saddad
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 ">
+                <div class="payment">
+                    <form accept-charset="UTF-8" id="moyasar" action="https://api.moyasar.com/v1/payments.html"
+                        method="POST">
+                        <input type="hidden" name="callback_url" value="{{siteUrl}}moyasar_payments_redirect/" />
+                        <input type="hidden" name="publishable_api_key"
+                            value="pk_test_vn9Pv9Yf65yz7GMKGsxhgzqdSQXvF6yEh7CrHQUe" />
+                        <input type="hidden" name="amount" value="{{total}}" />
+                        <input type="hidden" name="source[type]" value="creditcard" />
+                        <input type="hidden" name="description" value="Order id {{orderId}} by guest" />
+
+                        <div class="row form-group form-inline">
+                            <div class="col">
+                                <label for="source[name]" class="col-md-3">Name</label>
+                                <input class="col-md-8 form-control" type="text" name="source[name]" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col alerts">
+                                <span id="first_name"></span>
+                                <span id="last_name"></span>
+                            </div>
+                        </div>
+
+                        <div class="row form-group form-inline">
+                            <div class="col">
+                                <label for="source[number]" class="col-md-3">Card Number</label>
+                                <input class="col-md-9 form-control" type="text" name="source[number]" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col alerts">
+                                <span id="number"></span>
+                                <span id="company"></span>
+                            </div>
+                        </div>
+
+                        <div class="row form-group form-inline">
+                            <div class="col">
+                                <label for="source[month]" class="col-md-3">Month</label>
+                                <input class="col-md-9 form-control" type="text" name="source[month]" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col alerts">
+                                <span id="month"></span>
+                            </div>
+                        </div>
+                        <div class="row form-group form-inline">
+                            <div class="col">
+                                <label for="source[year]" class="col-md-3">Year</label>
+                                <input class="col-md-9 form-control" type="text" name="source[year]" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col alerts">
+                                <span id="year"></span>
+                            </div>
+                        </div>
+
+                        <div class="row form-group form-inline">
+                            <div class="col">
+                                <label for="source[cvc]" class="col-md-3">CVV</label>
+                                <input class="col-md-9 form-control" type="text" name="source[cvc]" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col alerts">
+                                <span id="cvc"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submit" class="btn btn-info" data-dismiss="modal">Pay</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $("#submit").click(function (event) {
+        event.preventDefault();
+        var form_data = $("#moyasar").serialize();
+        $.ajax({
+            url: "https://api.moyasar.com/v1/payments",
+            type: "POST",
+            data: form_data,
+            dataType: "json",
+        })
+            .done(function (data) {
+                var payment_id = data.id;
+                var url = data.source.transaction_url;
+                window.location.href = url;
+            })
+            .fail(function (data) {
+                $(".alerts").removeClass("alert alert-warning");
+                $(".alerts > span").text("")
+                let errors = data.responseJSON.errors
+                $.each(errors, function (key, value) {
+                    //$("#" + key).addClass("is-invalid");
+                    $("#" + key).text(value);
+                    $("#" + key).parent().addClass("alert alert-warning");
+                });
+
+            });
+    });
+</script>

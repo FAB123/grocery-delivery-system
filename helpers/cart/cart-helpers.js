@@ -13,7 +13,11 @@ module.exports = {
       let cartExist = await db
         .get()
         .collection(collection.CART_COLLECTIONS)
-        .findOne({ user: objectId(userId), dealerID: objectId(dealerID) });
+        .findOne({
+          user: objectId(userId),
+          dealerID: objectId(dealerID),
+          deleted: { $ne: true },
+        });
       if (cartExist) {
         let prodExist = cartExist.products.findIndex(
           (product) => product.item == prodID
@@ -26,6 +30,7 @@ module.exports = {
                 "products.item": objectId(prodID),
                 user: objectId(userId),
                 dealerID: objectId(dealerID),
+                deleted: { $ne: true },
               },
               {
                 $inc: { "products.$.quantity": 1 },
@@ -38,7 +43,11 @@ module.exports = {
           db.get()
             .collection(collection.CART_COLLECTIONS)
             .updateOne(
-              { user: objectId(userId), dealerID: objectId(dealerID) },
+              {
+                user: objectId(userId),
+                dealerID: objectId(dealerID),
+                deleted: { $ne: true },
+              },
               {
                 $push: { products: proObj },
               }
@@ -69,7 +78,7 @@ module.exports = {
         .get()
         .collection(collection.CART_COLLECTIONS)
         .findOne({
-          _id: objectId(data.cartID)
+          _id: objectId(data.cartID),
         });
       if (cartExist) {
         let prodExist = cartExist.products.findIndex(
@@ -95,6 +104,16 @@ module.exports = {
       } else {
         reject();
       }
+    });
+  },
+  clearAllcartItem: (userId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.CART_COLLECTIONS)
+        .deleteMany({ user: objectId(userId) })
+        .then((data) => {
+          resolve(data);
+        });
     });
   },
 
@@ -165,7 +184,7 @@ module.exports = {
         .collection(collection.CART_COLLECTIONS)
         .aggregate([
           {
-            $match: { user: objectId(userId) },
+            $match: { user: objectId(userId), deleted: { $ne: true } },
           },
           {
             $unwind: "$products",
@@ -282,153 +301,183 @@ module.exports = {
   },
   getCarttotal: (userId) => {
     return new Promise((resolve, reject) => {
-      db.get().collection(collection.CART_COLLECTIONS).aggregate([
-        {
-          $match: { user: objectId(userId) },
-        },
-        {
-          $unwind: "$products",
-        },
-        {
-          $project: {
-            _id: 1,
-            dealerID: 1,
-            item: "$products.item",
-            quantity: "$products.quantity",
+      db.get()
+        .collection(collection.CART_COLLECTIONS)
+        .aggregate([
+          {
+            $match: { user: objectId(userId) },
           },
-        },
-        {
-          $lookup: {
-            from: collection.PRODUCT_COLLECTION_BY_STORE,
-            let: { item: "$item", stores_id: "$dealerID" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$prodID", "$$item"] },
-                      { $eq: ["$store", "$$stores_id"] },
-                    ],
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              _id: 1,
+              dealerID: 1,
+              item: "$products.item",
+              quantity: "$products.quantity",
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION_BY_STORE,
+              let: { item: "$item", stores_id: "$dealerID" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$prodID", "$$item"] },
+                        { $eq: ["$store", "$$stores_id"] },
+                      ],
+                    },
                   },
                 },
-              },
-            ],
-            as: "details",
+              ],
+              as: "details",
+            },
           },
-        },
-        {
-          $unwind: "$details",
-        },
-        {
-          $group: {
-            _id: null,
-            total: { $sum: { $multiply: ["$quantity", "$details.price"] } },
+          {
+            $unwind: "$details",
           },
-        },
-      ]).toArray().then((cartTotal)=>{
-        resolve(cartTotal[0].total)
-      })
+          {
+            $group: {
+              _id: null,
+              total: { $sum: { $multiply: ["$quantity", "$details.price"] } },
+            },
+          },
+        ])
+        .toArray()
+        .then((cartTotal) => {
+          resolve(cartTotal[0].total);
+        });
     });
   },
   calculateCarttotalbystore: (userId, store) => {
     return new Promise((resolve, reject) => {
-      console.log(userId + ' store '+store)
-      db.get().collection(collection.CART_COLLECTIONS).aggregate([
-        {
-          $match: { user: objectId(userId), dealerID: objectId(store) },
-        },
-        {
-          $unwind: "$products",
-        },
-        {
-          $project: {
-            _id: 1,
-            dealerID: 1,
-            item: "$products.item",
-            quantity: "$products.quantity",
+      console.log(userId + " store " + store);
+      db.get()
+        .collection(collection.CART_COLLECTIONS)
+        .aggregate([
+          {
+            $match: {
+              user: objectId(userId),
+              dealerID: objectId(store),
+              deleted: { $ne: true },
+            },
           },
-        },
-        {
-          $lookup: {
-            from: collection.PRODUCT_COLLECTION_BY_STORE,
-            let: { item: "$item", stores_id: "$dealerID" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$prodID", "$$item"] },
-                      { $eq: ["$store", "$$stores_id"] },
-                    ],
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              _id: 1,
+              dealerID: 1,
+              item: "$products.item",
+              quantity: "$products.quantity",
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION_BY_STORE,
+              let: { item: "$item", stores_id: "$dealerID" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$prodID", "$$item"] },
+                        { $eq: ["$store", "$$stores_id"] },
+                      ],
+                    },
                   },
                 },
-              },
-            ],
-            as: "details",
+              ],
+              as: "details",
+            },
           },
-        },
-        {
-          $unwind: "$details",
-        },
-        {
-          $group: {
-            _id: null,
-            total: { $sum: { $multiply: ["$quantity", "$details.price"] } },
+          {
+            $unwind: "$details",
           },
-        },
-      ]).toArray().then((cartTotal)=>{
-        resolve(cartTotal[0].total)
-      })
+          {
+            $group: {
+              _id: null,
+              total: { $sum: { $multiply: ["$quantity", "$details.price"] } },
+            },
+          },
+        ])
+        .toArray()
+        .then((cartTotal) => {
+          if (cartTotal.length > 0) {
+            resolve(cartTotal[0].total);
+          } else {
+            resolve(0);
+          }
+        });
     });
   },
   calculateCarttotalbycartID: (cartID) => {
     return new Promise((resolve, reject) => {
-      db.get().collection(collection.CART_COLLECTIONS).aggregate([
-        {
-          $match: { _id: objectId(cartID) },
-        },
-        {
-          $unwind: "$products",
-        },
-        {
-          $project: {
-            _id: 1,
-            dealerID: 1,
-            item: "$products.item",
-            quantity: "$products.quantity",
+      db.get()
+        .collection(collection.CART_COLLECTIONS)
+        .aggregate([
+          {
+            $match: { _id: objectId(cartID) },
           },
-        },
-        {
-          $lookup: {
-            from: collection.PRODUCT_COLLECTION_BY_STORE,
-            let: { item: "$item", stores_id: "$dealerID" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$prodID", "$$item"] },
-                      { $eq: ["$store", "$$stores_id"] },
-                    ],
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              _id: 1,
+              dealerID: 1,
+              item: "$products.item",
+              quantity: "$products.quantity",
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION_BY_STORE,
+              let: { item: "$item", stores_id: "$dealerID" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$prodID", "$$item"] },
+                        { $eq: ["$store", "$$stores_id"] },
+                      ],
+                    },
                   },
                 },
-              },
-            ],
-            as: "details",
+              ],
+              as: "details",
+            },
           },
-        },
-        {
-          $unwind: "$details",
-        },
-        {
-          $group: {
-            _id: null,
-            total: { $sum: { $multiply: ["$quantity", "$details.price"] } },
+          {
+            $unwind: "$details",
           },
-        },
-      ]).toArray().then((cartTotal)=>{
-        resolve(cartTotal[0].total)
-      })
+          {
+            $group: {
+              _id: null,
+              total: { $sum: { $multiply: ["$quantity", "$details.price"] } },
+            },
+          },
+        ])
+        .toArray()
+        .then((cartTotal) => {
+          resolve(cartTotal[0].total);
+        });
+    });
+  },
+  getProductfromCart: (cartID) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.CART_COLLECTIONS)
+        .findOne({ _id: objectId(cartID) })
+        .then((data) => {
+          resolve(data);
+        });
     });
   },
 };

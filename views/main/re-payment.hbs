@@ -7,8 +7,8 @@
                 <div class="">
                     {{#each address}}
                     <div class="custom-control custom-radio border-address">
-                        <input type="radio" class="custom-control-input" id="address" name="address"
-                            value="{{this._id}}" checked>
+                        <input type="radio" class="custom-control-input" id="address" name="address" value="{{this._id}}" 
+                            checked>
                         <label class="address" for="{{this._id}}">{{this.name}}</label>
                         <span>{{this.mobile}}</span><br>
                         <span>{{this.address}}</span><br>
@@ -37,53 +37,33 @@
                         <h3>Total <span>{{cartTotal}}</span></h3>
                     </div>
                     <hr>
-                    <div class="">
-                        <h5 class="m-5">Payment Method</h5>
-                        <input type="hidden" name="cartID" value="{{cartID}}">
-                        {{#each paymentMethods}}
-                        <div class="form-check m-5 selectpayment">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="payment-type"
-                                value="{{@key}}">
-                            <label class="form-check-label" for="{{@key}}">
-                                {{this}}
-                            </label>
+                        <div class="container">
+                            <h5 class="m-5">Payment Method</h5>
+                            <input type="hidden" name="cartID" value="{{cartID}}">
+                            {{#each paymentMethods}}
+                            <div class="form-check m-5 selectpayment">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="payment-type"
+                                    value="{{@key}}" checked>
+                                <label class="form-check-label" for="{{@key}}">
+                                    {{this}}
+                                </label>
+                            </div>
+                            {{/each}}
+
                         </div>
-                        {{/each}}
 
-                    </div>
-
-                    <hr>
-                    <div class="d-flex">
-                        <button type="submit" class="payment-button"> PROCEED TO PAYMENT</button>
-                        <div class="clearfix"> </div>
-                    </div>
-
+                        <hr>
+                        <div class="d-flex">
+                            <button type="submit" class="payment-button"> PROCEED TO PAYMENT</button>
+                            <div class="clearfix"> </div>
+                        </div>
+                 
                 </div>
             </div>
         </form>
     </div>
 </div>
 {{>map-data}}
-
-<div class="modal fade" id="moyasar-pay">
-	<div class="modal-dialog moyasar-pay">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">Moyasar Payment Gateway</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-			</div>
-			<div class="modal-footer justify-content-between">
-				<button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                <button type="submit" id="submit" class="btn btn-info" data-dismiss="modal">Pay</button>
-			</div>
-              </form>
-		</div>
-	</div>
-</div>
 
 <div class="modal fade right" id="add_address" tabindex="-1" role="dialog" aria-labelledby="address" aria-hidden="true">
     <div class="modal-dialog" role="document">

@@ -3,12 +3,12 @@
   <div class="container-fluid">
     <div class="row mb-1">
       <div class="col-sm-6">
-        <h1>Add Employee</h1>
+        <h1>Add User</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">add_employee</li>
+          <li class="breadcrumb-item active">Create New User</li>
         </ol>
       </div>
     </div>
@@ -22,7 +22,7 @@
       <div class="col-md-12 center-block">
         <div class="card card-info">
           <div class="card-header">
-            <h3 class="card-title">Add New Employee</h3>
+            <h3 class="card-title">Add New User</h3>
           </div>
           <!-- /.card-header -->
           <!-- form start -->
@@ -91,9 +91,9 @@
               </div>
 
               <div class="form-group row">
-                <label for="active" class="col-sm-2 col-form-label">Active</label>
+                <label for="activate_employee" class="col-sm-2 col-form-label">Active</label>
                 <div class="col-sm-10">
-                  <input type="checkbox" name="active" checked data-bootstrap-switch data-on-text="Active"
+                  <input type="checkbox" name="activate_employee" checked data-bootstrap-switch data-on-text="Active"
                     data-off-text="Blocked" data-off-color="danger" data-on-color="success">
                 </div>
               </div>
@@ -110,37 +110,4 @@
     </div>
   </div>
 </section>
-
-
-<div class="modal fade" id="otp_validater">
-  <div class="modal-dialog">
-    <div class="modal-content bg-danger">
-      <div class="modal-header">
-        <h4 class="modal-title">Validate OTP</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="otp" placeholder="OTP">
-        </div>
-        <div class="col-sm-10">
-          <p id="error_text"></p>
-        </div>
-      </div>
-      <div class="modal-footer justify-content-between">
-        <button type="button" onclick="validateOtp()" class="btn btn-outline-light">Validate</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-
-
-
-
-
 </div>

@@ -2,11 +2,11 @@
 {{>admin-sidebar}}
 <section class="content">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row mt-2">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">DataTable with default features</h3>
+                        <h3 class="card-title">List of all Users</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -30,11 +30,11 @@
                                     <td>{{this.lastname}}</td>
                                     <td>{{this.mobile}}</td>
                                     <td> {{this.username}}</td>
-                                    <td>{{this.store}}</td>
+                                    <td>{{#if this.storename}}{{this.storename}}[{{this.companyname}}]{{/if}}</td>
                                     <td>{{this.supper_user}}</td>
                                     <td class="d-inline"><input type="checkbox" name="employeecontrol" id="{{this._id}}" {{#if this.active}} checked {{/if}}data-bootstrap-switch data-on-text="Active"
                     data-off-text="Blocked" data-off-color="danger" data-on-color="success"></td>
-                                    <td><a href="editEmployee/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"></ion-icon> </a></td>
+                                    <td><a href="editEmployee/{{this._id}}" class="pl-1 pr-1"><ion-icon name="receipt-outline"><ion-title>EDIT</ion-title></ion-icon> </a></td>
                                 </tr>
 
                                 {{/each}}

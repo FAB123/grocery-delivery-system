@@ -25,9 +25,7 @@ module.exports = {
   },
   createEmployee: (employeeData) => {
     return new Promise(async (resolve, reject) => {
-      delete employeeData.confirm_password;
-      employeeData.mobile = employeeData.mobile.replace("-", "");
-      employeeData.active = employeeData.active == "on" ? true : false;
+      employeeData.store = ObjectID(employeeData.store);
       employeeData.password = await bcrypt.hash(employeeData.password, 10);
       resolve();
       db.get()
@@ -52,16 +50,47 @@ module.exports = {
         });
     });
   },
-  getAllemployee: () => {
-    return new Promise((resolve, reject) => {
-      db.get()
-        .collection(collection.EMPLOYEE_COLLECTION)
-        .find()
-        .toArray()
-        .then((data) => {
-          resolve(data);
-        });
-    });
+  // getAllemployee: () => {
+  //   return new Promise((resolve, reject) => {
+  //     db.get()
+  //       .collection(collection.EMPLOYEE_COLLECTION)
+  //       .find()
+  //       .toArray()
+  //       .then((data) => {
+  //         resolve(data);
+  //       });
+  //   });
+  // },
+  getAllemployee:(storeId = null)=>{
+    return new Promise((resolve,reject)=>{
+      db.get().collection(collection.EMPLOYEE_COLLECTION).aggregate([
+        { "$match": { store: checkStoreId(storeId)}},
+        {
+          $lookup:{
+            from: collection.STORE_COLLECTION,
+            localField:"store",
+            foreignField:"_id",
+            as:"store"
+          }
+        },
+        {
+          $project:{
+            _id:1,
+            username:1,
+            firstname:1,
+            lastname:1,
+            mobile:1,
+            supper_user:1,
+            active:1,
+            storename:"$store.storename",
+            companyname:"$store.companyname"
+          }
+        }
+
+      ]).toArray().then((data)=>{
+        resolve(data)
+      })
+    })
   },
   doLogin: (userData) => {
     return new Promise(async (resolve, reject) => {
@@ -85,7 +114,7 @@ module.exports = {
             resolve(response);
           } else {
             response.status = false;
-            response.message = "invalid Password";
+            response.message = "User Blocked or invalid Mobile Number/Username";
             resolve(response);
           }
         });
@@ -118,6 +147,7 @@ module.exports = {
       //   employeeData.active = true;
       // }
       //employeeData.active = employeeData.active == "on" ? true : false;
+      employeeData.store = ObjectID(employeeData.store);
       db.get()
         .collection(collection.EMPLOYEE_COLLECTION)
         .updateOne(
@@ -157,3 +187,7 @@ module.exports = {
     });
   },
 };
+
+function checkStoreId(storeId){
+  return storeId ? ObjectID(storeId) : {$ne:'nothing'}
+}

@@ -204,6 +204,13 @@ button.item_add {
 .cart.box_1 {
   float: right;
   margin-top: 2px;
+  display: flex;
+  color: #f30d19;
+}
+.order{
+  font-size: 1.5em;
+  margin-right: .5em;
+  color: #52d0c4;
 }
 /*--- slider-css --*/
 .slider {
@@ -2043,4 +2050,133 @@ ul.nav.nav-pills {
 
 .custom-control {
   padding: 0.8rem !important;
+}
+
+.selectpicker{
+  overflow-y: unset !important;
+}
+
+
+/* Timeline css*/
+
+.timeline {
+  margin: 0 0 45px;
+  padding: 0;
+  position: relative;
+}
+
+.timeline>div {
+  margin-bottom: 15px;
+  margin-right: 10px;
+  position: relative;
+}
+
+.timeline>.time-label>span {
+  border-radius: 4px;
+  background-color: #fff;
+  display: inline-block;
+  font-weight: 600;
+  padding: 5px;
+}
+
+.timeline::before {
+  border-radius: .25rem;
+  background-color: #dee2e6;
+  bottom: 0;
+  content: "";
+  left: 31px;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  width: 4px;
+}
+
+.timeline>div::after, .timeline>div::before {
+  content: "";
+  display: table;
+}
+
+.timeline>div::after, .timeline>div::before {
+  content: "";
+  display: table;
+}
+
+.timeline>div>.fa, .timeline>div>.fab, .timeline>div>.fad, .timeline>div>.fal, .timeline>div>.far, .timeline>div>.fas, .timeline>div>.ion, .timeline>div>.svg-inline--fa {
+  background-color: #adb5bd;
+  border-radius: 50%;
+  font-size: 16px;
+  height: 30px;
+  left: 18px;
+  line-height: 30px;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 30px;
+}
+
+.bg-green, .bg-green>a {
+  color: #fff!important;
+}
+
+.bg-green {
+  background-color: #28a745!important;
+}
+
+.timeline>div>.timeline-item {
+  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  border-radius: .25rem;
+  background-color: #fff;
+  color: #495057;
+  margin-left: 60px;
+  margin-right: 15px;
+  margin-top: 0;
+  padding: 0;
+  position: relative;
+}
+
+.bg-red {
+  background-color: #dc3545!important;
+}
+
+.bg-red, .bg-red>a {
+  color: #fff!important;
+}
+
+.card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+
+.card {
+  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  margin-bottom: 1rem;
+}
+
+.card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 0 solid rgba(0,0,0,.125);
+  border-radius: .25rem;
+}
+
+.timeline>div>.timeline-item>.timeline-header {
+  border-bottom: 1px solid rgba(0,0,0,.125);
+  color: #495057;
+  font-size: 16px;
+  line-height: 1.1;
+  margin: 0;
+  padding: 10px;
+}
+
+.order-button {
+  margin-left: .1rem;
 }

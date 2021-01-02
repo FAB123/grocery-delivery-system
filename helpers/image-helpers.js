@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   carouselImages: () => {
     return new Promise((resolve, reject) => {
-      fs.readdir("public/carousel-images", (error, files) => {
+      fs.readdir("public/Carousel-images", (error, files) => {
         if (error) {
           resolve(false);
         } else {

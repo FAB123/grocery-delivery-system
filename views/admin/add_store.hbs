@@ -1,54 +1,82 @@
 {{>admin-sidebar}}
 <section class="content">
   <div class="container-fluid">
-    <div class="row">
-      <!-- left column -->
-      <div class="col-md-12 center-block">
-        <div class="card card-info">
-          <div class="card-header">
-            <h3 class="card-title">Add New Store Form</h3>
-          </div>
-          <!-- /.card-header -->
-          <!-- form start -->
-          <form class="form-horizontal" id="add_new_store" method="POST">
+    <form class="form-horizontal" id="add_new_store" method="POST">
+      <div class="row mt-2">
+
+        <!-- left column -->
+        <div class="col-md-6 center-block">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Add New Store Form</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+
             <div class="card-body">
               <div class="form-group row">
-                <label for="storename" class="col-sm-2 col-form-label">Store Name</label>
-                <div class="col-sm-10">
+                <label for="storename" class="col-sm-3 col-form-label">Store Name</label>
+                <div class="col-sm-9">
                   <input type="text" class="form-control" name="storename" placeholder="Store Name">
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="company" class="col-sm-2 col-form-label">Company Name</label>
-                <div class="col-sm-10">
+                <label for="company" class="col-sm-3 col-form-label">Company Name</label>
+                <div class="col-sm-9">
                   <input type="text" class="form-control" name="companyname" placeholder="Company Name">
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="address" class="col-sm-2 col-form-label">Address</label>
-                <div class="col-sm-10">
+                <label for="address" class="col-sm-3 col-form-label">Address</label>
+                <div class="col-sm-9">
                   <textarea class="form-control" name="address" rows="3" placeholder="Address ..."></textarea>
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="mobile" class="col-sm-2 col-form-label">Mobile</label>
-                <div class="input-group col-sm-10">
+                <label for="telephone" class="col-sm-3 col-form-label">Telephone</label>
+                <div class="input-group col-sm-9">
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
                   </div>
-                  <input type="text" name="mobile" class="form-control"
-                    data-inputmask="'mask': ['999-999-9999 [x99999]', '+099 99 99 9999[9]-9999']" data-mask>
+                  <input type="tel" name="telephone" class="form-control">
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="vat_number" class="col-sm-2 col-form-label">VAT Number</label>
-                <div class="col-sm-10">
+                <label for="vat_number" class="col-sm-3 col-form-label">VAT Number</label>
+                <div class="col-sm-9">
                   <input type="number" class="form-control" name="vat_number" placeholder="VAT Number">
                 </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <label for="opening_time">Opening Time:</label>
+                  <div class="input-group date" id="id_opening_time">
+                    <input type="text" name="opening_time" value="11:31:00" class="form-control" placeholder="End time"
+                      title="" required id="opening_time" />
+                    <div class="input-group-addon input-group-append">
+                      <div class="input-group-text">
+                        <i class="glyphicon glyphicon-time far fa-clock"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <label for="closing_time">Closing Time:</label>
+                  <div class="input-group date" id="id_end_time">
+                    <input type="text" name="closing_time" value="23:31:00" class="form-control" placeholder="End time"
+                      title="" required id="closing_time" />
+                    <div class="input-group-addon input-group-append">
+                      <div class="input-group-text">
+                        <i class="glyphicon glyphicon-time far fa-clock"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
               {{!-- <div class="form-group row">
@@ -58,37 +86,114 @@
                     data-off-text="Blocked" data-off-color="danger" data-on-color="success">
                 </div>
               </div> --}}
-
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 center-block">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Create a User For Store</h3>
+            </div>
+            <div class="card-body">
               <div class="form-group row">
-                <label for="address" class="col-sm-2 col-form-label">Location</label>
-                <div class="col-sm-10">
-                  <div class="m-t-small">
-                    <label class="p-r-small col-sm-1 control-label">Lat.:</label>
-                    <div class="col-md-4">
-                      <input type="text" name="latitude" class="form-control" readonly style="width: 100%"
-                        id="us3-lat" />
-                    </div>
-                    <label class="p-r-small col-sm-1 control-label">Long.:</label>
-
-                    <div class="col-md-4">
-                      <input type="text" name="longitude" class="form-control" readonly style="width: 100%"
-                        id="us3-lon" />
-                    </div>
-                  </div>
-                  <div id="us3" style="width: 550px; height: 400px;"></div>
+                <label for="firstname" class="col-sm-4 col-form-label">First Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="firstname" placeholder="First Name">
                 </div>
               </div>
-              
+
+              <div class="form-group row">
+                <label for="lastname" class="col-sm-4 col-form-label">Last Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="lastname" placeholder="Last Name">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="mobile" class="col-sm-4 col-form-label">Mobile</label>
+                <div class="input-group col-sm-8">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  </div>
+                  <input type="tel" name="mobile" class="form-control">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="username" class="col-sm-4 col-form-label">Username</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="password" class="col-sm-4 col-form-label">Password</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Password">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="confirm_password" class="col-sm-4 col-form-label">Confirm Password</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" id="confirm_pwd" name="confirm_pwd"
+                    placeholder="Confirm Password">
+                </div>
+              </div>
             </div>
-            <!-- /.card-body -->
-            <div class="card-footer">
-              <button type="submit" class="btn btn-info float-right">Save</button>
+          </div>
+        </div>
+
+        <div class="col-md-12 center-block">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Store Location</h3>
             </div>
-            <!-- /.card-footer -->
-          </form>
+            <div class="col-sm-12">
+              <div id="us3" class="mt-2" style=" height: 400px;"></div>
+
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <label>Lat.:</label>
+                </div>
+                <div class="col-sm-6">
+                  <label>Long.:</label>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <input type="text" class="form-control" id="us3-lat" disabled name="latitude" placeholder="Loading..">
+                </div>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control" id="us3-lon" disabled name="longitude"
+                    placeholder="Loading..">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 center-block">
+          <div class="form-group row">
+            <label for="contactpage" class="col-sm-12 col-form-label">Contact Page</label>
+            <div class="col-sm-12">
+              <textarea class="form-control" name="contactpage" rows="8"
+                placeholder="Contact Page (Use HTML)"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 center-block">
+          <div class="card-footer">
+            <button type="submit" class="btn btn-info float-right">Save</button>
+          </div>
         </div>
       </div>
-    </div>
+
+
+    </form>
+  </div>
+  </div>
   </div>
 </section>
 

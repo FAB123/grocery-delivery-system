@@ -2,70 +2,78 @@
 	<div class="container">
 		<div class="footer-top">
 			<div class="col-md-8 top-footer">
-				<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d927.5338548746532!2d39.238712603518536!3d21.5806364995102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2ssa!4v1602453125246!5m2!1sen!2ssa" allowfullscreen=""></iframe>
+				<iframe
+					src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d927.5338548746532!2d39.238712603518536!3d21.5806364995102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2ssa!4v1602453125246!5m2!1sen!2ssa"
+					allowfullscreen=""></iframe>
 			</div>
 			<div class="col-md-4 top-footer1">
 				<h2>Newsletter</h2>
-					<form>
-						<input type="text" value="" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='';}">
-						<input type="submit" value="SUBSCRIBE">
-					</form>
+				<form>
+					<input type="text" value="" onfocus="this.value='';"
+						onblur="if (this.value == '') {this.value ='';}">
+					<input type="submit" value="SUBSCRIBE">
+				</form>
 			</div>
-			<div class="clearfix"> </div>	
-		</div>	
+			<div class="clearfix"> </div>
+		</div>
 	</div>
 	<div class="footer-bottom">
 		<div class="container">
-				<div class="col-sm-3 footer-bottom-cate">
-					<h6>Categories</h6>
-					<ul>
-						<li><a href="#">Curabitur sapien</a></li>
-						<li><a href="#">Dignissim purus</a></li>						
-					</ul>
-				</div>
-				<div class="col-sm-3 footer-bottom-cate">
-					<h6>Feature Projects</h6>
-					<ul>
-						<li><a href="#">Curabitur sapien</a></li>
-						<li><a href="#">Dignissim purus</a></li>					
-					</ul>
-				</div>
-				<div class="col-sm-3 footer-bottom-cate">
-					<h6>Top Brands</h6>
-					<ul>
-						<li><a href="#">Curabitur sapien</a></li>
-						<li><a href="#">Dignissim purus</a></li>					
-					</ul>
-				</div>
-				<div class="col-sm-3 footer-bottom-cate cate-bottom">
-					<h6>Our Address</h6>
-					<ul>
-						<li>{{defaultStore}} </li>
-						<li class="phone">PH : 6985792466</li>
-					</ul>
-				</div>
-				<div class="clearfix"> </div>
-				<p class="footer-class"> © 2021 Fysal KT. All Rights Reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts</a> </p>
+			<div class="col-sm-3 footer-bottom-cate">
+				<h6>Categories</h6>
+				<ul>
+					<li><a href="#">Curabitur sapien</a></li>
+					<li><a href="#">Dignissim purus</a></li>
+				</ul>
 			</div>
+			<div class="col-sm-3 footer-bottom-cate">
+				<h6>Feature Projects</h6>
+				<ul>
+					<li><a href="#">Curabitur sapien</a></li>
+					<li><a href="#">Dignissim purus</a></li>
+				</ul>
+			</div>
+			<div class="col-sm-3 footer-bottom-cate">
+				<h6>Top Brands</h6>
+				<ul>
+					<li><a href="#">Curabitur sapien</a></li>
+					<li><a href="#">Dignissim purus</a></li>
+				</ul>
+			</div>
+			<div class="col-sm-3 footer-bottom-cate cate-bottom">
+				<h6>Our Address</h6>
+				<ul>
+					<li>{{user.storeData.storename}} </li>
+					<li>{{user.storeData.companyname}} </li>
+					<li>{{user.storeData.address}} </li>
+					<li class="phone">PH : {{user.storeData.mobile}}</li>
+				</ul>
+			</div>
+			<div class="clearfix"> </div>
+			<p class="footer-class"> © 2021 Fysal KT. All Rights Reserved | Design by <a href="http://w3layouts.com/"
+					target="_blank">W3layouts</a> </p>
+		</div>
 	</div>
-	  <script defer src="/assets/js/jquery.flexslider.js"></script>
-<link rel="stylesheet" href="/assets/css/flexslider.css" type="text/css" media="screen" />
+	<script defer src="/assets/js/jquery.flexslider.js"></script>
+	<link rel="stylesheet" href="/assets/css/flexslider.css" type="text/css" media="screen" />
 
-<script>
-// Can also be used with $(document).ready()
-$(window).load(function() {
-  $('.flexslider').flexslider({
-    animation: "slide",
-    controlNav: "thumbnails"
-  });
-});
-</script>
+	<script>
+		// Can also be used with $(document).ready()
+		$(window).load(function () {
+			$('.flexslider').flexslider({
+				animation: "slide",
+				controlNav: "thumbnails"
+			});
+		});
+	</script>
 
-<script src="/admin/plugins/jquery-validation/jquery.validate.min.js"></script>
-<script src="/admin/plugins/jquery-validation/additional-methods.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
-<script src="/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+	<script src="/admin/plugins/jquery-validation/jquery.validate.min.js"></script>
+	<script src="/admin/plugins/jquery-validation/additional-methods.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
-<script src="/assets/js/script.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+	<script src="/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+	<script src="/assets/js/script.js"></script>
 </div>

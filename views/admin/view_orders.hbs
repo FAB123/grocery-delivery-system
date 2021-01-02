@@ -1,0 +1,124 @@
+<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+{{>admin-sidebar}}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row mt-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pending Orders</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Payment Method</th>
+                                    <th>Store</th>
+                                    <th>Order Status</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {{#each orderItems}}
+                                <tr>
+                                    </td>
+                                    <td>{{#dateTime this.orderDate}}{{/dateTime}}</td>
+                                    <td>{{this.paymentMethod}}</td>
+                                    <td>{{this.storename}}[{{this.storecompany}}]</td>
+                                    <td class="d-inline-block">{{ this.lastStatus.status}} <br><span
+                                            class="text-muted d-inline-block font-italic font-weight-light">{{#dateTime
+                                            this.lastStatus.time}}{{/dateTime}} </span></td>
+                                    <td>{{this.totalAmount}}</td>
+                                    {{#unless this.Finished}}
+                                    <td><select class="form-control select2" style="width: 100%;" onchange="changeOrderstatus('{{this._id}}',this)"
+                                            data-width="fit">
+                                            {{#each ../status}}
+                                            <option {{#elseIf ../this.lastStatus.status this}} selected {{/elseIf}}>
+                                                {{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                    {{else}}
+                                    <td></td>
+                                    {{/unless}}
+                                    <td>
+                                        <a href="javascript:viewStatus('{{this._id}}');"><i class="fas fa-truck"
+                                                style="font-size: larger;"></i></a>
+                                        <a href="javascript:viewCartitems('{{this._id}}');"><i
+                                                class="fas fa-cart-plus"></i></a>
+                                        {{#unless this.Finished}}
+                                        <a href="javascript:markFinished('{{this._id}}');"><i
+                                                class="fas fa-check-circle"></i></a>
+                                        {{/unless}}
+
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="view-cart">
+    <div class="modal-dialog view-cart">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Order Detailes</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+
+                    <table class="table table-sm table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr class="table-primary">
+                                <td>Item</td>
+                                <td>Qty</td>
+                                <td>Price</td>
+                                <td>Total</td>
+                            </tr>
+                        </thead>
+                        <tbody id="getCode">
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="view-tracks">
+    <div class="modal-dialog modal-lg view-tracks">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Order Tracking Detailes</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

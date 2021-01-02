@@ -46,6 +46,9 @@ module.exports={
                 address:storeData.address,
                 mobile:storeData.mobile,
                 vat_number:storeData.vat_number,
+                contactpage:storeData.contactpage,
+                opening_time: storeData.opening_time,
+                closingtime: storeData.closing_time,
             }}).then((data)=>{
                 resolve(data)
             })

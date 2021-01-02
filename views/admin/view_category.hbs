@@ -6,51 +6,32 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">List of all Products</h3>
+                        <h3 class="card-title">List of All Category</h3>
                     </div>
+
                     {{#if statusMsg}}
                     <div class="alert alert-danger m-3 text-center text-white" role="alert">
                         {{statusMsg}}
                     </div>
                     {{/if}}
+                    <!-- /.card-header -->
                     <div class="card-body">
                         <table id="view_product" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Product Name</th>
-                                    <th>Catogary</th>
-                                    <th>Short Description</th>
-                                    {{#if dealerUser}}
-                                    <th>Price</th>
-                                    <th>Active</th>
-                                    {{/if}}
+                                    <th>Category</th>
+                                    <th>User</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each data}}
+                                {{#each category}}
                                 <tr>
-                                    <td>{{this.product_name}}</td>
                                     <td>{{this.category}}</td>
-                                    <td>{{this.shortdescription}}</td>
-                                    {{#if ../dealerUser}}
-                                    <td> {{this.price}}</td>
-                                    <td><input type="checkbox" name="active" id="{{this._id}}" {{#if this.active }}
-                                            checked {{/if}} data-bootstrap-switch data-on-text="Active"
-                                            data-off-text="Blocked" data-off-color="danger" data-on-color="success">
-                                    </td>
-                                    {{/if}}
-                                    <td class="d-inline"><a href="edit_product/{{this._id}}" class="m-1 btn btn-info">
-                                            <span class="far fa-circ">Update</span>
-                                        </a>
-                                        <button class="m-1 btn btn-danger" onclick="deleteProduct('{{this._id}}')">
-                                            <span class="far fa-circle">Delete</span>
-                                        </button>
-                                        {{#if ../dealerUser}}<a href="/admin/edit_price/{{this._id}}"
-                                            class="m-1 btn btn-warning"><span class="far fa-circle">Price</span></a>
-                                        {{/if}}
-                                    </td>
+                                    <td>{{this.store}}</td>
+                                    <td></td>
                                 </tr>
+
                                 {{/each}}
                             </tbody>
                         </table>
@@ -89,6 +70,5 @@
         </div>
     </div>
 </div>
-
 
 </div>

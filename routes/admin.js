@@ -2,15 +2,14 @@ var express = require("express");
 var router = express.Router();
 var employeeHelper = require("../helpers/employee-helper");
 var store_helper = require("../helpers/store-helper");
-var otpGenerator = require("otp-generator");
+//var otpGenerator = require("otp-generator");
 var productHelper = require("../helpers/product-helpers");
 var imageHelper = require("../helpers/image-helpers");
 var fileSaver = require("file-saver");
 //var sharp = require("sharp");
 var Jimp = require("jimp");
 var fs = require("fs");
-const { updateProduct } = require("../helpers/product-helpers");
-const { handlebars } = require("hbs");
+var orderTransactions = require("../helpers/payment/order-transactions");
 
 var company_data = { name: "Test Company" };
 
@@ -97,7 +96,6 @@ router.post("/login", function (req, res) {
       if (response.status) {
         req.session.empLoggedin = true;
         req.session.employee = response.employee;
-
         req.session.adminLoginErr = false;
         req.session.lastExetime = Date.now();
         if (req.session.route) {
@@ -140,12 +138,40 @@ router.get("/add_store", varifyLogin("/admin/add_store"), function (req, res) {
   });
 });
 
-router.post("/add_store", varifyLogin("/admin/dashboard"), function (req, res) {
+router.post("/add_store", function (req, res) {
   req.session.lastExetime = Date.now();
-  store_helper.addStore(req.body).then((data) => {
-    console.log(data);
-  });
-  res.json({ message: "New Store Created or Updated" });
+  if (req.session.empLoggedin) {
+    let storeData = {
+      storename: req.body.storename,
+      companyname: req.body.companyname,
+      address: req.body.address,
+      mobile: req.body.telephone,
+      vat_number: req.body.vat_number,
+      latitude: req.body.latitude,
+      longitude: req.body.longitude,
+      contactpage: req.body.contactpage,
+      opening_time: req.body.opening_time,
+      closingtime: req.body.closing_time,
+    };
+    let loginData = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      mobile: req.body.mobile,
+      username: req.body.username,
+      password: req.body.pwd,
+      active: true,
+    };
+    store_helper.addStore(storeData).then((storeId) => {
+      loginData.store = storeId._id;
+      console.log(storeId);
+      employeeHelper.createEmployee(loginData).then((data) => {
+        res.json({ login: true, message: "New Store Created or Updated" });
+      });
+      // console.log(data);
+    });
+  } else {
+    res.json({ login: false });
+  }
 });
 
 router.get(
@@ -226,7 +252,6 @@ router.get("/add_employee", varifyLogin("/admin/add_employee"), (req, res) => {
 
 //validate user pre registration data
 router.post("/validate_registration", (req, res) => {
-  console.log(req.body);
   let input = req.body.username ? req.body.username : req.body.mobile;
   employeeHelper.validateRegistration(input).then((data) => {
     data ? res.send("false") : res.send("true");
@@ -234,28 +259,21 @@ router.post("/validate_registration", (req, res) => {
 });
 
 router.post("/add_employee", (req, res) => {
-  console.log(req.body);
-  req.session.userregisterdata = req.body;
-  req.session.userregotp = otpGenerator.generate(6, {
-    upperCase: false,
-    specialChars: false,
-  });
-  if (req.session.userregotp) {
-    res.json({ otp: true, data: req.session.userregotp });
-  } else {
-    res.json({ otp: false });
-  }
-});
-
-router.post("/validate_otp", (req, res) => {
-  if (req.body.otp == req.session.userregotp) {
-    employeeHelper.createEmployee(req.session.userregisterdata).then((data) => {
-      res.json({ data: true });
-      req.session.userregisterdata = null;
-      req.session.userregotp = null;
+  if (req.session.empLoggedin) {
+    let loginData = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      store: req.body.store,
+      mobile: req.body.mobile,
+      username: req.body.username,
+      password: req.body.password,
+      active: req.body.activate_employee == "on" ? true : false,
+    };
+    employeeHelper.createEmployee(loginData).then((data) => {
+      res.json({ status: true, data: true });
     });
   } else {
-    res.json({ data: false });
+    res.json({ status: false, data: false });
   }
 });
 
@@ -264,18 +282,14 @@ router.get(
   varifyLogin("/admin/view_employee"),
   (req, res) => {
     let employee_data = req.session.employee;
-    if (employee_data.supper_user) {
-      employeeHelper.getAllemployee().then((data) => {
-        res.render("admin/view_employee", {
-          admin: true,
-          employee: true,
-          employee_data,
-          users: data,
-        });
+    employeeHelper.getAllemployee(employee_data.store).then((data) => {
+      res.render("admin/view_employee", {
+        admin: true,
+        employee: true,
+        employee_data,
+        users: data,
       });
-    } else {
-      res.render("admin/no_access", { employee_data, admin: true });
-    }
+    });
   }
 );
 
@@ -303,6 +317,7 @@ router.post(
   "/editEmployee/:employeeId",
   varifyLogin("/admin/dashboard"),
   (req, res) => {
+    console.log(req.body)
     req.session.lastExetime = Date.now();
     employeeHelper
       .updateEmployeeDetailes(req.params.employeeId, req.body)
@@ -326,8 +341,37 @@ router.post("/enable_employee", (req, res) => {
 
 router.get("/add_product", varifyLogin("/admin/add_product"), (req, res) => {
   let employee_data = req.session.employee;
-  res.render("admin/add_product", { employee_data, admin: true, edit: false });
+  let customer =
+    employee_data.supper_user == "yes" ? "null" : employee_data._id;
+  productHelper.getAllCategory(customer).then((category) => {
+    res.render("admin/add_product", {
+      employee_data,
+      admin: true,
+      edit: false,
+      category,
+    });
+  });
 });
+
+router.get(
+  "/view_category",
+  varifyLogin("/admin/view_category"),
+  (req, res) => {
+    let employee_data = req.session.employee;
+    let customer =
+      employee_data.supper_user == "yes" ? "null" : employee_data._id;
+    let statusMsg = req.session.statusMsg ? req.session.statusMsg : false;
+    req.session.statusMsg = false;
+    productHelper.getAllCategory(customer).then((category) => {
+      res.render("admin/view_category", {
+        employee_data,
+        admin: true,
+        category,
+        statusMsg,
+      });
+    });
+  }
+);
 
 router.post(
   "/add_product",
@@ -344,49 +388,41 @@ router.post(
       let image = req.body.prodIm;
       delete req.body.id;
       delete req.body.prodIm;
+      if(employee_data.supper_user != "yes"){
+        req.body.dealerId = employee_data._id
+      }
 
-      productHelper.addProduct(req.body, (id) => {
+      productHelper.addProduct(req.body, async (id) => {
         if (image) {
           var base64Data = image.replace(/^data:image\/png;base64,/, "");
           let filename = "./public/product-images/" + id + ".png";
 
-          fs.writeFile(filename, base64Data, "base64", function (err) {
+          await fs.writeFile(filename, base64Data, "base64", function (err) {
             console.log(err);
           });
         }
-
-        let product = req.body;
-        res.render("admin/add_product", {
-          employee_data,
-          product,
-          id,
-          admin: true,
-          edit: false,
-        });
+        req.session.statusMsg =
+          "New Product Added Successfully, To edit or add carousel images select edit product";
+        console.log(id);
         if (image) {
           Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
-            if (err) throw err;
+            if (err) console.log(err);
             lenna
               .resize(200, 200) // resize
               .quality(60) // set JPEG quality
               .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
           });
+          res.redirect("/admin/view_products");
         }
-
-        // sharp("./public/product-images/" + id + ".png")
-        //   .resize({ width: 200, height: 200, fit: "inside" })
-        //   .toFormat("jpeg")
-        //   .toFile(
-        //     "./public/product-images/thumbnails/" + id + ".jpg",
-        //     (err, newfile) => {
-        //       if (err) console.log(err);
-        //       else console.log(newfile);
-        //     }
-        //   );
+        res.redirect("/admin/view_products");
       });
     }
   }
 );
+
+router.get("/add_category", (req, res) => {
+  res.render("admin/add_category", {});
+});
 
 router.post("/deleteProduct", (req, res) => {
   req.session.lastExetime = Date.now();
@@ -407,13 +443,16 @@ router.get(
       req.session.employee.supper_user == "yes"
         ? "none"
         : req.session.employee.store;
-    productHelper.getAllProduct20(req.session.employee.store).then((data) => {
+    productHelper.getAllProduct20(req.session.employee.store, req.session.employee.supper_user).then((data) => {
       //console.log(data)
       let employee_data = req.session.employee;
+      let statusMsg = req.session.statusMsg ? req.session.statusMsg : false;
+      req.session.statusMsg = false;
       let dealerUser = employee_data.supper_user == "yes" ? false : true;
       res.render("admin/view_products", {
         data,
         employee_data,
+        statusMsg,
         admin: true,
         dealerUser,
       });
@@ -421,17 +460,33 @@ router.get(
   }
 );
 
+router.post("/add-category", (req, res) => {
+  let employee_data = req.session.employee;
+  let customer =
+    employee_data.supper_user == "yes" ? "null" : employee_data._id;
+  productHelper.addCategory(req.body.category, customer).then((data) => {
+    req.session.statusMsg = "New Category Added Successfully";
+    res.redirect("/admin/view_category");
+  });
+});
+
 router.get("/edit_price/:id", varifyLogin("/edit_price/:id"), (req, res) => {
   let prodId = req.params.id;
   let employee_data = req.session.employee;
-  if(employee_data.supper_user){
-    res.redirect("/admin/view_product")
-  }
-  else{
-    productHelper.getProductdetailesbyStore(prodId, employee_data.store).then((product)=>{
-      console.log(product)
-      res.render("admin/edit_price", { admin: true, prodId, employee_data, product });
-    })
+  if (employee_data.supper_user) {
+    res.redirect("/admin/view_product");
+  } else {
+    productHelper
+      .getProductdetailesbyStore(prodId, employee_data.store)
+      .then((product) => {
+        console.log(product);
+        res.render("admin/edit_price", {
+          admin: true,
+          prodId,
+          employee_data,
+          product,
+        });
+      });
   }
 });
 
@@ -441,7 +496,15 @@ router.post("/edit_price/:id", (req, res) => {
   let employee_data = req.session.employee;
   body.storeId = employee_data.store;
   productHelper.updatePrice(body, prodId).then(() => {
-    res.redirect("/admin/edit_price/" + prodId);
+    //res.redirect("/admin/edit_price/" + prodId);
+    req.session.statusMsg = "Product Price Edited Successfully " + prodId;
+    // res.render("admin/edit_price", {
+    //   admin: true,
+    //   prodId,
+    //   employee_data,
+    //   product,
+    // });
+    res.redirect("/admin/view_products");
   });
 });
 
@@ -451,15 +514,22 @@ router.get(
   (req, res) => {
     let employee_data = req.session.employee;
     let id = req.params.id;
+    let customer =
+      employee_data.supper_user == "yes" ? "null" : employee_data._id;
+
     productHelper.getProductdetailes(id).then(async (product) => {
       let productCarouselimages = await imageHelper.productcarouselImages(id);
-      res.render("admin/add_product", {
-        employee_data,
-        product,
-        files: productCarouselimages,
-        id,
-        admin: true,
-        edit: true,
+      productHelper.getAllCategory(customer).then((category) => {
+        console.log("test cat" + category);
+        res.render("admin/add_product", {
+          employee_data,
+          product,
+          files: productCarouselimages,
+          id,
+          category,
+          admin: true,
+          edit: true,
+        });
       });
     });
   }
@@ -545,6 +615,93 @@ router.post("/enable_product", (req, res) => {
     productHelper.updateProdStatus(updateData).then((data) => {
       res.json({ loginError: false, status: true });
     });
+  }
+});
+
+router.get(
+  "/pending_orders",
+  varifyLogin("/admin/pending_orders"),
+  (req, res) => {
+    let employee_data = req.session.employee;
+    if (!employee_data.supper_user) {
+      orderTransactions
+        .getAllorderItembystore(employee_data.store, "Pending")
+        .then(async (orderItems) => {
+          let status = await orderTransactions.selectStatus();
+          console.log(orderItems);
+          res.render("admin/view_orders", {
+            employee_data,
+            admin: true,
+            edit: false,
+            orderItems,
+            status,
+          });
+        });
+    } else {
+      res.render("admin/no_access", { admin: true });
+    }
+  }
+);
+
+router.get(
+  "/completed_orders",
+  varifyLogin("/admin/pending_orders"),
+  (req, res) => {
+    let employee_data = req.session.employee;
+    if (!employee_data.supper_user) {
+      orderTransactions
+        .getAllorderItembystore(employee_data.store, "Finished")
+        .then((orderItems) => {
+          res.render("admin/view_orders", {
+            employee_data,
+            admin: true,
+            edit: false,
+            orderItems,
+          });
+        });
+    } else {
+      res.render("admin/no_access", { admin: true });
+    }
+  }
+);
+
+router.post("/get_ordered_products", async (req, res) => {
+  if (req.session.empLoggedin) {
+    orderTransactions.getProductdetailes(req.body.orederId, (items) => {
+      console.log(items);
+      res.json({ login: true, items: items });
+    });
+  } else {
+    res.json({ login: false });
+  }
+});
+
+router.post("/change_order_status", (req, res) => {
+  orderTransactions
+    .updateOrderstatus(req.body.orederId, req.body.status)
+    .then((data) => {
+      res.json({ status: data });
+    });
+});
+
+router.get("/get_ordered_status/:id", async (req, res) => {
+  if (req.session.empLoggedin) {
+    orderTransactions.getOrderedProductStatus(req.params.id, (tracks) => {
+      console.log(tracks);
+      res.render("admin/order_shipping_status", { tracks, layout: false });
+    });
+  } else {
+    res.json({ login: false });
+  }
+});
+
+router.post("/mark_as_finished", (req, res) => {
+  if (req.session.empLoggedin) {
+    orderTransactions.getOrderedasFinished(req.body.orederId).then((tracks) => {
+      res.json({ login: true, tracks });
+    });
+  } else {
+    res.json({ login: false });
   }
 });
 

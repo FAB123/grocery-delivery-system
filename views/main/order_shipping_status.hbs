@@ -1,0 +1,37 @@
+<div class="container-fluid">
+    <div class="card-body">
+        <h6>Order ID: {{tracks.addressID}}</h6>
+        <article class="card">
+            <div class="card-body row">
+
+                <div class="col-sm-4"> <strong>Shipping TO:</strong> <br> {{tracks.address.0.name}} | <i
+                        class="fa fa-phone"></i> {{tracks.address.0.mobile}} </div>
+                <div class="col-sm-4"> <strong>Address:</strong> <br>{{tracks.address.0.address}}
+                    {{tracks.address.0.building}} | {{tracks.address.0.flat}}</div>
+                <div class="col-sm-4"> <strong>Last Status:</strong> <br>{{#dateTime tracks.lastStatus.time}}{{/dateTime}}</div>
+            </div>
+
+    </div>
+    </article>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="timeline">
+            {{#each tracks.orderStatus}}
+            <div class="time-label">
+                <span class="bg-red">{{#dateTime this.time}}{{/dateTime}}</span>
+            </div>
+            <div>
+                <i class="fas fa-user bg-green"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> </span>
+                    <h3 class="timeline-header no-border">{{this.status}} </h3>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+    <!-- /.col -->
+</div>
+</div>
