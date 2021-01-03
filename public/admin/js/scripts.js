@@ -43,7 +43,9 @@ $(function () {
       },
       telephone: {
         required: true,
+        number: true, 
         minlength: 10,
+        maxlength: 10,
       },
       username: {
         required: true,
@@ -70,6 +72,9 @@ $(function () {
       },
       mobile: {
         required: true,
+        number: true, 
+        minlength: 10,
+        maxlength: 10,
         remote: {
           url: "/admin/validate_registration",
           type: "POST",
@@ -185,6 +190,9 @@ $(function () {
       },
       mobile: {
         required: true,
+        number: true,
+        minlength: 10,
+        maxlength: 10,
         remote: {
           url: "/admin/validate_registration",
           type: "POST",

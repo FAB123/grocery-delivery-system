@@ -167,7 +167,6 @@ router.post("/add_store", function (req, res) {
       employeeHelper.createEmployee(loginData).then((data) => {
         res.json({ login: true, message: "New Store Created or Updated" });
       });
-      // console.log(data);
     });
   } else {
     res.json({ login: false });
@@ -317,7 +316,7 @@ router.post(
   "/editEmployee/:employeeId",
   varifyLogin("/admin/dashboard"),
   (req, res) => {
-    console.log(req.body)
+    console.log(req.body);
     req.session.lastExetime = Date.now();
     employeeHelper
       .updateEmployeeDetailes(req.params.employeeId, req.body)
@@ -388,8 +387,8 @@ router.post(
       let image = req.body.prodIm;
       delete req.body.id;
       delete req.body.prodIm;
-      if(employee_data.supper_user != "yes"){
-        req.body.dealerId = employee_data._id
+      if (employee_data.supper_user != "yes") {
+        req.body.dealerId = employee_data._id;
       }
 
       productHelper.addProduct(req.body, async (id) => {
@@ -443,20 +442,25 @@ router.get(
       req.session.employee.supper_user == "yes"
         ? "none"
         : req.session.employee.store;
-    productHelper.getAllProduct20(req.session.employee.store, req.session.employee.supper_user).then((data) => {
-      //console.log(data)
-      let employee_data = req.session.employee;
-      let statusMsg = req.session.statusMsg ? req.session.statusMsg : false;
-      req.session.statusMsg = false;
-      let dealerUser = employee_data.supper_user == "yes" ? false : true;
-      res.render("admin/view_products", {
-        data,
-        employee_data,
-        statusMsg,
-        admin: true,
-        dealerUser,
+    productHelper
+      .getAllProduct20(
+        req.session.employee.store,
+        req.session.employee.supper_user
+      )
+      .then((data) => {
+        //console.log(data)
+        let employee_data = req.session.employee;
+        let statusMsg = req.session.statusMsg ? req.session.statusMsg : false;
+        req.session.statusMsg = false;
+        let dealerUser = employee_data.supper_user == "yes" ? false : true;
+        res.render("admin/view_products", {
+          data,
+          employee_data,
+          statusMsg,
+          admin: true,
+          dealerUser,
+        });
       });
-    });
   }
 );
 

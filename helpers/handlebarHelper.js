@@ -1,64 +1,95 @@
 module.exports = {
-    eqIf: (arg1, arg2) => {
-      return arg1 == arg2 ? true : false;
-    },
-    elseIf:(arg1,arg2,options)=>{
-      return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-    },
-    // ifnot:(arg1,options)=>{
-    //   return (arg1) ? options.fn(this) : options.inverse(this);
-    // },
-    ifEq:(arg1,arg2,options)=>{
-      return (arg1 == arg2) ? options.inverse(this) : options.fn(this);
-    },
-    dateTime:(date)=>{
-      return date.toLocaleString();
-    },
-    ifnot:(arg1,options)=>{
-      return (arg1) ? options.inverse(this) : options.fn(this);
-    },
-    getLaststatus:(status)=>{
-      let index = status.length - 1
-      return status[index].status + '  '+ status[index].date.toLocaleString();
-    },
-    getStorestatus:(start, end)=>{
-      var now = getMinutesNow();
-      var start = getMinutes(start);
-      var end = getMinutes(end);
-      if (start > end) end += getMinutes("24:00");
-      if (now > start && now < end) {
-        //console.log("now Open");
-        return ''
-      } else {
-        //console.log("Closed");
-        return " [CLOSED]"
-      }
+  eqIf: (arg1, arg2) => {
+    return arg1 == arg2 ? true : false;
+  },
+  elseIf: (arg1, arg2, options) => {
+    return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+  },
+  // ifnot:(arg1,options)=>{
+  //   return (arg1) ? options.fn(this) : options.inverse(this);
+  // },
+  ifEq: (arg1, arg2, options) => {
+    return arg1 == arg2 ? options.inverse(this) : options.fn(this);
+  },
+  dateTime: (date) => {
+    return date.toLocaleString();
+  },
+  ifnot: (arg1, options) => {
+    return arg1 ? options.inverse(this) : options.fn(this);
+  },
+  getLaststatus: (status) => {
+    let index = status.length - 1;
+    return status[index].status + "  " + status[index].date.toLocaleString();
+  },
+  getStorestatus1: (start, end) => {
+    var now = getMinutesNow();
+    var start = getMinutes(start);
+    var end = getMinutes(end);
+
+    if (start > end) end += getMinutes("24:00");
+    //  console.log("start"+start+"end"+end+"now"+now)
+
+    if (now >= start && now < end) {
+      console.log("now Open");
+      return "";
+    } else {
+      console.log("Closed" + now + ">=" + start + "&&" + now + "<" + end);
+      return " [CLOSED]";
     }
+  },
+  getStorestatus: (start, end) => {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+  
+    dd = dd < 10 ? "0" + dd : dd;
+    mm = mm < 10 ? "0" + mm : mm;
+    tempDate = yyyy + "/" + mm + "/" + dd;
+  
+    calcStartdate = getHour(start);
+    calcEnddate = getHour(end);
+    console.log(new Date())
+  
+    let startDate = generateTimestamp(tempDate, start);
+    let now = Date.now() / 1000;
+    var endDate = generateTimestamp(tempDate, end);
+
+    if (calcStartdate > calcEnddate) {
+      endDate = addDays(endDate, 1)
+    }
+
+    if (now >= startDate && now < endDate) {
+      return "";
+    } else {
+      return " [CLOSED]";
+    }
+  },
 };
 
-function timechecker() {
-  var now = getMinutesNow();
-  var start = getMinutes("10:00:12 PM");
-  var end = getMinutes("17:35:12 AM");
- // if (start > end) end += getMinutes("24:00");
+function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}  
 
-  if (now > start && now < end) {
-    console.log("now Open");
-  } else {
-    console.log("Closed");
-  }
+function getHour(gtime) {
+  var time = gtime.split(":");
+  var format = gtime.split(" ");
+  time[0] = parseInt(time[0]);
+  format[1] == "PM" ? (time[0] = time[0] + 12) : (time[0] = time[0]);
+  return time[0];
 }
 
-function getMinutesNow() {
-  var timeNow = new Date();
-  return timeNow.getHours() * 60 + timeNow.getMinutes();
-}
-
-function getMinutes(str) {
-  var time = str.split(":");
-  var format = str.split(" ");
-  time[0] = parseInt(time[0])
-  time[1] = parseInt(time[1])
-  format[1] == "PM" ? (time[0] = time[0] + 12) : time[0] = time[0];
-  return time[0] * 60 + time[1] * 1;
+function generateTimestamp(tempDate, gtime) {
+  var time = gtime.split(":");
+  var format = gtime.split(" ");
+  time[0] = parseInt(time[0]);
+  time[1] = parseInt(time[1]);
+  format[1] == "PM" ? (time[0] = time[0] + 12) : (time[0] = time[0]);
+  
+  time[0] = time[0] < 10 ? "0" + time[0] : time[0];
+  time[1] = time[1] < 10 ? "0" + time[1] : time[1];
+  let strap = Math.round(new Date(tempDate + ' ' + time[0] + ':' + time[1] + ':00').getTime() / 1000)
+  return strap;
 }

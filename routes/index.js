@@ -36,6 +36,20 @@ router.get("/", commonData(), async function (req, res, next) {
     });
 });
 
+router.get("/about", commonData(),(req,res)=>{
+  res.render("main/about", {
+    admin: false,
+    user: req.session.dataTouser,
+  });
+})
+
+router.get("/contact", (req,res)=>{
+  res.render("main/contact", {
+    admin: false,
+    user: req.session.dataTouser,
+  });
+})
+
 router.get("/detailes/:id", commonData(), (req, res) => {
   productHelpers.getProductdetailes(req.params.id).then(async (data) => {
     let carouselImages = await imageHelpers.productcarouselImages(

@@ -2180,3 +2180,7 @@ ul.nav.nav-pills {
 .order-button {
   margin-left: .1rem;
 }
+
+.bootstrap-select.btn-group .dropdown-menu li {
+  width: 100%;
+}
