@@ -46,9 +46,11 @@
                                         <button class="m-1 btn btn-danger" onclick="deleteProduct('{{this._id}}')">
                                             <span class="far fa-circle">Delete</span>
                                         </button>
+                                        
                                         {{#if ../dealerUser}}<a href="/admin/edit_price/{{this._id}}"
                                             class="m-1 btn btn-warning"><span class="far fa-circle">Price</span></a>
                                         {{/if}}
+                                        
                                     </td>
                                 </tr>
                                 {{/each}}

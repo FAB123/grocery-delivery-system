@@ -55,8 +55,8 @@ router.get("/detailes/:id", commonData(), (req, res) => {
     let carouselImages = await imageHelpers.productcarouselImages(
       req.params.id
     );
+
     res.render("main/detailes", {
-      company: "Balsam Laundary",
       data,
       admin: false,
       user: req.session.dataTouser,
@@ -162,6 +162,22 @@ router.get("/logout", function (req, res) {
   req.session.destroy();
   res.redirect("login");
 });
+
+router.post("/new-product-review", (req,res)=>{
+  if(req.session.loggedIn){
+    data = req.body;
+    data.dealerId = req.session.defaultStore;
+    data.userId = req.session.user._id;
+    productHelpers.writeReview(data).then((status)=>{
+      res.json({login:true, status:true})
+    }).catch((err)=>{
+      res.json({login:true, status:false})
+    })
+  }
+  else{
+    res.json({login:false})
+  }
+})
 
 //add to cart
 router.post("/add-to-cart", (req, res) => {
@@ -358,6 +374,20 @@ router.post("/save_address", (req, res) => {
   }
 });
 
+//delete address
+router.post("/deleteAddress", (req,res)=>{
+  if(req.session.loggedIn){
+     addressHelpers.deleteAddress(req.body.id).then((data)=>{
+       res.json({login:true, status:true})
+     }).catch((err)=>{
+       res.json({login:true, status:false})
+     })
+  }
+  else{
+    res.json({login:false})
+  }
+})
+
 router.post("/place_order", async (req, res) => {
   if (req.session.loggedIn) {
     let cartID = req.body.cartID;
@@ -418,8 +448,8 @@ router.post("/varify-razorpay", (req, res) => {
 
 router.get("/orders", commonData(), varifyLogin("/orders"), (req, res) => {
   orderTransactions.getAllorderItem(req.session.user._id).then((orderItems) => {
-    console.log(orderItems);
     let orderStatus = req.session.orderStatus ? req.session.orderStatus : false;
+    req.session.orderStatus = false;
     res.render("main/orders", {
       company,
       orderStatus,

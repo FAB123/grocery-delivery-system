@@ -121,8 +121,8 @@ function validateOtp() {
     success: (response) => {
       if (response.data) {
         $("#otp_validater").modal("hide");
-        messageAlert("User Registration Successfull.")
-        location.replace("/login")
+        messageAlert("User Registration Successfull.");
+        location.replace("/login");
       } else {
         $("#otp").removeAttr("disabled", "disabled");
         $("#otp").val("");
@@ -200,73 +200,184 @@ $(document).ready(function () {
   });
 });
 
-$("#placeorder").submit((e) => {
-  e.preventDefault();
-  $.ajax({
-    url: "/place_order",
-    type: "POST",
-    data: $("#placeorder").serialize(),
-    dataType: "json",
-    success: function (response) {
-      alert(response.method)
-      if (response.login) {
-        if (response.method == "razorPay") {        
-          var rzp1 = new Razorpay(RazOpt(response.options));
-          rzp1.open();
-          rzp1.on("payment.failed", function (response) {
-            // alert(response.error.code);
-            // alert(response.error.description);
-            // alert(response.error.source);
-            // alert(response.error.step);
-            // alert(response.error.reason);
-            // alert(response.error.metadata.order_id);
-            // alert(response.error.metadata.payment_id);
-          });
+function deleteAddress(addressId) {
+  r = confirm("do you want remove this address?");
+  if (r) {
+    $.ajax({
+      url: "/deleteAddress",
+      method: "POST",
+      type: "JSON",
+      data: { id: addressId },
+      success: function (response) {
+        if (response.login) {
+          if (response.status) {
+            messageAlert("Address Removed Successfully", "info");
+            location.reload();
+          } else {
+            messageAlert("Error removing address", "danger");
+          }
+        } else {
+          location.replace("/login");
         }
-        else if(response.method == "moyasar"){
+      },
+    });
+  }
+}
 
-          // $("#moyasar-pay")
-          // .modal({ backdrop: "static" })
-          // .find(".modal-body")
-          // .load("/moyasar_payment/");
-          window.location = "/moyasar_payment/";
+$("#newproductreview").validate({
+  rules: {
+    comment: "required",
+  },
+  message: {
+    comment: "This field is required",
+  },
+  submitHandler: function (form) {
+    $.ajax({
+      url: "/new-product-review",
+      type: "POST",
+      data: $("#newproductreview").serialize(),
+      dataType: "json",
+      success: function (response) {
+        if (response.login) {
+          if (response.status) {
+            $('#post-review-box').slideUp(300, function()
+            {
+              $('#new-review').focus();
+              $('#open-review-box').fadeIn(200);
+            });
+            messageAlert("Thank You for Review, Have a nice day", "info");
+          }
+          else
+          {
+            messageAlert("Ohh, Some think went Wrong", "Danger")
+          }
+        } else {
+          location.replace("/login");
         }
-        else if (response.method == "cod"){
+      },
+    });
+  },
+});
+
+$("#placeorder").validate({
+  rules: {
+    address: "required",
+    paymentMethod: "required",
+  },
+  message: {
+    address: "This field is required",
+    paymentMethod: "This field is required",
+  },
+  submitHandler: function (form) {
+    alert($("#address").length);
+    if ($("#address").length < 1) {
+      alert("no address found");
+    } else {
+      $.ajax({
+        url: "/place_order",
+        type: "POST",
+        data: $("#placeorder").serialize(),
+        dataType: "json",
+        success: function (response) {
+          alert(response.method);
+          if (response.login) {
+            if (response.method == "razorPay") {
+              var rzp1 = new Razorpay(RazOpt(response.options));
+              rzp1.open();
+              rzp1.on("payment.failed", function (response) {
+                // alert(response.error.code);
+                // alert(response.error.description);
+                // alert(response.error.source);
+                // alert(response.error.step);
+                // alert(response.error.reason);
+                // alert(response.error.metadata.order_id);
+                // alert(response.error.metadata.payment_id);
+              });
+            } else if (response.method == "moyasar") {
+              // $("#moyasar-pay")
+              // .modal({ backdrop: "static" })
+              // .find(".modal-body")
+              // .load("/moyasar_payment/");
+              window.location = "/moyasar_payment/";
+            } else if (response.method == "cod") {
+              window.location = "/orders";
+            } else {
+              messageAlert(response.message, "danger");
+            }
+          } else {
+            location.replace("/login");
+          }
+        },
+      });
+    }
+  },
+});
+
+// submit((e) => {
+//   e.preventDefault();
+//   $.ajax({
+//     url: "/place_order",
+//     type: "POST",
+//     data: $("#placeorder").serialize(),
+//     dataType: "json",
+//     success: function (response) {
+//       alert(response.method)
+//       if (response.login) {
+//         if (response.method == "razorPay") {
+//           var rzp1 = new Razorpay(RazOpt(response.options));
+//           rzp1.open();
+//           rzp1.on("payment.failed", function (response) {
+//             // alert(response.error.code);
+//             // alert(response.error.description);
+//             // alert(response.error.source);
+//             // alert(response.error.step);
+//             // alert(response.error.reason);
+//             // alert(response.error.metadata.order_id);
+//             // alert(response.error.metadata.payment_id);
+//           });
+//         }
+//         else if(response.method == "moyasar"){
+
+//           // $("#moyasar-pay")
+//           // .modal({ backdrop: "static" })
+//           // .find(".modal-body")
+//           // .load("/moyasar_payment/");
+//           window.location = "/moyasar_payment/";
+//         }
+//         else if (response.method == "cod"){
+//           window.location = "/orders";
+//         }
+//         else {
+//           messageAlert(response.message, "danger");
+//         }
+//       } else {
+//         location.replace("/login");
+//       }
+//     },
+//   });
+// });
+
+function varifyRazorpayPayment(payment) {
+  $.ajax({
+    url: "/varify-razorpay",
+    data: { payment: payment },
+    method: "POST",
+    success: function (response) {
+      if (response.login) {
+        if (response.payment) {
+          alert("payment success");
           window.location = "/orders";
-        }
-        else {
-          messageAlert(response.message, "danger");
+        } else {
+          alert("payment failed");
         }
       } else {
         location.replace("/login");
       }
     },
   });
-});
-
-function varifyRazorpayPayment(payment) {
-  $.ajax({
-    url:"/varify-razorpay",
-    data:{payment:payment},
-    method:"POST",
-    success:function(response){
-      if(response.login){
-        if(response.payment){
-          alert("payment success")
-          window.location = "/orders";
-        }
-        else{
-          alert("payment failed")
-        }
-      }
-      else{
-        location.replace("/login")
-      }
-    }
-  })
 }
 
-function RazOpt(data){
+function RazOpt(data) {
   var options = {
     key: data.key_id,
     amount: data.razamount,
@@ -276,7 +387,7 @@ function RazOpt(data){
     image: "https://example.com/your_logo",
     order_id: data.orderid,
     handler: function (response) {
-      varifyRazorpayPayment(response)
+      varifyRazorpayPayment(response);
     },
     prefill: {
       name: data.user.first_name + " " + data.user.last_name,
@@ -291,8 +402,6 @@ function RazOpt(data){
   };
   return options;
 }
-
-
 
 function setGeostore() {
   getLocation().then((data) => {
@@ -440,16 +549,16 @@ function loginAlert() {
   });
 }
 
-function clearCart(){
-  confirm = confirm("Do you want to Clear Cart?")
-  if(confirm){
+function clearCart() {
+  confirm = confirm("Do you want to Clear Cart?");
+  if (confirm) {
     $.ajax({
-      url:"/clear_cart",
-      method:"POST",
-      success:function(response){
-         alert(response)
-      }
-    })
+      url: "/clear_cart",
+      method: "POST",
+      success: function (response) {
+        alert(response);
+      },
+    });
   }
 }
 

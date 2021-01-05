@@ -13,12 +13,14 @@
 
 	<script src="/assets/js/jquery.min.js"></script>
 	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	
 	<!-- Custom Theme files -->
 	<!--theme-style-->
 	<link rel="stylesheet" href="/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 	<link rel="stylesheet"
 		href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
 	<link href="/assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 	<!--//theme-style-->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -50,7 +52,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<div class="header">
 		<div class="header-top">
 			<div class="container1">
-				<div class="col-sm-4 world">
+				<div class="col-md-4 col-sm-12 world">
 					<ul>
 						<li>
 							<select class="lang in-drop selectpicker show-tick" data-width="fit">
@@ -79,11 +81,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						</li>
 					</ul>
 				</div>
-				<div class="col-sm-4 logo">
+				<div class="col-md-4 col-sm-12 logo">
 					<a href="/"><span class="company-head">{{user.storeData.storename}} </span></a>
 				</div>
 
-				<div class="col-sm-4 header-left">
+				<div class="col-md-4 col-sm-12 header-left">
 					{{#if user.userData.status}}
 					<p class="log"><span>{{user.userData.userName}}</span>
 						<a href="/logout">Logout</a>

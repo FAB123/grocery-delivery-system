@@ -118,7 +118,7 @@
         input.value = '';
         image.src = url;
         $alert.hide();
-        $modal.modal('show');
+        $modal.modal({ backdrop: "static" });
       };
       var reader;
       var file;

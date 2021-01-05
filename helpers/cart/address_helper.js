@@ -1,4 +1,4 @@
-const { Db } = require("mongodb");
+const { Db, ObjectId } = require("mongodb");
 const collection = require("../../config/collection");
 const db = require("../../config/connection");
 module.exports = {
@@ -16,10 +16,21 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.USER_ADDRESS_COLLECTION)
-        .find({ user: user }).toArray()
+        .find({ user: user, deleted:{$ne:true} }).toArray()
         .then((data) => {
             resolve(data);
         });
     });
   },
+  deleteAddress:(addressId)=>{
+    return new Promise((resolve, reject)=>{
+      db.get().collection(collection.USER_ADDRESS_COLLECTION).updateOne({_id:ObjectId(addressId)}, {$set:{
+        deleted : true
+      }}).then((data)=>{
+        resolve()
+      }).catch((err)=>{
+        reject()
+      })
+    })
+  }
 };

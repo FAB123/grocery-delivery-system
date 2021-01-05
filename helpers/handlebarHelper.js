@@ -37,6 +37,9 @@ module.exports = {
       return " [CLOSED]";
     }
   },
+  calcProgress:(value)=>{
+    return value*20;
+  },
   getStorestatus: (start, end) => {
     var today = new Date();
     var dd = today.getDate();
@@ -56,7 +59,10 @@ module.exports = {
     var endDate = generateTimestamp(tempDate, end);
 
     if (calcStartdate > calcEnddate) {
-      endDate = addDays(endDate, 1)
+
+      console.log(startDate)
+      console.log(now)
+      console.log(endDate)
     }
 
     if (now >= startDate && now < endDate) {

@@ -1,4 +1,9 @@
 {{>admin-sidebar}}
+<style>
+  .img-container img {
+    max-width: 100%;
+  }
+</style>
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -42,7 +47,7 @@
                 <label for="category">Category</label>
                 <select class="form-control" name="category" id="category" required>
                   {{#each category}}
-                  <option  value="{{this.category}}">{{this.category}}</option>
+                  <option value="{{this.category}}">{{this.category}}</option>
                   {{/each}}
                 </select>
               </div>

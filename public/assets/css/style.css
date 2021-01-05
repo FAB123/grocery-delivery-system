@@ -207,9 +207,9 @@ button.item_add {
   display: flex;
   color: #f30d19;
 }
-.order{
+.order {
   font-size: 1.5em;
-  margin-right: .5em;
+  margin-right: 0.5em;
   color: #52d0c4;
 }
 /*--- slider-css --*/
@@ -970,7 +970,7 @@ a.cart:hover {
 /*--checkout--*/
 .check-out {
   padding: 1em 0em;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 table {
   width: 100%;
@@ -1954,7 +1954,7 @@ ul.nav.nav-pills {
   padding: 2rem;
 }
 
-.payment{
+.payment {
   border: aliceblue;
   border-style: dashed;
   border-color: #52d0c4;
@@ -1964,7 +1964,7 @@ ul.nav.nav-pills {
   margin: 3px;
   padding-bottom: 3em;
 }
-.payment-button{
+.payment-button {
   background: #a37dce;
   color: #fff;
   font-size: 1em;
@@ -2043,19 +2043,18 @@ ul.nav.nav-pills {
   display: flex !important;
   justify-content: space-between;
 }
-.selectpayment{
-  padding: .2em;
-  font-family: 'Courier New', Courier, monospace;
+.selectpayment {
+  padding: 0.2em;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .custom-control {
   padding: 0.8rem !important;
 }
 
-.selectpicker{
+.selectpicker {
   overflow-y: unset !important;
 }
-
 
 /* Timeline css*/
 
@@ -2065,13 +2064,13 @@ ul.nav.nav-pills {
   position: relative;
 }
 
-.timeline>div {
+.timeline > div {
   margin-bottom: 15px;
   margin-right: 10px;
   position: relative;
 }
 
-.timeline>.time-label>span {
+.timeline > .time-label > span {
   border-radius: 4px;
   background-color: #fff;
   display: inline-block;
@@ -2080,7 +2079,7 @@ ul.nav.nav-pills {
 }
 
 .timeline::before {
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   background-color: #dee2e6;
   bottom: 0;
   content: "";
@@ -2091,17 +2090,26 @@ ul.nav.nav-pills {
   width: 4px;
 }
 
-.timeline>div::after, .timeline>div::before {
+.timeline > div::after,
+.timeline > div::before {
   content: "";
   display: table;
 }
 
-.timeline>div::after, .timeline>div::before {
+.timeline > div::after,
+.timeline > div::before {
   content: "";
   display: table;
 }
 
-.timeline>div>.fa, .timeline>div>.fab, .timeline>div>.fad, .timeline>div>.fal, .timeline>div>.far, .timeline>div>.fas, .timeline>div>.ion, .timeline>div>.svg-inline--fa {
+.timeline > div > .fa,
+.timeline > div > .fab,
+.timeline > div > .fad,
+.timeline > div > .fal,
+.timeline > div > .far,
+.timeline > div > .fas,
+.timeline > div > .ion,
+.timeline > div > .svg-inline--fa {
   background-color: #adb5bd;
   border-radius: 50%;
   font-size: 16px;
@@ -2114,17 +2122,18 @@ ul.nav.nav-pills {
   width: 30px;
 }
 
-.bg-green, .bg-green>a {
-  color: #fff!important;
+.bg-green,
+.bg-green > a {
+  color: #fff !important;
 }
 
 .bg-green {
-  background-color: #28a745!important;
+  background-color: #28a745 !important;
 }
 
-.timeline>div>.timeline-item {
-  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
-  border-radius: .25rem;
+.timeline > div > .timeline-item {
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
   background-color: #fff;
   color: #495057;
   margin-left: 60px;
@@ -2135,11 +2144,12 @@ ul.nav.nav-pills {
 }
 
 .bg-red {
-  background-color: #dc3545!important;
+  background-color: #dc3545 !important;
 }
 
-.bg-red, .bg-red>a {
-  color: #fff!important;
+.bg-red,
+.bg-red > a {
+  color: #fff !important;
 }
 
 .card-body {
@@ -2150,7 +2160,7 @@ ul.nav.nav-pills {
 }
 
 .card {
-  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-bottom: 1rem;
 }
 
@@ -2164,12 +2174,12 @@ ul.nav.nav-pills {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 0 solid rgba(0,0,0,.125);
-  border-radius: .25rem;
+  border: 0 solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
 }
 
-.timeline>div>.timeline-item>.timeline-header {
-  border-bottom: 1px solid rgba(0,0,0,.125);
+.timeline > div > .timeline-item > .timeline-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
   color: #495057;
   font-size: 16px;
   line-height: 1.1;
@@ -2178,9 +2188,24 @@ ul.nav.nav-pills {
 }
 
 .order-button {
-  margin-left: .1rem;
+  margin-left: 0.1rem;
 }
 
 .bootstrap-select.btn-group .dropdown-menu li {
   width: 100%;
+}
+
+.stock {
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+  margin-bottom: .8rem;
+  margin-top: .8rem;
+  font-family: "OleoScript-Regular";
+  font-size: .8rem;
+  width: 100%;
+}
+
+.item_price{
+  font-family: "OleoScript-Regular";
+  font-size: 1rem;
 }

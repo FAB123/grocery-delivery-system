@@ -10,6 +10,7 @@ var fileSaver = require("file-saver");
 var Jimp = require("jimp");
 var fs = require("fs");
 var orderTransactions = require("../helpers/payment/order-transactions");
+const dashboardHelper = require("../helpers/dashboard-helper")
 
 var company_data = { name: "Test Company" };
 
@@ -17,12 +18,18 @@ var company_data = { name: "Test Company" };
 router.get("/", function (req, res, next) {
   res.redirect("dashboard");
 });
-router.get("/dashboard", varifyLogin("/admin/dashboard"), function (req, res) {
+router.get("/dashboard", varifyLogin("/admin/dashboard"), async function (req, res) {
+  let employee_data = req.session.employee;
+  if(employee_data.supper_user != "yes"){
+    var dashboardData = await dashboardHelper.getStoresdashboards(employee_data.store)
+    console.log(dashboardData)
+  }
   res.render("admin/dashboard", {
     admin: true,
     company_data,
+    dashboardData,
     dashboard: true,
-    employee_data: req.session.employee,
+    employee_data,
   });
 });
 

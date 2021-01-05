@@ -355,7 +355,6 @@ module.exports = {
   },
   calculateCarttotalbystore: (userId, store) => {
     return new Promise((resolve, reject) => {
-      console.log(userId + " store " + store);
       db.get()
         .collection(collection.CART_COLLECTIONS)
         .aggregate([
@@ -413,7 +412,9 @@ module.exports = {
           } else {
             resolve(0);
           }
-        });
+        }).catch((err)=>{
+          reject(err)
+        })
     });
   },
   calculateCarttotalbycartID: (cartID) => {

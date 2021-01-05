@@ -228,6 +228,7 @@ module.exports = {
             { prodID: ObjectID(prodId), store: ObjectID(body.storeId) },
             {
               $set: {
+                store: ObjectID(body.storeId),
                 price: parseInt(body.price),
                 qty: parseInt(body.qty),
                 vat: parseInt(body.vat),
@@ -245,9 +246,9 @@ module.exports = {
           .insertOne({
             store: ObjectID(body.storeId),
             prodID: ObjectID(prodId),
-            price: body.price,
-            qty: body.qty,
-            vat: body.vat,
+            price: parseInt(body.price),
+            qty: parseInt(body.qty),
+            vat: parseInt(body.vat),
           })
           .then((data) => {
             resolve(data);
@@ -294,12 +295,12 @@ module.exports = {
       let product = await db
         .get()
         .collection(collections.PRODUCT_COLLECTION_BY_STORE)
-        .findOne({ prodID: ObjectID(data.prodId), store: data.store });
+        .findOne({ prodID: ObjectID(data.prodId), store: ObjectID(data.store) });
       if (product) {
         db.get()
           .collection(collections.PRODUCT_COLLECTION_BY_STORE)
           .updateOne(
-            { store: data.store, prodID: ObjectID(data.prodId) },
+            { store: ObjectID(data.store), prodID: ObjectID(data.prodId) },
             {
               $set: {
                 active: state,
@@ -371,6 +372,28 @@ module.exports = {
         });
     });
   },
+  writeReview:(data)=>{
+    return new Promise(async(resolve, reject)=>{
+      data.prodId = ObjectID(data.prodId);
+      data.dealerId = ObjectID(data.dealerId);
+      data.userId = ObjectID(data.userId);
+      review = await db.get().collection(collections.PRODUCT_REVIEW).findOne({dealerId:data.dealerId, userId:data.userId, prodId:data.prodId})
+      if(review){
+        db.get().collection(collections.PRODUCT_REVIEW).updateOne({dealerId:data.dealerId, userId:data.userId, prodId:data.prodId}, {$set:{
+          rating: data.rating,
+          comment: data.comment
+        }}).then((result)=>{
+          resolve()
+        })
+      }
+      else{
+        db.get().collection(collections.PRODUCT_REVIEW).insertOne(data).then((result)=>{
+          resolve()
+        })
+      }
+    })
+
+  }
 };
 
 function checkCustomer(store) {

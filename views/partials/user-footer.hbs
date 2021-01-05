@@ -27,11 +27,11 @@
 				</ul>
 			</div>
 			<div class="col-sm-3 footer-bottom-cate">
-				 <h6>Top Brands</h6>
+				<h6>Top Brands</h6>
 				<ul>
 					<li><a href="#">Al Marai</a></li>
 					<li><a href="#">Nadec</a></li>
-				</ul> 
+				</ul>
 			</div>
 			<div class="col-sm-3 footer-bottom-cate">
 				<h6>Payment System</h6>
@@ -74,6 +74,13 @@
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 	<script src="/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 	<script src="/assets/js/script.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('#orders').DataTable();
+		});
+	</script>
 </div>

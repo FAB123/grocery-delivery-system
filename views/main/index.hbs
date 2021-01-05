@@ -46,8 +46,13 @@
                         </a>
                         <h3><a href="detailes/{{this._id}}">{{this.product_name}}</a></h3>
                         <h3>{{this.shortdescription}}</h3>
+                        <div class="stock text-center divider py-1 bg-dark">
+                  
+                            <p>Stock : {{this.qty}} nos</p>
+                
+                        </div>
                         <div class="price">
-                            <h5 class="item_price">{{this.price}}</h5>
+                            <h5 class="item_price">{{this.price}} SR</h5>
                             <button onclick="addTocart('{{this._id}}')" class="item_add">Add To Cart</button>
                             <div class="clearfix"> </div>
                         </div>
