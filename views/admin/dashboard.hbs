@@ -6,11 +6,11 @@
     <div class="row ">
       <div class="col-md-4 col-sm-6 col-12 mt-3">
         <div class="info-box">
-          <span class="info-box-icon bg-info"><i class="far fa-envelope"></i></span>
+          <span class="info-box-icon bg-info progress-bar-striped"><i class="fas fa-user"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">Employee</span>
-            <span class="info-box-number">{{dashboardData.total_user}}</span>
+            <span class="info-box-number">{{dashboardData.totalUsers.TotalUsers}}</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -19,11 +19,11 @@
       <!-- /.col -->
       <div class="col-md-4 col-sm-6 col-12 mt-3">
         <div class="info-box">
-          <span class="info-box-icon bg-success"><i class="far fa-flag"></i></span>
+          <span class="info-box-icon bg-success progress-bar-striped"><i class="far fa-flag"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">Products</span>
-            <span class="info-box-number">{{dashboardData.total_products.count}}</span>
+            <span class="info-box-number">{{dashboardData.allProducts.count}}</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -34,11 +34,11 @@
       <!-- /.col -->
       <div class="col-md-4 col-sm-6 col-12 mt-3">
         <div class="info-box">
-          <span class="info-box-icon bg-danger"><i class="far fa-star"></i></span>
+          <span class="info-box-icon bg-warning progress-bar-striped"><i class="far fa-thumbs-up"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">Feedbacks</span>
-            <span class="info-box-number">{{dashboardData.totalFeedbacks.count}}</span>
+            <span class="info-box-number">{{dashboardData.allFeedbacks.count}}</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -48,6 +48,19 @@
     </div>
     <div class="row">
       <div class="col-lg-6 mt-3">
+        <div class="card">
+
+          <div class="card-header border-0">
+            <h3 class="card-title">Order History</h3>
+          </div>
+          <div class="card-body">
+            <canvas id="orderHistory"
+              style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+          </div>
+        </div>
+
+
+
         <div class="card">
           <div class="card-header border-0">
             <h3 class="card-title">New Items</h3>
@@ -70,12 +83,12 @@
                 </tr>
               </thead>
               <tbody>
-                {{#each dashboardData.total_products.items}}
+                {{#each dashboardData.allProducts.items}}
                 <tr>
                   <td>
                     <img src="/product-images/thumbnails/{{this.prodID}}.jpg" alt="Product 1"
                       class="img-circle img-size-32 mr-2">
-                    {{this.product}}
+                    {{this.product_name}}
                   </td>
                   <td>{{this.price}}</td>
                   <td>
@@ -87,9 +100,34 @@
             </table>
           </div>
         </div>
-
       </div>
+
       <div class="col-lg-6 mt-3">
+        <div class="card">
+          <div class="card-header border-0">
+            <div class="d-flex justify-content-between">
+              <h3 class="card-title">Sales History</h3>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <div class="position-relative mb-4">
+              <canvas id="sales-chart" height="200"></canvas>
+            </div>
+
+            <div class="d-flex flex-row justify-content-end">
+              <span class="mr-2">
+                <i class="fas fa-square text-primary"></i> Completed
+              </span>
+
+              <span>
+                <i class="fas fa-square text-gray"></i> Pending
+              </span>
+            </div>
+          </div>
+        </div>
+
+
         <div class="card">
           <div class="card-header border-0">
             <h3 class="card-title">Latest Feedbacks</h3>
@@ -112,7 +150,7 @@
                 </tr>
               </thead>
               <tbody>
-                {{#each dashboardData.totalFeedbacks.items}}
+                {{#each dashboardData.allFeedbacks.items}}
                 <tr>
                   <td>
                     <img src="/product-images/thumbnails/{{this.prodId}}.jpg" alt="Product 1"
@@ -121,9 +159,9 @@
                   </td>
                   <td>{{this.comment}}</td>
                   <td>
-                    <div class="progress progress-xs">
+                    <div class="progress">
                       <div class="progress-bar bg-warning progress-bar-striped" role="progressbar"
-                        aria-valuenow="{{#calcProgress this.rating}}{{/calcProgress}}" aria-valuemin="0"
+                        aria-valuenow="{{#calcProgress this.rating}}{{/calcProgress}}%" aria-valuemin="0"
                         aria-valuemax="100" style="width: {{#calcProgress this.rating}}{{/calcProgress}}%">
                         <span>{{this.rating}}</span>
                       </div>
@@ -153,11 +191,107 @@
   <!-- Control sidebar content goes here -->
 </aside>
 <!-- /.control-sidebar -->
-
-<style>
-  .stars {
-    margin: 20px 0;
-    font-size: 24px;
-    color: #d17581;
+<script src="plugins/chart.js/Chart.min.js"></script>
+<script>
+  $(function () {
+    var donutChartCanvas = $('#orderHistory').get(0).getContext('2d')
+    var donutData = {
+      labels: [
+        'Total',
+        'Pending',
+        'Finished',
+      ],
+      datasets: [
+        {
+          data: [{{dashboardData.allorders.total}}, {{dashboardData.allorders.pending}}, {{dashboardData.allorders.active}}],
+          backgroundColor : ['#00c0ef', '#d2d6de', '#3c8dbc'],
+        }
+      ]
+    }
+    var donutOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
   }
-</style>
+  var donutChart = new Chart(donutChartCanvas, {
+    type: 'doughnut',
+    data: donutData,
+    options: donutOptions
+  })
+
+  var ticksStyle = {
+    fontColor: '#495057',
+    fontStyle: 'bold'
+  }
+
+  var mode = 'index'
+  var intersect = true
+
+
+  var $salesChart = $('#sales-chart')
+  // eslint-disable-next-line no-unused-vars
+  var salesChart = new Chart($salesChart, {
+    data: {
+      labels: ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
+      datasets: [{
+        type: 'line',
+        data: [100, 120, 170, 167, 180, 177, 160],
+        backgroundColor: 'transparent',
+        borderColor: '#007bff',
+        pointBorderColor: '#007bff',
+        pointBackgroundColor: '#007bff',
+        fill: false
+        // pointHoverBackgroundColor: '#007bff',
+        // pointHoverBorderColor    : '#007bff'
+      },
+      {
+        type: 'line',
+        data: [60, 80, 70, 67, 80, 77, 100],
+        backgroundColor: 'tansparent',
+        borderColor: '#ced4da',
+        pointBorderColor: '#ced4da',
+        pointBackgroundColor: '#ced4da',
+        fill: false
+        // pointHoverBackgroundColor: '#ced4da',
+        // pointHoverBorderColor    : '#ced4da'
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+            suggestedMax: 200
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    }
+  })
+
+  })
+</script>

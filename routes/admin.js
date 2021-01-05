@@ -12,7 +12,7 @@ var fs = require("fs");
 var orderTransactions = require("../helpers/payment/order-transactions");
 const dashboardHelper = require("../helpers/dashboard-helper")
 
-var company_data = { name: "Test Company" };
+var company_data = { name: "Grocery Delivery System" };
 
 /* GET root router. */
 router.get("/", function (req, res, next) {
@@ -22,7 +22,6 @@ router.get("/dashboard", varifyLogin("/admin/dashboard"), async function (req, r
   let employee_data = req.session.employee;
   if(employee_data.supper_user != "yes"){
     var dashboardData = await dashboardHelper.getStoresdashboards(employee_data.store)
-    console.log(dashboardData)
   }
   res.render("admin/dashboard", {
     admin: true,

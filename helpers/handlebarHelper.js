@@ -52,17 +52,18 @@ module.exports = {
   
     calcStartdate = getHour(start);
     calcEnddate = getHour(end);
-    console.log(new Date())
+
   
     let startDate = generateTimestamp(tempDate, start);
     let now = Date.now() / 1000;
     var endDate = generateTimestamp(tempDate, end);
 
     if (calcStartdate > calcEnddate) {
+      //  console.log(startDate)
+      //  console.log(now)
+      //  console.log(endDate)
 
-      console.log(startDate)
-      console.log(now)
-      console.log(endDate)
+      startDate = addDays(startDate, 1)
     }
 
     if (now >= startDate && now < endDate) {
@@ -74,9 +75,9 @@ module.exports = {
 };
 
 function addDays(date, days) {
-  var result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
+  var result = new Date(date * 1000);
+  result.setDate(result.getDate() - days);
+  return Date.parse(result)/1000;
 }  
 
 function getHour(gtime) {
