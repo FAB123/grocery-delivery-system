@@ -25,7 +25,7 @@ i18next
     backend: {
       loadPath: __dirname + '/locales/{{lng}}/{{ns}}.json'
     },
-    debug: true,
+    debug: false,
     detection: {
       order: ['querystring', 'cookie'],
       caches: ['cookie']

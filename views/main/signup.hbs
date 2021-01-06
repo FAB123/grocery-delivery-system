@@ -1,42 +1,42 @@
 <div class="container">
     <div class="register">
-        <h1>Register</h1>
+        <h1>{{{t "signup.register"}}}</h1>
         <form action="signup" method="post" id="signup">
             <div class="col-md-6 register-top-grid">
 
                 <div class="mation">
                     <div class="form-group">
-                        <span>First Name</span>
+                        <span>{{{t "signup.firstname"}}}</span>
                         <input type="text" name="first_name" id="first_name">
                     </div>
 
                     <div class="form-group">
-                        <span>Last Name</span>
+                        <span>{{{t "signup.lastname"}}}</span>
                         <input type="text" name="last_name" id="last_name">
                     </div>
                     <div class="form-group">
-                        <span>Mobile</span>
+                        <span>{{{t "signup.mobile"}}}</span>
                         <input type="tel" name="mobile" id="mobile">
                     </div>
                 </div>
                 <div class="clearfix"> </div>
                 <a class="news-letter" href="#">
-                    <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>Sign Up</label>
+                    <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>{{{t "signup.signup"}}}</label>
                 </a>
             </div>
             <div class=" col-md-6 register-bottom-grid">
 
                 <div class="mation">
                     <div class="form-group">
-                        <span>Username</span>
+                        <span>{{{t "signup.username"}}}</span>
                         <input type="text" name="username" id="username">
                     </div>
                     <div class="form-group">
-                        <span>Password</span>
+                        <span>{{{t "account.password"}}}</span>
                         <input type="password" name="password" id="password">
                     </div>
                     <div class="form-group">
-                        <span>Confirm Password</span>
+                        <span>{{{t "signup.confirmpassword"}}}</span>
                         <input type="password" name="confirm_password" id="confirm_password">
                     </div>
                 </div>
@@ -45,8 +45,7 @@
 
 
             <div class="register-but">
-
-                <input type="submit" value="submit">
+                <input type="submit" value="{{{t "signup.submit"}}}">
                 <div class="clearfix"> </div>
         </form>
     </div>
@@ -56,7 +55,7 @@
     <div class="modal-dialog">
         <div class="modal-content bg-danger">
             <div class="modal-header">
-                <h4 class="modal-title">Validate OTP</h4>
+                <h4 class="modal-title">{{{t "signup.vaidate"}}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -151,10 +151,13 @@ $(document).ready(function () {
     if (!sessionStorage.getItem("ShoppingLocation")) {
       setGeostore();
     }
+    if(sessionStorage.getItem("Language")){
+      $('#language').val(sessionStorage.getItem("Language"))
+    }
   } else {
     console.log("Local Storage Not Supported");
   }
-
+  
   $("#save_address").validate({
     rules: {
       name: "required",
@@ -643,7 +646,7 @@ function messageAlert(message, type) {
   });
 }
 
-$('select').on('change', function() {
-  sessionStorage.lang = this.value
+$('#language').on('change', function() {
+  sessionStorage.setItem("Language", this.value);
   location.replace("?lng="+this.value)
 });

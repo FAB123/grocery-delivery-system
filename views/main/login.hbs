@@ -1,18 +1,18 @@
 <div class="account">
     <div class="container">
-        <h1>Account</h1>
+        <h1>{{{t "account.account"}}}</h1>
 
         <div class="account_grid">
             <div class="col-md-6 login-right">
                 <form action="login" id="login" method="POST">
 
-                    <span>Mobile / Username</span>
+                    <span>{{{t "account.username"}}}</span>
                     <input type="text" name="mobile" id="mobile">
 
-                    <span>Password</span>
+                    <span>{{{t "account.password"}}}</span>
                     <input type="password" name="password" id="password">
                     <div class="word-in">
-                        <a class="forgot" href="#">Forgot Your Password?</a>
+                        <a class="forgot" href="#">{{{t "account.login"}}}</a>
                         <input type="submit" value="Login">
                     </div>
                     <div id="login-message">
@@ -21,10 +21,9 @@
                 </form>
             </div>
             <div class="col-md-6 login-left">
-                <h4>NEW CUSTOMERS</h4>
-                <p>By creating an account with our store, you will be able to move through the checkout process faster,
-                    store multiple shipping addresses, view and track your orders in your account and more.</p>
-                <a class="acount-btn" href="signup">Create an Account</a>
+                <h4>{{{t "account.newcustomers"}}}</h4>
+                <p>{{{t "account.textforcreatenewcustomer"}}}</p>
+                <a class="acount-btn" href="signup">{{{t "account.createanaccount"}}}</a>
             </div>
             <div class="clearfix"> </div>
         </div>

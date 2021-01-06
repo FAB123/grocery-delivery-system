@@ -12,7 +12,50 @@
       "newsletter": "النشرة الإخبارية",
       "ouraddress": "عنواننا",
       "paymentsystem":"نظام الدفع",
-      "subscribe":"الإشتراك"
+      "subscribe":"الإشتراك",
+      "stock":"مخزون",
+      "recentproducts":"منتجات"
+    },
+    "account":{
+      "account": "الحساب",
+      "username": "الجوال / اسم المستخدم",
+      "password" : "كلمه السر",
+      "login" : "تسجيل الدخول",
+      "forgetpassword": "هل نسيت كلمة المرور",
+      "newcustomers":"زبائن الجدد",
+      "textforcreatenewcustomer":"من خلال إنشاء حساب في متجرنا ، ستتمكن من التنقل خلال عملية الدفع بشكل أسرع ، وتخزين عناوين شحن متعددة ، وعرض وتتبع طلباتك في حسابك والمزيد.",
+      "createanaccount":"انشئ حساب"
+    },
+    "signup":{
+      "register":"تسجيل",
+      "firstname": "الاسم الاول",
+      "lastname": "اسم العائلة",
+      "mobile": "جوال",
+      "username": "اسم المستخدم",
+      "confirmpassword": "تأكيد كلمة المرور",
+      "signup": "سجل",
+      "submit" : "إرسال",
+      "validateotp" : "التحقق من صحة OTP"
+    },
+    "orderlist":{
+      "orderlist": "لائحة الطلبات",
+      "date" : "تاريخ",
+      "paymentmethod":"طريقة الدفع او السداد",
+      "store": "متجر",
+      "orderstatus": "حالة الطلب",
+      "total" : "إجمالي",
+      "status": "الحالة",
+      "items": "العناصر",
+      "recipt": "إيصال",
+      "repayment":"السداد"
+    },
+    "checkout":{
+      "checkout":"الدفع",
+      "item": "بند",
+      "price":"السعر",
+      "qty":"الكمية",
+      "subtotal":"المجموع الفرعي",
+      "proceedtocheckout":"باشرالخروج من الفندق"
     }
   }
   
