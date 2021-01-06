@@ -12,6 +12,7 @@ var addressHelpers = require("../helpers/cart/address_helper");
 var paymentHelpers = require("../helpers/payment/payment-method");
 const cartHelpers = require("../helpers/cart/cart-helpers");
 const orderTransactions = require("../helpers/payment/order-transactions");
+const IndexContoller = require('../helpers/index_controller');
 const siteUrl = "http://localhost:3000/";
 
 const company = "Balsam Laundary";
@@ -19,7 +20,7 @@ const company = "Balsam Laundary";
 var userData;
 
 /* GET home page. */
-router.get("/", commonData(), async function (req, res, next) {
+router.get("/", commonData(), IndexContoller.list, async function (req, res, next) {
   let carousel = await imageHelpers.carouselImages();
   productHelpers
     .getAllProductbyStore(req.session.defaultStore)

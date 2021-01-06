@@ -1,0 +1,18 @@
+{
+    "home": {
+      "home": "الصفحة الرئيسية",
+      "aboutstore": "حول المتجر",
+      "contact": "اتصل",
+      "login": "تسجيل الدخول",
+      "logout":"Logout",
+      "or" : "أو",
+      "signup": "سجل",
+      "emptycart":"عربة فارغة",
+      "addtocart":"أضف إلى السلة",
+      "newsletter": "النشرة الإخبارية",
+      "ouraddress": "عنواننا",
+      "paymentsystem":"نظام الدفع",
+      "subscribe":"الإشتراك"
+    }
+  }
+  

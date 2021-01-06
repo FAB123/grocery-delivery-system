@@ -1,0 +1,16 @@
+{
+  "home": {
+    "home": "Home",
+    "aboutstore": "About Store",
+    "contact": "Contact",
+    "login": "Login",
+    "or" : "Or",
+    "signup": "Signup",
+    "emptycart":"Empty Cart",
+    "addtocart":"Add to Cart",
+    "newsletter": "Newsletter",
+    "ouraddress": "Our Address",
+    "paymentsystem":"Payment System",
+    "subscribe":"SUBSCRIBE"
+  }
+}

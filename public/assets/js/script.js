@@ -642,3 +642,8 @@ function messageAlert(message, type) {
     });
   });
 }
+
+$('select').on('change', function() {
+  sessionStorage.lang = this.value
+  location.replace("?lng="+this.value)
+});

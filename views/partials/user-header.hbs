@@ -56,8 +56,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<ul>
 						<li>
 							<select class="lang in-drop selectpicker show-tick" data-width="fit">
-								<option> English </option>
-								<option> Arabic </option>
+								<option value="en"> English </option>
+								<option value="ar"> Arabic </option>
 							</select>
 						</li>
 						<li class="ml-2">
@@ -88,11 +88,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<div class="col-md-4 col-sm-12 header-left">
 					{{#if user.userData.status}}
 					<p class="log"><span>{{user.userData.userName}}</span>
-						<a href="/logout">Logout</a>
+						<a href="/logout">{{{t "home.logout"}}}</a>
 					</p>
 					{{else}}
-					<p class="log"><a href="/login">Login</a>
-						<span>or</span><a href="/signup">Signup</a>
+					<p class="log"><a href="/login">{{{t "home.login"}}}</a>
+						<span>{{{t "home.or"}}}</span><a href="/signup">{{{t "home.signup"}}}</a>
 					</p>
 					{{/if}}
 
@@ -108,7 +108,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									<img src="/assets/images/cart.png" alt="" />
 								</h3>
 							</a>
-							<p><a href="javascript:clearCart();" class="simpleCart_empty">Empty Cart</a></p>
+							<p><a href="javascript:clearCart();" class="simpleCart_empty">{{{t "home.emptycart"}}}</a></p>
 						</div>
 					</div>
 					<div class="clearfix"> </div>
@@ -123,7 +123,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				</div>
 				<div class="col-sm-8 h_menu4">
 					<ul class="memenu skyblue">
-						<li class=" grid"><a href="/">Home</a></li>
+						<li class=" grid"><a href="/">{{{t "home.home"}}}</a></li>
 						{{!-- <li><a href="#">Men</a>
 							<div class="mepanel">
 								<div class="row">
@@ -241,8 +241,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</li>
 						<li><a href="typo.html">Blog</a></li>--}}
-						<li><a class="color6" href="/about">About Store</a></li>
-						<li><a class="color6" href="/contact">Conact</a></li>
+						<li><a class="color6" href="/about">{{{t "home.aboutstore"}}}</a></li>
+						<li><a class="color6" href="/contact">{{{t "home.contact"}}}</a></li>
 					</ul>
 				</div>
 				<div class="col-sm-2 search">
