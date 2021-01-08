@@ -181,7 +181,7 @@ router.post("/add_store", function (req, res) {
 
 router.get(
   "/editStore/:storeId",
-  varifyLogin("/admin/editStore/:storeId"),
+  varifyLogin("/admin/editStore/"),
   (req, res) => {
     req.session.lastExetime = Date.now();
     store_helper.getStoreDetails(req.params.storeId).then((storeData) => {
@@ -724,16 +724,19 @@ router.get("/logout", function (req, res) {
   res.redirect("/admin/dashboard");
 });
 
-router.get("/clear", function (req, res) {
-  employeeHelper.clearDb().then((data) => {
-    console.log(data);
-  });
-});
+// router.get("/clear", function (req, res) {
+//   employeeHelper.clearDb().then((data) => {
+//     console.log(data);
+//   });
+// });
 
 function varifyLogin(route) {
   return function (req, res, next) {
     if (route) {
-      req.session.route = route;
+      //req.session.route = route;
+      req.params.id
+      ? (req.session.route = route + "/" + req.params.id)
+      : (req.session.route = route);
     }
     // if (req.session.empLoggedin) {
     //   let currentTime = Date.now();
