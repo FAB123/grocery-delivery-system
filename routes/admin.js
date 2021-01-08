@@ -386,7 +386,25 @@ router.post(
     if (req.body.id) {
       //console.log("updating")
       let id = req.body.id;
-      productHelper.updateProduct(req.body).then((data) => {
+      productHelper.updateProduct(req.body).then(async(data) => {
+        let image = req.body.prodIm;
+        if (image) {
+          var base64Data = image.replace(/^data:image\/png;base64,/, "");
+          let filename = "./public/product-images/" + id + ".png";
+
+          await fs.writeFile(filename, base64Data, "base64", function (err, data) {
+            if (err) {
+              return console.log(err);
+            }
+            Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
+              if (err) console.log(err);
+              lenna
+                .resize(200, 200) // resize
+                .quality(60) // set JPEG quality
+                .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
+            });
+          });
+        }
         res.redirect("/admin/edit_product/" + id);
       });
     } else {

@@ -31,30 +31,33 @@
             <div class="content-top1">
                 {{#each products}}
                 <div class="col-md-3 col-md2">
-                    {{#if this.ribbon}}
-                    <div class="ribbon-wrapper ribbon-xl">
-                        <div class="ribbon bg-{{this.ribbonstyle}} text-xl">
-                            {{this.ribbon}}
+                    <div class="proditem">
+                        {{#if this.ribbon}}
+                        <div class="ribbon-wrapper ribbon-xl">
+                            <div class="ribbon bg-{{this.ribbonstyle}} text-xl">
+                                {{this.ribbon}}
+                            </div>
                         </div>
-                    </div>
-                    {{/if}}
-                    <div class="col-md1 simpleCart_shelfItem">
-                        <a href="detailes/{{this._id}}">
-                            <img class="img-responsive"
-                                onerror="if (this.src != '/admin/img/error.png') this.src = '/admin/img/error.png';"
-                                src="/product-images/thumbnails/{{this._id}}.jpg" alt="" />
-                        </a>
-                        <h3><a href="detailes/{{this._id}}">{{this.product_name}}</a></h3>
-                        <h3>{{this.shortdescription}}</h3>
-                        <div class="stock text-center divider py-1 bg-dark">
-                  
-                            <p>{{{../t "home.stock"}}} : {{this.qty}} nos</p>
-                
-                        </div>
-                        <div class="price">
-                            <h5 class="item_price">{{this.price}} SR</h5>
-                            <button onclick="addTocart('{{this._id}}')" class="item_add">{{{../t "home.addtocart"}}}</button>
-                            <div class="clearfix"> </div>
+                        {{/if}}
+                        <div class="col-md1 simpleCart_shelfItem">
+                            <a href="detailes/{{this._id}}">
+                                <img class="img-responsive"
+                                    onerror="if (this.src != '/admin/img/error.png') this.src = '/admin/img/error.png';"
+                                    src="/product-images/thumbnails/{{this._id}}.jpg" alt="" />
+                            </a>
+                            <h3><a href="detailes/{{this._id}}">{{this.product_name}}</a></h3>
+                            <h3>{{this.shortdescription}}</h3>
+                            <div class="stock text-center divider py-1 bg-dark">
+
+                                <p>{{{../t "home.stock"}}} : {{this.qty}} nos</p>
+
+                            </div>
+                            <div class="price">
+                                <h5 class="item_price">{{this.price}} SR</h5>
+                                <button onclick="addTocart('{{this._id}}')" class="item_add">{{{../t
+                                    "home.addtocart"}}}</button>
+                                <div class="clearfix"> </div>
+                            </div>
                         </div>
                     </div>
                 </div>
