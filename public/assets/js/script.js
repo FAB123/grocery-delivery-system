@@ -60,6 +60,7 @@ $(function () {
       },
       username: {
         required: true,
+        minlength: 5,
         remote: {
           url: "/validate_registration",
           type: "POST",
@@ -67,10 +68,12 @@ $(function () {
         },
       },
       password: {
+        minlength: 6,
         required: true,
       },
       confirm_password: {
         required: true,
+        minlength: 6,
         equalTo: "#password",
       },
       mobile: {
@@ -120,8 +123,13 @@ $(function () {
 });
 
 function validateOtp() {
-  otp = $("#otp").val();
-  $("#otp").attr("disabled", "disabled");
+  otp = $("#firstdigit").val()+$("#secondtdigit").val()+$("#thirddigit").val()+$("#fourthdigit").val()+$("#fifthdigit").val()+$("#sixthdigit").val();
+  $("#firstdigit").attr("disabled", "disabled");
+  $("#secondtdigit").attr("disabled", "disabled");
+  $("#thirddigit").attr("disabled", "disabled");
+  $("#fourthdigit").attr("disabled", "disabled");
+  $("#fifthdigit").attr("disabled", "disabled");
+  $("#sixthdigit").attr("disabled", "disabled");
   $.ajax({
     url: "/validate_otp",
     data: { otp: otp },

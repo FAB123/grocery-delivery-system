@@ -26,7 +26,7 @@ module.exports = {
   // },
 
   getAllProductbyStore: (storeId) => {
-    console.log(storeId);
+    console.log("test"+storeId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collections.PRODUCT_COLLECTION_BY_STORE)

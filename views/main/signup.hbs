@@ -21,7 +21,8 @@
                 </div>
                 <div class="clearfix"> </div>
                 <a class="news-letter" href="#">
-                    <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>{{{t "signup.signup"}}}</label>
+                    <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>{{{t
+                        "signup.signup"}}}</label>
                 </a>
             </div>
             <div class=" col-md-6 register-bottom-grid">
@@ -45,34 +46,84 @@
 
 
             <div class="register-but">
-                <input type="submit" value="{{{t "signup.submit"}}}">
+                <input type="submit" value="{{{t " signup.submit"}}}">
                 <div class="clearfix"> </div>
         </form>
     </div>
 </div>
 
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#otp_validater">
+    Launch demo modal
+</button>
+
 <div class="modal fade" id="otp_validater">
     <div class="modal-dialog">
         <div class="modal-content bg-danger">
             <div class="modal-header">
-                <h4 class="modal-title">{{{t "signup.vaidate"}}}</h4>
+                <h4 class="modal-title">{{{t "signup.validateotp"}}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="otp" placeholder="OTP">
+                {{!-- <div class="row">
+                    <div class="col-sm-10">
+                        <input type="pwd" class="form-control" id="otp" placeholder="OTP">
+                    </div>
+                </div> --}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p id="error_text"></p>
+                    </div>
                 </div>
-                <div class="col-sm-10">
-                    <p id="error_text"></p>
+
+                <div class="row">
+                    <div class="form-group m-5 p-5">
+                        <div class="col-sm-12 text-center vaidotp">
+                            <input name="firstdigit" class="digit text-center" type="text" required id="firstdigit"
+                                size="1" maxlength="1" tabindex="0">
+                            <input name="secondtdigit" class="digit text-center" type="text" required id="secondtdigit"
+                                size="1" maxlength="1" tabindex="1">
+                            <input name="thirddigit" class="digit text-center" type="text" required id="thirddigit"
+                                size="1" maxlength="1" tabindex="2">
+                            <input name="fourthdigit" class="digit text-center" type="text" required id="fourthdigit"
+                                size="1" maxlength="1" tabindex="3">
+                            <input name="fifthdigit" class="digit text-center" type="text" required id="fifthdigit"
+                                size="1" maxlength="1" tabindex="4">
+                            <input name="sixthdigit" class="digit text-center" type="text" required id="sixthdigit"
+                                size="1" maxlength="1" tabindex="5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-9 col-sm-offset-3 text-center">
+                        </div>
+                    </div>
+
+
                 </div>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" onclick="validateOtp()" class="btn btn-outline-light">Validate</button>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" onclick="validateOtp()" class="btn btn-outline-light">Validate</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+
+    <script>
+        $(document).ready(function () {
+            $(".vaidotp :input[type='text']").keyup(function (event) {
+                if ($(this).next('[type="text"]').length > 0) {
+                    $(this).next('[type="text"]')[0].focus();
+                } else {
+                    if ($(this).parent().next().find('[type="text"]').length > 0) {
+                        $(this).parent().next().find('[type="text"]')[0].focus();
+                    }
+                }
+            });
+            $('#otp_validater').on('shown.bs.modal', function (e) {
+                $("#firstdigit").focus();
+            });
+        });
+    </script>
 
 </div>

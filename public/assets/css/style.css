@@ -2209,3 +2209,15 @@ ul.nav.nav-pills {
   font-family: "OleoScript-Regular";
   font-size: 1rem;
 }
+
+.vaidotp input[type="text"] {
+  border-radius: 0.5rem;
+  margin: .5rem;
+}
+
+.vaidotp input[type="text"]:focus  {
+  outline: none !important;
+  border:0.2rem solid #52d0c4;
+  box-shadow: 0 0 10px #0b529e;
+}
+

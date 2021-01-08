@@ -21,18 +21,15 @@ const company = "Balsam Laundary";
 var userData;
 
 /* GET home page. */
-router.get("/", commonData(), IndexContoller.list, async function (req, res, next) {
+router.get("/", commonData(), IndexContoller.list, async(req, res, next)=> {
   let carousel = await imageHelpers.carouselImages();
   productHelpers
     .getAllProductbyStore(req.session.defaultStore)
     .then((products) => {
       res.render("main/index", {
-        company: "Balsam Laundary",
         products,
         admin: false,
         carousel,
-        // storeNames,
-        // defaultStore: req.session.defaultStore,
         user: req.session.dataTouser,
       });
     });
@@ -69,7 +66,7 @@ router.get("/detailes/:id", commonData(), (req, res) => {
 
 router.get("/login", commonData(), function (req, res) {
   if (req.session.loggedIn) {
-    route = req.session.userRoute ? req.session.userRoute : "/";
+    userRoute = req.session.userRoute ? req.session.userRoute : "/";
     res.redirect(userRoute);
   } else {
     res.render("main/login", { admin: false, user: req.session.dataTouser });
@@ -531,7 +528,7 @@ function commonData() {
         req.session.user._id,
         req.session.defaultStore
       );
-      userData = {
+      var userData = {
         userName:
           req.session.user.first_name + " " + req.session.user.last_name,
         id: req.session.user._id,
