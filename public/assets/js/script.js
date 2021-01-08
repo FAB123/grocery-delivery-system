@@ -1,3 +1,14 @@
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/assets/js/sworker.js").then(registration=>{
+    console.log("registerd");
+    console.log(registration);
+  }).catch(e=>{
+    console.log("service worker error" + e)
+  })
+}
+else{
+  console.log("Service Worker Not Compatible cuurent browser")
+}
 $(function () {
   $("#login").submit(function (event) {
     event.preventDefault();

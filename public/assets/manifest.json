@@ -1,0 +1,21 @@
+{
+    "name": "Grocery Delivery System",
+    "short_name": "My Grocery",
+    "start_url" : "/",
+    "background_color":"green",
+    "theme_color" :"#008fd6",
+    "display":"standalone",
+    "icons":[{
+        "src":"/assets/icons/icon64.png", "sizes":"64x64", "type":"image/png"
+        },
+        {
+            "src":"/assets/icons/icon128.png", "sizes":"128x128", "type":"image/png"
+        },
+        {
+            "src":"/assets/icons/icon256.png", "sizes":"256x256", "type":"image/png"
+        },
+        {
+            "src":"/assets/icons/icon512.png", "sizes":"512x512", "type":"image/png"
+        }
+    ]
+}
