@@ -151,13 +151,13 @@ $(document).ready(function () {
     if (!sessionStorage.getItem("ShoppingLocation")) {
       setGeostore();
     }
-    if(sessionStorage.getItem("Language")){
+    if (sessionStorage.getItem("Language")) {
       $('#language').val(sessionStorage.getItem("Language"))
     }
   } else {
     console.log("Local Storage Not Supported");
   }
-  
+
   $("#save_address").validate({
     rules: {
       name: "required",
@@ -243,15 +243,13 @@ $("#newproductreview").validate({
       success: function (response) {
         if (response.login) {
           if (response.status) {
-            $('#post-review-box').slideUp(300, function()
-            {
+            $('#post-review-box').slideUp(300, function () {
               $('#new-review').focus();
               $('#open-review-box').fadeIn(200);
             });
             messageAlert("Thank You for Review, Have a nice day", "info");
           }
-          else
-          {
+          else {
             messageAlert("Ohh, Some think went Wrong", "Danger")
           }
         } else {
@@ -272,9 +270,9 @@ $("#placeorder").validate({
     paymentMethod: "This field is required",
   },
   submitHandler: function (form) {
-    alert($("#address").length);
-    if ($("#address").length < 1) {
-      alert("no address found");
+    var findAddress = $('input[name=address]:checked', '#placeorder').val()
+    if (!findAddress) {
+      messageAlert("Shipping Address not Provided, Please update shipping address", "info")
     } else {
       $.ajax({
         url: "/place_order",
@@ -282,30 +280,34 @@ $("#placeorder").validate({
         data: $("#placeorder").serialize(),
         dataType: "json",
         success: function (response) {
-          alert(response.method);
           if (response.login) {
-            if (response.method == "razorPay") {
-              var rzp1 = new Razorpay(RazOpt(response.options));
-              rzp1.open();
-              rzp1.on("payment.failed", function (response) {
-                // alert(response.error.code);
-                // alert(response.error.description);
-                // alert(response.error.source);
-                // alert(response.error.step);
-                // alert(response.error.reason);
-                // alert(response.error.metadata.order_id);
-                // alert(response.error.metadata.payment_id);
-              });
-            } else if (response.method == "moyasar") {
-              // $("#moyasar-pay")
-              // .modal({ backdrop: "static" })
-              // .find(".modal-body")
-              // .load("/moyasar_payment/");
-              window.location = "/moyasar_payment/";
-            } else if (response.method == "cod") {
-              window.location = "/orders";
-            } else {
-              messageAlert(response.message, "danger");
+            if (response.storeclosed) {
+              messageAlert("Store Closed Now, Please try on Working Hours or try another Store", "warning")
+            }
+            else {
+              if (response.method == "razorPay") {
+                var rzp1 = new Razorpay(RazOpt(response.options));
+                rzp1.open();
+                rzp1.on("payment.failed", function (response) {
+                  // alert(response.error.code);
+                  // alert(response.error.description);
+                  // alert(response.error.source);
+                  // alert(response.error.step);
+                  // alert(response.error.reason);
+                  // alert(response.error.metadata.order_id);
+                  // alert(response.error.metadata.payment_id);
+                });
+              } else if (response.method == "moyasar") {
+                // $("#moyasar-pay")
+                // .modal({ backdrop: "static" })
+                // .find(".modal-body")
+                // .load("/moyasar_payment/");
+                window.location = "/moyasar_payment/";
+              } else if (response.method == "cod") {
+                window.location = "/orders";
+              } else {
+                messageAlert(response.message, "danger");
+              }
             }
           } else {
             location.replace("/login");
@@ -422,9 +424,9 @@ function setGeostore() {
               .val(response.stores[val]._id)
               .html(
                 response.stores[val].storename +
-                  "[" +
-                  response.stores[val].companyname +
-                  "]"
+                "[" +
+                response.stores[val].companyname +
+                "]"
               )
           );
         });
@@ -598,14 +600,14 @@ function viewCartitems(orederId) {
           $.each(response.items, function (key, value) {
             $("#getCode").append(
               "<tr class='table-info'><td>" +
-                value.item +
-                "</td><td>" +
-                value.quantity +
-                "</td><td>" +
-                value.price +
-                "</td><td>" +
-                value.quantity * value.price +
-                "</td></tr>"
+              value.item +
+              "</td><td>" +
+              value.quantity +
+              "</td><td>" +
+              value.price +
+              "</td><td>" +
+              value.quantity * value.price +
+              "</td></tr>"
             );
           });
           // $('#view-cart').modal('show').find('.modal-body').load('/admin/get_orderd_products');
@@ -646,7 +648,7 @@ function messageAlert(message, type) {
   });
 }
 
-$('#language').on('change', function() {
+$('#language').on('change', function () {
   sessionStorage.setItem("Language", this.value);
-  location.replace("?lng="+this.value)
+  location.replace("?lng=" + this.value)
 });

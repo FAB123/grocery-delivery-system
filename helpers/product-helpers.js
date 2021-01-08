@@ -365,7 +365,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collections.CATEGORY_COLLECTION)
-        .find({ store: checkCustomer(store) })
+        .find(checkCustomer(store))
         .toArray()
         .then((category) => {
           resolve(category);
@@ -392,12 +392,22 @@ module.exports = {
         })
       }
     })
-
-  }
+  },
+  updateProductqty:(products, storeId)=>{
+    // db.get().collection(collections.PRODUCT_COLLECTION_BY_STORE).updateMany({produ})
+    return new Promise(async(resolve, reject)=>{
+     products.forEach(product => {
+       db.get().collection(collections.PRODUCT_COLLECTION_BY_STORE).updateOne({store:ObjectID(storeId), prodID: ObjectID(product.item)}, {
+         $inc: {qty: product.quantity * -1}
+       })
+     });
+     resolve();
+    });
+   }
 };
 
 function checkCustomer(store) {
-  return store == "null" ? { $ne: "null" } : ObjectID(store);
+  return store == "null" ? { store: false } : {$or:[{store : ObjectID(store)}, {store:false}]};
 }
 
 function addCustomer(customer){

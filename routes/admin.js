@@ -20,7 +20,7 @@ router.get("/", function (req, res, next) {
 });
 router.get("/dashboard", varifyLogin("/admin/dashboard"), async function (req, res) {
   let employee_data = req.session.employee;
-  if(employee_data.supper_user != "yes"){
+  if (employee_data.supper_user != "yes") {
     var dashboardData = await dashboardHelper.getStoresdashboards(employee_data.store)
   }
   res.render("admin/dashboard", {
@@ -402,23 +402,22 @@ router.post(
           var base64Data = image.replace(/^data:image\/png;base64,/, "");
           let filename = "./public/product-images/" + id + ".png";
 
-          await fs.writeFile(filename, base64Data, "base64", function (err) {
-            console.log(err);
+          await fs.writeFile(filename, base64Data, "base64", function (err, data) {
+            if (err) {
+              return console.log(err);
+            }
+            Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
+              if (err) console.log(err);
+              lenna
+                .resize(200, 200) // resize
+                .quality(60) // set JPEG quality
+                .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
+            });
           });
         }
         req.session.statusMsg =
           "New Product Added Successfully, To edit or add carousel images select edit product";
-        console.log(id);
-        if (image) {
-          Jimp.read("./public/product-images/" + id + ".png", (err, lenna) => {
-            if (err) console.log(err);
-            lenna
-              .resize(200, 200) // resize
-              .quality(60) // set JPEG quality
-              .write("./public/product-images/thumbnails/" + id + ".jpg"); // save
-          });
-          res.redirect("/admin/view_products");
-        }
+
         res.redirect("/admin/view_products");
       });
     }
@@ -566,9 +565,9 @@ router.post("/upload_product_carousel", (req, res) => {
                   .quality(60) // set JPEG quality
                   .write(
                     "./public/product-carousel-images/thumbnails/" +
-                      image.name +
-                      "." +
-                      id
+                    image.name +
+                    "." +
+                    id
                   ); // save
               }
               res.json({ loginError: false, result: true });

@@ -3,6 +3,7 @@ var collection = require("../config/collection");
 var bcrypt = require("bcrypt");
 const { response } = require("express");
 const { ObjectID } = require("mongodb");
+const { YesterdayInstance } = require("twilio/lib/rest/api/v2010/account/usage/record/yesterday");
 
 module.exports = {
   clearDb: () => {
@@ -14,6 +15,8 @@ module.exports = {
         firstname: "Fysal",
         lastname: "KT",
         mobile: "530829178",
+        supper_user:"yes",
+        active:true
       };
       db.get()
         .collection(collection.EMPLOYEE_COLLECTION)

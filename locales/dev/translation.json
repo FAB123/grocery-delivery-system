@@ -1,0 +1,59 @@
+{
+  "home": {
+    "home": "Home",
+    "aboutstore": "About Store",
+    "contact": "Contact",
+    "login": "Login",
+    "or" : "Or",
+    "signup": "Signup",
+    "emptycart":"Empty Cart",
+    "addtocart":"Add to Cart",
+    "newsletter": "Newsletter",
+    "ouraddress": "Our Address",
+    "paymentsystem":"Payment System",
+    "subscribe":"SUBSCRIBE",
+    "stock":"STOCK",
+    "recentproducts":"Recent Products"
+  },
+  "account":{
+    "account": "Account",
+    "username": "Mobile / Username",
+    "password" : "Password",
+    "login" : "Login",
+    "forgetpassword": "Forget Password",
+    "newcustomers":"NEW CUSTOMERS",
+    "textforcreatenewcustomer":"By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.",
+    "createanaccount":"Create an Account"
+  },
+  "signup":{
+    "register":"Register",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "mobile": "Mobile",
+    "username": "Username",
+    "confirmpassword": "Confirm Password",
+    "signup": "SIGNUP",
+    "submit" : "SUBMIT",
+    "validateotp" : "Validate OTP"
+  },
+  "orderlist":{
+    "orderlist": "Order List",
+    "date" : "Date",
+    "paymentmethod":"Payment Method",
+    "store": "Store",
+    "orderstatus": "Order Status",
+    "total" : "Total",
+    "status": "Status",
+    "items": "Items",
+    "recipt": "Recipt",
+    "repayment":"Re Payment"
+  },
+  "checkout":{
+    "checkout":"Checkout",
+    "item": "Item",
+    "price":"Price",
+    "qty":"Qty",
+    "subtotal":"Subtotal",
+    "proceedtocheckout":"PROCEED TO CHECKOUT"
+  }
+}

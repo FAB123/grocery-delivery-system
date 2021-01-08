@@ -13,6 +13,7 @@ var paymentHelpers = require("../helpers/payment/payment-method");
 const cartHelpers = require("../helpers/cart/cart-helpers");
 const orderTransactions = require("../helpers/payment/order-transactions");
 const IndexContoller = require('../helpers/index_controller');
+const handlebarHelper = require("../helpers/handlebarHelper");
 const siteUrl = "http://localhost:3000/";
 
 const company = "Balsam Laundary";
@@ -37,14 +38,14 @@ router.get("/", commonData(), IndexContoller.list, async function (req, res, nex
     });
 });
 
-router.get("/about", commonData(),(req,res)=>{
+router.get("/about", commonData(), (req, res) => {
   res.render("main/about", {
     admin: false,
     user: req.session.dataTouser,
   });
 })
 
-router.get("/contact", (req,res)=>{
+router.get("/contact", (req, res) => {
   res.render("main/contact", {
     admin: false,
     user: req.session.dataTouser,
@@ -164,19 +165,19 @@ router.get("/logout", function (req, res) {
   res.redirect("login");
 });
 
-router.post("/new-product-review", (req,res)=>{
-  if(req.session.loggedIn){
+router.post("/new-product-review", (req, res) => {
+  if (req.session.loggedIn) {
     data = req.body;
     data.dealerId = req.session.defaultStore;
     data.userId = req.session.user._id;
-    productHelpers.writeReview(data).then((status)=>{
-      res.json({login:true, status:true})
-    }).catch((err)=>{
-      res.json({login:true, status:false})
+    productHelpers.writeReview(data).then((status) => {
+      res.json({ login: true, status: true })
+    }).catch((err) => {
+      res.json({ login: true, status: false })
     })
   }
-  else{
-    res.json({login:false})
+  else {
+    res.json({ login: false })
   }
 })
 
@@ -366,26 +367,26 @@ router.post("/save_address", (req, res) => {
     addressHelpers.saveAddress(req.body).then((data) => {
       data
         ? res.json({
-            login: true,
-            success: true,
-            message: "New Address Saved Successfully",
-          })
+          login: true,
+          success: true,
+          message: "New Address Saved Successfully",
+        })
         : res.json({ login: true, success: false, message: "Unknown Error" });
     });
   }
 });
 
 //delete address
-router.post("/deleteAddress", (req,res)=>{
-  if(req.session.loggedIn){
-     addressHelpers.deleteAddress(req.body.id).then((data)=>{
-       res.json({login:true, status:true})
-     }).catch((err)=>{
-       res.json({login:true, status:false})
-     })
+router.post("/deleteAddress", (req, res) => {
+  if (req.session.loggedIn) {
+    addressHelpers.deleteAddress(req.body.id).then((data) => {
+      res.json({ login: true, status: true })
+    }).catch((err) => {
+      res.json({ login: true, status: false })
+    })
   }
-  else{
-    res.json({login:false})
+  else {
+    res.json({ login: false })
   }
 })
 
@@ -393,32 +394,41 @@ router.post("/place_order", async (req, res) => {
   if (req.session.loggedIn) {
     let cartID = req.body.cartID;
     let products = await cartHelpers.getProductfromCart(cartID);
-    let total = await cartHelper.calculateCarttotalbycartID(cartID);
-    orderTransactions.placeOrder(req.body, products, total).then((data) => {
-      if (req.body.paymentMethod === "cod") {
-        req.session.orderStatus = "New Order Placed Successfully";
-        res.json({ login: true, method: "cod" });
-      } else {
-        if (req.body.paymentMethod === "razorpay") {
-          let razamount = total * 100;
-          req.session.razpayOrderId = data;
-          paymentHelpers.generateRazorpay(data, razamount).then((data) => {
-            //let options = paymentHelpers.razorpayClientoption(razamount, data.id, req.session.user);
-            let options = {
-              razamount: razamount,
-              orderid: data.id,
-              user: req.session.user,
-              key_id: "rzp_test_zt63z5Weu5i5fx",
-            };
-            res.json({ login: true, method: "razorPay", options: options });
+    let dealer = await store_helper.getStoreDetails(products.dealerID)
+    if (handlebarHelper.getStorestatus(dealer.opening_time, dealer.closingtime) === " [CLOSED]") {
+      res.json({ login: true, storeclosed: true });
+    }
+    else {
+      let total = await cartHelper.calculateCarttotalbycartID(cartID);
+      orderTransactions.placeOrder(req.body, products, total).then(async (data) => {
+        if (req.body.paymentMethod === "cod") {
+          productHelpers.updateProductqty(products.products, products.dealerID).then((data) => {
+            console.log("hi")
+            req.session.orderStatus = "New Order Placed Successfully";
+            res.json({ login: true, method: "cod" });
           });
-        } else if (req.body.paymentMethod === "moyasar") {
-          req.session.OrderId = data;
-          console.log("order is setted " + req.session.OrderId);
-          res.json({ login: true, method: "moyasar" });
+        } else {
+          if (req.body.paymentMethod === "razorpay") {
+            let razamount = total * 100;
+            req.session.razpayOrderId = data;
+            paymentHelpers.generateRazorpay(data, razamount).then((data) => {
+              //let options = paymentHelpers.razorpayClientoption(razamount, data.id, req.session.user);
+              let options = {
+                razamount: razamount,
+                orderid: data.id,
+                user: req.session.user,
+                key_id: "rzp_test_zt63z5Weu5i5fx",
+              };
+              res.json({ login: true, method: "razorPay", options: options });
+            });
+          } else if (req.body.paymentMethod === "moyasar") {
+            req.session.OrderId = data;
+            console.log("order is setted " + req.session.OrderId);
+            res.json({ login: true, method: "moyasar" });
+          }
         }
-      }
-    });
+      });
+    }
   } else {
     res.json({ login: false });
   }
@@ -513,8 +523,7 @@ function commonData() {
         }
       }
     }
-    else
-    {
+    else {
       storeData = [];
     }
     if (req.session.loggedIn) {
