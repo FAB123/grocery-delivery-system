@@ -3,7 +3,7 @@
     "short_name": "My Grocery",
     "start_url" : "/",
     "background_color":"green",
-    "theme_color" :"#008fd6",
+    "theme_color" :"#52D0C4",
     "display":"standalone",
     "icons":[{
         "src":"/assets/icons/icon64.png", "sizes":"64x64", "type":"image/png"
