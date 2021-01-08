@@ -1,7 +1,7 @@
 if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sworker.js").then(registration=>{
+  navigator.serviceWorker.register("/sworker.js").then(registration=>{
   }).catch(e=>{
-    console.log("service worker error" + e)
+    console.log(e)
   })
 }
 else{

@@ -2,7 +2,8 @@
     "name": "Grocery Delivery System",
     "short_name": "My Grocery",
     "start_url" : "/",
-    "background_color":"green",
+    "scope" : "/",
+    "background_color": "#52D0C4",
     "theme_color" :"#52D0C4",
     "display":"standalone",
     "icons":[{
