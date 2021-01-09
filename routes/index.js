@@ -14,7 +14,7 @@ const cartHelpers = require("../helpers/cart/cart-helpers");
 const orderTransactions = require("../helpers/payment/order-transactions");
 const IndexContoller = require('../helpers/index_controller');
 const handlebarHelper = require("../helpers/handlebarHelper");
-const siteUrl = "http://localhost:3000/";
+const siteUrl = "https://fysal.herokuapp.com/";
 
 const company = "Balsam Laundary";
 
