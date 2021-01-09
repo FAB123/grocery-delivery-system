@@ -10,7 +10,8 @@ var fileSaver = require("file-saver");
 var Jimp = require("jimp");
 var fs = require("fs");
 var orderTransactions = require("../helpers/payment/order-transactions");
-const dashboardHelper = require("../helpers/dashboard-helper")
+const dashboardHelper = require("../helpers/dashboard-helper");
+const handlebardHelper = require("../helpers/handlebarHelper")
 
 var company_data = { name: "Grocery Delivery System" };
 
@@ -22,6 +23,34 @@ router.get("/dashboard", varifyLogin("/admin/dashboard"), async function (req, r
   let employee_data = req.session.employee;
   if (employee_data.supper_user != "yes") {
     var dashboardData = await dashboardHelper.getStoresdashboards(employee_data.store)
+  }
+  else{
+    var stores = await store_helper.getAllstores();
+      var status
+      var storeStatus = {closed:0, open:0, total:0}
+      stores.forEach(store => {
+        status = handlebardHelper.getStorestatus(store.opening_time, store.closingtime)
+        if(status){
+          tempColsed = storeStatus.closed;
+          storeStatus.closed = tempColsed + 1
+        }
+        else{
+          tempOpen = storeStatus.open;
+          storeStatus.open = tempOpen + 1
+        }
+        tempTotal = storeStatus.total;
+        storeStatus.total = tempTotal + 1
+      });
+      console.log(storeStatus)
+      res.render("admin/dashboard", {
+        admin: true,
+        dashboardData :false,
+        company_data,
+        storeStatus,
+        dashboard: true,
+        employee_data,
+      });
+    
   }
   res.render("admin/dashboard", {
     admin: true,

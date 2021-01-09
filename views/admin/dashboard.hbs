@@ -2,7 +2,7 @@
 <!-- Main content -->
 <div class="content">
   <div class="container-fluid">
-
+    {{#if dashboardData}}
     <div class="row ">
       <div class="col-md-4 col-sm-6 col-12 mt-3">
         <div class="info-box">
@@ -58,8 +58,6 @@
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
-
-
 
         <div class="card">
           <div class="card-header border-0">
@@ -179,6 +177,55 @@
       <!-- /.col-md-6 -->
     </div>
     <!-- /.row -->
+
+
+
+    {{else}}
+
+    <div class="row ">
+      <div class="col-md-4 col-sm-6 col-12 mt-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-success progress-bar-striped"><i class="fa fa-building"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Opened Stores</span>
+            <span class="info-box-number">{{storeStatus.open}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-4 col-sm-6 col-12 mt-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-danger progress-bar-striped"><i class="fa fa-building"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Closed Stores</span>
+            <span class="info-box-number">{{storeStatus.closed}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+
+      <!-- /.col -->
+      <div class="col-md-4 col-sm-6 col-12 mt-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-primary progress-bar-striped"><i class="fa fa-building"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Total Stores</span>
+            <span class="info-box-number">{{storeStatus.total}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    {{/if}}
   </div>
   <!-- /.container-fluid -->
 </div>
