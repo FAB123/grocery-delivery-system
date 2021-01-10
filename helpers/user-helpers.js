@@ -2,6 +2,7 @@ var db = require("../config/connection");
 var collections = require("../config/collection");
 const bcrypt = require("bcrypt");
 const { response } = require("express");
+const { ObjectID } = require("mongodb");
 
 module.exports = {
   doSignup: (userData) => {
@@ -14,6 +15,20 @@ module.exports = {
           resolve(response.ops[0]);
         });
     });
+  },
+  changePassword: (pwd, user) => {
+    return new Promise(async(resolve, reject) => {
+      pwd = await bcrypt.hash(pwd, 10);
+      db.get().collection(collections.USER_COLLECTIONS).updateOne({ _id: ObjectID(user) }, {
+        $set: {
+          password: pwd
+        }
+      }).then((data) => {
+        resolve(data);
+      }).catch((e)=>{
+        reject()
+      })
+    })
   },
   doLogin: (userData) => {
     return new Promise(async (resolve, reject) => {

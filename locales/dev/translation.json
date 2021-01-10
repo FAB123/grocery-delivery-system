@@ -33,7 +33,7 @@
     "mobile": "Mobile",
     "username": "Username",
     "confirmpassword": "Confirm Password",
-    "signup": "SIGNUP",
+    "sign-up": "SIGNUP",
     "submit" : "SUBMIT",
     "validateotp" : "Validate OTP"
   },

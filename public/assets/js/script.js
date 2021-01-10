@@ -1,10 +1,10 @@
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("/sworker.js").then(registration=>{
-  }).catch(e=>{
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sworker.js").then(registration => {
+  }).catch(e => {
     console.log(e)
   })
 }
-else{
+else {
   console.log("Service Worker Not Compatible cuurent browser")
 }
 $(function () {
@@ -50,6 +50,50 @@ $(function () {
       });
     },
   });
+
+  $("#changepwd").validate({
+    rules: {
+      pwd: {
+        minlength: 6,
+        required: true,
+      },
+      Confirmpassword: {
+        required: true,
+        minlength: 6,
+        equalTo: "#Password",
+      }
+    },
+    message: {
+      pwd: {
+        requierd: "password must be required",
+      },
+      Confirmpassword: {
+        requierd: "password must be required",
+        equalTo: "password not match",
+      },
+    },
+    submitHandler: function () {
+      $.ajax({
+        url: "/change_password",
+        type: "POST",
+        data: $("#changepwd").serialize(),
+        success: function (response) {
+          if (response.login) {
+            if (response.status) {
+              $("#change-password").modal("hide");
+              messageAlert("Your password Changed Successfully", "info");
+            }
+            else {
+              messageAlert("Ohh, Some think went Wrong", "Danger")
+            }
+          } else {
+            location.replace("/login");
+          }
+        },
+      });
+    },
+  });
+
   $("#signup").validate({
     rules: {
       first_name: {
@@ -123,7 +167,7 @@ $(function () {
 });
 
 function validateOtp() {
-  otp = $("#firstdigit").val()+$("#secondtdigit").val()+$("#thirddigit").val()+$("#fourthdigit").val()+$("#fifthdigit").val()+$("#sixthdigit").val();
+  otp = $("#firstdigit").val() + $("#secondtdigit").val() + $("#thirddigit").val() + $("#fourthdigit").val() + $("#fifthdigit").val() + $("#sixthdigit").val();
   $("#firstdigit").attr("disabled", "disabled");
   $("#secondtdigit").attr("disabled", "disabled");
   $("#thirddigit").attr("disabled", "disabled");
@@ -669,3 +713,8 @@ $('#language').on('change', function () {
   sessionStorage.setItem("Language", this.value);
   location.replace("?lng=" + this.value)
 });
+
+function changePassword() {
+  $("#change-password")
+    .modal({ backdrop: "static" });
+}

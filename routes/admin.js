@@ -743,7 +743,6 @@ router.post("/change_order_status", (req, res) => {
 router.get("/get_ordered_status/:id", async (req, res) => {
   if (req.session.empLoggedin) {
     orderTransactions.getOrderedProductStatus(req.params.id, (tracks) => {
-      console.log(tracks);
       res.render("admin/order_shipping_status", { tracks, layout: false });
     });
   } else {

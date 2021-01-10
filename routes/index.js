@@ -21,7 +21,7 @@ const company = "Balsam Laundary";
 var userData;
 
 /* GET home page. */
-router.get("/", commonData(), IndexContoller.list, async(req, res, next)=> {
+router.get("/", commonData(), IndexContoller.list, async (req, res, next) => {
   let carousel = await imageHelpers.carouselImages();
   productHelpers
     .getAllProductbyStore(req.session.defaultStore)
@@ -489,6 +489,19 @@ router.get("/get_ordered_status/:id", async (req, res) => {
     res.json({ login: false });
   }
 });
+
+router.post("/change_password", (req, res) => {
+  if (req.session.loggedIn) {
+    pasword = req.body.Password;
+    user = req.session.user._id;
+    userHelpers.changePassword(pasword, user).then((data) => {
+      res.json({ login: true, status: true })
+    })
+  }
+  else {
+    res.json({ login: false })
+  }
+})
 
 function varifyLogin(userRoute) {
   return function (req, res, next) {

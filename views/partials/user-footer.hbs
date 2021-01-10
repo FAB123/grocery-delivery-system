@@ -11,12 +11,42 @@
 				<form>
 					<input type="text" value="" onfocus="this.value='';"
 						onblur="if (this.value == '') {this.value ='';}">
-					<input type="submit" value="{{{t "home.subscribe"}}}">
+					<input type="submit" value="{{{t " home.subscribe"}}}">
 				</form>
 			</div>
 			<div class="clearfix"> </div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="change-password">
+		<div class="modal-dialog modal-sm change-password">
+			<div class="modal-content">
+				<form id="changepwd" method="POST">
+					<div class="modal-header">
+						<h4 class="modal-title">Set a new Password</h4>
+					</div>
+					<div class="modal-body">
+						<section class="mb-5 text-center">
+							<div class="md-form md-outline">
+								<input type="password" id="Password" name="Password" placeholder="New password" class="form-control">
+								<label data-error="wrong" data-success="right" for="Password"></label>
+							</div>
+
+							<div class="md-form md-outline">
+								<input type="password" id="Confirmpassword" name="Confirmpassword" placeholder="Confirm password"
+									class="form-control">
+							</div>
+						</section>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="submit" class="btn btn-primary mb-4">Change password</button>
+						<button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<div class="footer-bottom">
 		<div class="container">
 			<div class="col-sm-3 footer-bottom-cate">

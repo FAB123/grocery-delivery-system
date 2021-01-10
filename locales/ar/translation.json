@@ -33,7 +33,7 @@
       "mobile": "جوال",
       "username": "اسم المستخدم",
       "confirmpassword": "تأكيد كلمة المرور",
-      "signup": "سجل",
+      "sign-up": "سجل",
       "submit" : "إرسال",
       "validateotp" : "التحقق من صحة OTP"
     },
