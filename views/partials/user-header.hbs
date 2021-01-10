@@ -101,7 +101,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					{{/if}}
 
 					<div class="cart box_1">
+						{{#if user.userData.status}}
 						<a href="javascript:changePassword()"  class="order"><span class="glyphicon glyphicon-user"></span></a>
+						{{/if}}
 						<a href="/orders" class="order"><span class="glyphicon glyphicon-briefcase"></span></a>
 						{{!-- <a href="/orders" class="order"><span class="glyphicon glyphicon-gift"></span></a> --}}
 						<div>
