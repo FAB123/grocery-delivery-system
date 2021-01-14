@@ -5,6 +5,25 @@ const { ObjectID } = require("mongodb");
 module.exports = {
   getStoresdashboards: (storeID) => {
     return new Promise((resolve, reject) => {
+      let allOrdersgraph = new Promise((resolve, reject) => {
+        db.get().collection(collection.ORDER_COLLECTION).aggregate([
+          {
+            $match: {
+              dealerID: ObjectID(storeID),
+            },
+          },
+          {
+            $group: {
+              _id: { $month: "$orderDate" },
+              total: { $sum: 1 },
+              totalAmount: { $sum: "$totalAmount" }
+            }
+          }
+        ]).toArray().then((data) => {
+          resolve(data);
+        })
+      });
+
       let getAllusers = new Promise((resolve, reject) => {
         db.get()
           .collection(collection.EMPLOYEE_COLLECTION)
@@ -138,11 +157,11 @@ module.exports = {
               $facet: {
                 total: [{ $count: "total" }],
                 pending: [
-                  { $match: { Finished: {$ne: true} } },
+                  { $match: { Finished: { $ne: true } } },
                   { $count: "pending" },
                 ],
                 active: [
-                  { $match: { Finished: true } }, 
+                  { $match: { Finished: true } },
                   { $count: "active" }],
               },
             },
@@ -164,16 +183,18 @@ module.exports = {
       });
 
       Promise.all([
+        allOrdersgraph,
         getAllusers,
         productReviews,
         getAllproducts,
         getAllOrders,
       ]).then((data) => {
         resolve({
-          totalUsers: data[0],
-          allFeedbacks: data[1],
-          allProducts: data[2],
-          allorders: data[3],
+          allOrdersgraph: data[0],
+          totalUsers: data[1],
+          allFeedbacks: data[2],
+          allProducts: data[3],
+          allorders: data[4],
         });
       });
     });
