@@ -23,7 +23,18 @@ router.get("/dashboard", varifyLogin("/admin/dashboard"), async function (req, r
   let employee_data = req.session.employee;
   if (employee_data.supper_user != "yes") {
     var dashboardData = await dashboardHelper.getStoresdashboards(employee_data.store);
-    console.log(dashboardData)
+    
+    let label=[]
+    let graphOrdertotal = [];
+    let graphOrdertotalAmount = [];
+    dashboardData.allOrdersgraph.forEach(data => {
+      label.push(getMonth(data._id));
+      graphOrdertotal.push(data.total);
+      graphOrdertotalAmount.push(data.totalAmount);
+    });
+    
+    dashboardData.allOrdersgraph = {label, graphOrdertotal, graphOrdertotalAmount}
+
     res.render("admin/dashboard", {
       admin: true,
       company_data,
@@ -32,32 +43,32 @@ router.get("/dashboard", varifyLogin("/admin/dashboard"), async function (req, r
       employee_data,
     });
   }
-  else{
+  else {
     var stores = await store_helper.getAllstores();
-      var status
-      var storeStatus = {closed:0, open:0, total:0}
-      for (store of stores){
-        status = await handlebardHelper.getStorestatus(store.opening_time, store.closingtime)
-        if(status){
-          tempColsed = storeStatus.closed;
-          storeStatus.closed = tempColsed + 1
-        }
-        else{
-          tempOpen = storeStatus.open;
-          storeStatus.open = tempOpen + 1
-        }
-        tempTotal = storeStatus.total;
-        storeStatus.total = tempTotal + 1
+    var status
+    var storeStatus = { closed: 0, open: 0, total: 0 }
+    for (store of stores) {
+      status = await handlebardHelper.getStorestatus(store.opening_time, store.closingtime)
+      if (status) {
+        tempColsed = storeStatus.closed;
+        storeStatus.closed = tempColsed + 1
       }
+      else {
+        tempOpen = storeStatus.open;
+        storeStatus.open = tempOpen + 1
+      }
+      tempTotal = storeStatus.total;
+      storeStatus.total = tempTotal + 1
+    }
 
-      res.render("admin/dashboard", {
-        admin: true,
-        dashboardData :false,
-        company_data,
-        storeStatus,
-        dashboard: true,
-        employee_data,
-      });
+    res.render("admin/dashboard", {
+      admin: true,
+      dashboardData: false,
+      company_data,
+      storeStatus,
+      dashboard: true,
+      employee_data,
+    });
   }
 });
 
@@ -415,7 +426,7 @@ router.post(
     if (req.body.id) {
       //console.log("updating")
       let id = req.body.id;
-      productHelper.updateProduct(req.body).then(async(data) => {
+      productHelper.updateProduct(req.body).then(async (data) => {
         let image = req.body.prodIm;
         if (image) {
           var base64Data = image.replace(/^data:image\/png;base64,/, "");
@@ -776,13 +787,17 @@ router.get("/logout", function (req, res) {
 //   });
 // });
 
+function getMonth(mon) {
+  return ['"January"', '"February"', '"March"', '"April"', '"May"', '"June"', '"July"', '"August"', '"September"', '"October"', '"November"', '"December"'][mon - 1];
+}
+
 function varifyLogin(route) {
   return function (req, res, next) {
     if (route) {
       //req.session.route = route;
       req.params.id
-      ? (req.session.route = route + "/" + req.params.id)
-      : (req.session.route = route);
+        ? (req.session.route = route + "/" + req.params.id)
+        : (req.session.route = route);
     }
     // if (req.session.empLoggedin) {
     //   let currentTime = Date.now();

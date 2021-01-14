@@ -17,7 +17,10 @@ module.exports = {
               _id: { $month: "$orderDate" },
               total: { $sum: 1 },
               totalAmount: { $sum: "$totalAmount" }
-            }
+            },
+          },
+          {
+            $sort: { _id: 1 }
           }
         ]).toArray().then((data) => {
           resolve(data);
