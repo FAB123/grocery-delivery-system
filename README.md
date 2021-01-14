@@ -37,11 +37,11 @@ Please make sure to update tests as appropriate.
 
 #### Usage Guide
 
-  +----------------------------------+
+  |----------------------------------|
   |         Demo Password            |
-  +----------------------------------+ 
+  |----------------------------------| 
   |                                  |
-  |-----------------------------------
+  |----------------------------------|
   |         admin login              |
   |       username : admin           |
   |       password : 123             |
@@ -57,6 +57,6 @@ Please make sure to update tests as appropriate.
   |       username : indian          |
   |       password : 12341234        |
   |                                  |
-  +----------------------------------+
+  |----------------------------------|
 
       Will be Update Soon .....
