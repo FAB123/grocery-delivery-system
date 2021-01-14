@@ -30,8 +30,7 @@ npm install
 ```
 
 ## Demo
-[Application Interface https://grocery.ahcjed.com/](https://grocery.ahcjed.com/ "User Page")
-[Admin Panelhttps://grocery.ahcjed.com/admin](https://grocery.ahcjed.com/admin "Admin Panel")
+Demo Application is Hosted on [Application Interface https://grocery.ahcjed.com/](https://grocery.ahcjed.com/ "User Page"). and Admin panel Avalable on [Admin Panelhttps://grocery.ahcjed.com/admin](https://grocery.ahcjed.com/admin "Admin Panel").
 
 
 
