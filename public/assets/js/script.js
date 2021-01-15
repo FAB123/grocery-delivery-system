@@ -42,7 +42,7 @@ $(function () {
         success: (response) => {
           if (response.otp) {
             $("#otp_validater").modal("show");
-            alert("your Otp is " + response.data);
+            alert("Free Sms Facilty only alowed to on registerd number, so we temperorly disabled sms Facility. your Otp is " + response.data);
           } else {
             alert("unknown eRROR!");
           }
@@ -262,6 +262,43 @@ $(document).ready(function () {
       });
     },
   });
+
+  $("#repayment").validate({
+    rules: {
+      paymentMethod: "required",
+    },
+    message: {
+      paymentMethod: "This field is required",
+    },
+    submitHandler: function (form) {
+      $.ajax({
+        url: "/re-payment",
+        type: "POST",
+        data: $("#repayment").serialize(),
+        dataType: "json",
+        success: function (response) {
+          if (response.login) {
+            if (response.method == "razorPay") {
+              var rzp1 = new Razorpay(RazOpt(response.options));
+              rzp1.open();
+              rzp1.on("payment.failed", function (response) {
+              });
+            } else if (response.method == "moyasar") {
+              window.location = "/moyasar_payment/";
+            } else if (response.method == "cod") {
+              window.location = "/orders";
+            } else {
+              messageAlert(response.message, "danger");
+            }
+  
+          } else {
+            location.replace("/login");
+          }
+        },
+      });
+    },
+  });
+  
 });
 
 function deleteAddress(addressId) {
@@ -378,6 +415,7 @@ $("#placeorder").validate({
     }
   },
 });
+
 
 // submit((e) => {
 //   e.preventDefault();

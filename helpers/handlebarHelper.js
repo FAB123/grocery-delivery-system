@@ -40,6 +40,9 @@ module.exports = {
   calcProgress:(value)=>{
     return value*20;
   },
+  multiple: (val1, val2)=>{
+    return val1 * val2
+  },
   getStorestatus: (start, end) => {
     var today = new Date();
     var dd = today.getDate();

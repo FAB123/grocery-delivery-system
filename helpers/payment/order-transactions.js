@@ -267,7 +267,6 @@ module.exports = {
       })
   },
   calculateOrdertotalbyorderID: (orderId) => {
-    console.log(orderId)
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -318,6 +317,16 @@ module.exports = {
         .toArray()
         .then((cartTotal) => {
           resolve(cartTotal[0].total);
+        });
+    });
+  },
+  getProductfromOrder: (orderId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .findOne({ _id: ObjectID(orderId) })
+        .then((data) => {
+          resolve(data);
         });
     });
   },

@@ -1,133 +1,62 @@
 <div class="container">
     <div class="check-out">
-        <h1>Place Order</h1>
+        <h1>Re Payment Order</h1>
         <div class="clearfix"> </div>
-        <form id="placeorder" method="POST">
-            <div class="col-md-6 col-12">
-                <div class="">
-                    {{#each address}}
-                    <div class="custom-control custom-radio border-address">
-                        <input type="radio" class="custom-control-input" id="address" name="address" value="{{this._id}}" 
-                            checked>
-                        <label class="address" for="{{this._id}}">{{this.name}}</label>
-                        <span>{{this.mobile}}</span><br>
-                        <span>{{this.address}}</span><br>
-                        <span>House :{{this.building}} Flat: {{this.flat}}</span><br>
-                        <div class="address_align">
-                            <a href="javascript:editAddress({{this._id}})"><span
-                                    class="glyphicon glyphicon-edit span-primary"></span></a>
-                            <a href="javascript:editLocation({{this._id}})"><span
-                                    class="glyphicon glyphicon-pushpin span-primary"></span></a>
-                            <a href='javascript:deleteAddress({{this._id}})'><span
-                                    class="glyphicon glyphicon-trash span-red"></span></a>
-                        </div>
-                    </div>
+        <div class="col-md-6 col-12">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr class="table-primary">
+                            <td>{{{t "checkout.item"}}}</td>
+                            <td>{{{t "checkout.qty"}}}</td>
+                            <td>{{{t "checkout.price"}}}</td>
+                            <td>{{{t "orderlist.total"}}}</td>
+                        </tr>
+                    </thead>
+                    {{#each orderdItems}}
+                    <tr class="table-primary">
+                        <td>{{this.item}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.price}}</td>
+                        <td>{{multiple this.quantity this.price}}</td>
+                    </tr>
                     {{/each}}
-                </div>
-                <div class="clearfix"> </div>
-                <div class="register-but">
-                    <input type="button" value="New Address" data-toggle="modal" data-target="#add_address">
-                    <div class="clearfix"> </div>
-                </div>
-
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-            <div class="col-md-6 col-12">
-                <div class="payment p-5" style="margin-bottom: 4em;">
-                    <div class="total">
-                        <h3>Total <span>{{cartTotal}}</span></h3>
+            <div class="clearfix"> </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="payment p-5" style="margin-bottom: 4em;">
+                <div class="total">
+                    <h3>Total <span>{{orderTotal}}</span></h3>
+                </div>
+                <hr>
+                <form id="repayment" method="POST">
+                    <div class="container">
+                        <h5 class="m-5">Payment Method</h5>
+                        <input type="hidden" name="orderId" value="{{orderId}}">
+                        {{#each paymentMethods}}
+                        <div class="form-check m-5 selectpayment">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="payment-type"
+                                value="{{@key}}" checked>
+                            <label class="form-check-label" for="{{@key}}">
+                                {{this}}
+                            </label>
+                        </div>
+                        {{/each}}
+
                     </div>
+
                     <hr>
-                        <div class="container">
-                            <h5 class="m-5">Payment Method</h5>
-                            <input type="hidden" name="cartID" value="{{cartID}}">
-                            {{#each paymentMethods}}
-                            <div class="form-check m-5 selectpayment">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="payment-type"
-                                    value="{{@key}}" checked>
-                                <label class="form-check-label" for="{{@key}}">
-                                    {{this}}
-                                </label>
-                            </div>
-                            {{/each}}
-
-                        </div>
-
-                        <hr>
-                        <div class="d-flex">
-                            <button type="submit" class="payment-button"> PROCEED TO PAYMENT</button>
-                            <div class="clearfix"> </div>
-                        </div>
-                 
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-{{>map-data}}
-
-<div class="modal fade right" id="add_address" tabindex="-1" role="dialog" aria-labelledby="address" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="addaddress">Add Address</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method='POST' id="save_address" autocomplete="off">
-                    <div class="register-bottom-grid">
-                        <div class="mation">
-                            <input type="hidden" name='address_id' id='address_id'>
-                            <div class="form-group">
-                                <div class=col-md-6>
-                                    <span>Name</span>
-                                    <input type="text" name='name' id='name'>
-                                </div>
-                                <div class=col-md-6>
-                                    <span>Phone</span>
-                                    <input type="tel" name='mobile' id='mobile'>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class=col-md-6>
-                                    <span>Building No:</span>
-                                    <input type="text" name='building' id='building'>
-                                </div>
-                                <div class=col-md-6>
-                                    <span>Flat No:</span>
-                                    <input type="text" name='flat' id='flat'>
-                                </div>
-                            </div>
-                            <div class=col-md-12>
-                                <span>Address:</span>
-                                <textarea rows="3" class="rounded-0 form-control" name="address"
-                                    id="address"> </textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <div id="us3" style="width: 100%; height: 250px;"></div>
-                                <div class="m-t-small">
-                                    <span class="p-r-small col-md-2 control-label">Lat.:</span>
-                                    <div class="col-md-4">
-                                        <input type="text" name="latitude" class="form-control" readonly
-                                            style="width: 100%" id="us3-lat" />
-                                    </div>
-                                    <span class="p-r-small col-md-2 control-label">Long.:</span>
-                                    <div class="col-md-4">
-                                        <input type="text" name="longitude" class="form-control" readonly
-                                            style="width: 100%" id="us3-lon" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="d-flex">
+                        <button type="submit" class="payment-button"> PROCEED TO PAYMENT</button>
+                        <div class="clearfix"> </div>
                     </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="submit" id='submit_address' class="btn btn-primary">Save</button>
+                </form>
             </div>
         </div>
-        </form>
+        
     </div>
 </div>

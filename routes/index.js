@@ -14,7 +14,7 @@ const cartHelpers = require("../helpers/cart/cart-helpers");
 const orderTransactions = require("../helpers/payment/order-transactions");
 const IndexContoller = require('../helpers/index_controller');
 const handlebarHelper = require("../helpers/handlebarHelper");
-const siteUrl = "https://fysal.herokuapp.com/";
+const siteUrl = "https://grocery.ahcjed.com/";
 
 const company = "Balsam Laundary";
 
@@ -35,6 +35,7 @@ router.get("/", commonData(), IndexContoller.list, async (req, res, next) => {
     });
 });
 
+/* render about page*/
 router.get("/about", commonData(), (req, res) => {
   res.render("main/about", {
     admin: false,
@@ -42,6 +43,7 @@ router.get("/about", commonData(), (req, res) => {
   });
 })
 
+/* render contact page */
 router.get("/contact", (req, res) => {
   res.render("main/contact", {
     admin: false,
@@ -49,12 +51,12 @@ router.get("/contact", (req, res) => {
   });
 })
 
+/*render individual product detailes */
 router.get("/detailes/:id", commonData(), (req, res) => {
   productHelpers.getProductdetailes(req.params.id).then(async (data) => {
     let carouselImages = await imageHelpers.productcarouselImages(
       req.params.id
     );
-
     res.render("main/detailes", {
       data,
       admin: false,
@@ -64,6 +66,7 @@ router.get("/detailes/:id", commonData(), (req, res) => {
   });
 });
 
+/*render login page*/
 router.get("/login", commonData(), function (req, res) {
   if (req.session.loggedIn) {
     userRoute = req.session.userRoute ? req.session.userRoute : "/";
@@ -72,6 +75,8 @@ router.get("/login", commonData(), function (req, res) {
     res.render("main/login", { admin: false, user: req.session.dataTouser });
   }
 });
+
+/*valdate login credentials*/
 
 router.post("/login", function (req, res) {
   userHelpers.doLogin(req.body).then((response) => {
@@ -87,6 +92,7 @@ router.post("/login", function (req, res) {
   });
 });
 
+/*change store*/
 router.post("/change_store", async (req, res) => {
   req.session.defaultStore = req.body.store;
   if (req.session.defaultStore == req.body.store) {
@@ -99,10 +105,12 @@ router.post("/change_store", async (req, res) => {
   }
 });
 
+/*user signup form*/
 router.get("/signup", commonData(), function (req, res) {
   res.render("main/signup", { admin: false, user: req.session.dataTouser });
 });
 
+/*submit user signup*/
 router.post("/signup", (req, res) => {
   console.log(req.body);
   req.session.clientuserregisterdata = req.body;
@@ -120,6 +128,7 @@ router.post("/signup", (req, res) => {
   }
 });
 
+/* Otp Validator*/
 router.post("/validate_otp", (req, res) => {
   console.log(req.body.otp);
   if (req.body.otp == req.session.clientuserregotp) {
@@ -133,7 +142,7 @@ router.post("/validate_otp", (req, res) => {
   }
 });
 
-//validate user pre registration data
+/*validate user priviesly registration data for disable same mobile / username*/
 router.post("/validate_registration", (req, res) => {
   console.log(req.body);
   let input = req.body.username ? req.body.username : req.body.mobile;
@@ -142,6 +151,7 @@ router.post("/validate_registration", (req, res) => {
   });
 });
 
+/*calcualte nearest store*/
 router.post("/geo_locator", async (req, res) => {
   let storeNames = await store_helper.getAllstorenamebylocation();
   for (i = 0; i < storeNames.length; i++) {
@@ -278,24 +288,67 @@ router.get(
 );
 
 router.get(
-  "re-payment:/id",
+  "/re-payment/:id",
   commonData(),
-  varifyLogin("/orders"),
+  varifyLogin("/re-payment"),
   (req, res) => {
-    cartHelper
-      .calculateCarttotalbycartID(req.params.id)
-      .then(async (cartTotal) => {
+    orderTransactions
+      .calculateOrdertotalbyorderID(req.params.id)
+      .then(async (orderTotal) => {
         let paymentMethods = await paymentHelpers.getPaymentmethods();
-        res.render("main/re-payment", {
-          cartID: req.params.id,
-          admin: false,
-          paymentMethods,
-          cartTotal,
-          user: req.session.dataTouser,
+        await orderTransactions.getProductdetailes(req.params.id, (orderdItems) => {
+          res.render("main/re-payment", {
+            orderId: req.params.id,
+            admin: false,
+            paymentMethods,
+            orderdItems,
+            orderTotal,
+            user: req.session.dataTouser,
+          });
         });
       });
   }
 );
+
+//post repayment form
+router.post("/re-payment", async (req, res) => {
+  if (req.session.loggedIn) {
+    let orderId = req.body.orderId;
+    let total = await orderTransactions.calculateOrdertotalbyorderID(orderId);
+    let products = await orderTransactions.getProductfromOrder(orderId);
+
+    console.log(products)
+    if (req.body.paymentMethod === "cod") {
+      productHelpers.updateProductqty(products.products, products.dealerID).then(async (data) => {
+        await orderTransactions.updateOrderstatus(orderId, "Order Placed")
+        req.session.orderStatus = "New Order Placed Successfully";
+        res.json({ login: true, method: "cod" });
+      });
+    } else {
+      if (req.body.paymentMethod === "razorpay") {
+        let razamount = total * 100;
+        req.session.razpayOrderId = orderId;
+        paymentHelpers.generateRazorpay(orderId, razamount).then((data) => {
+          //let options = paymentHelpers.razorpayClientoption(razamount, data.id, req.session.user);
+          let options = {
+            razamount: razamount,
+            orderid: data.id,
+            user: req.session.user,
+            key_id: "rzp_test_zt63z5Weu5i5fx",
+          };
+          res.json({ login: true, method: "razorPay", options: options });
+        });
+      } else if (req.body.paymentMethod === "moyasar") {
+        req.session.OrderId = orderId;
+        console.log("order is setted " + req.session.OrderId);
+        res.json({ login: true, method: "moyasar" });
+      }
+    }
+  }
+  else {
+    res.json({ login: false });
+  }
+});
 
 router.get(
   "/moyasar_payment",
@@ -400,7 +453,6 @@ router.post("/place_order", async (req, res) => {
       orderTransactions.placeOrder(req.body, products, total).then(async (data) => {
         if (req.body.paymentMethod === "cod") {
           productHelpers.updateProductqty(products.products, products.dealerID).then((data) => {
-            console.log("hi")
             req.session.orderStatus = "New Order Placed Successfully";
             res.json({ login: true, method: "cod" });
           });
