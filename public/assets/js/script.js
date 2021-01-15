@@ -225,8 +225,8 @@ $(document).ready(function () {
       address: "required",
       mobile: {
         required: true,
-        minlength: 9,
-        maxlength: 9,
+        minlength: 10,
+        maxlength: 10,
         number: true,
       },
       building: "required",
