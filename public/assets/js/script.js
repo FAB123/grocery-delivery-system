@@ -756,3 +756,7 @@ function changePassword() {
   $("#change-password")
     .modal({ backdrop: "static" });
 }
+
+function generateBill(orderId){
+ alert(orderId)
+}

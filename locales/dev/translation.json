@@ -46,7 +46,7 @@
     "total" : "Total",
     "status": "Status",
     "items": "Items",
-    "recipt": "Recipt",
+    "receipt": "Receipt",
     "repayment":"Re Payment"
   },
   "checkout":{

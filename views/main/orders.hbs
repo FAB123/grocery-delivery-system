@@ -6,47 +6,50 @@
 			{{orderStatus}}
 		</div>
 		{{/if}}
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered" id="orders">
+				<thead>
+					<tr>
+						<th>{{{t "orderlist.date"}}}</th>
+						<th>{{{t "orderlist.paymentmethod"}}}</th>
+						<th>{{{t "orderlist.store"}}}</th>
+						<th>{{{t "orderlist.orderstatus"}}}</th>
+						<th>{{{t "orderlist.total"}}}</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each orderItems}}
+					<tr>
+						</td>
+						<td>{{#dateTime this.orderDate}}{{/dateTime}}</td>
+						<td>{{this.paymentMethod}}</td>
+						<td>{{this.storename}}[{{this.storecompany}}]</td>
+						<td class="d-inline-block">{{ this.lastStatus.status}} <br><span
+								class="text-muted d-inline-block font-italic font-weight-light">{{#dateTime
+								this.lastStatus.time}}{{/dateTime}} </span></td>
+						<td>{{this.totalAmount}}</td>
+						<td>
+							<div class="btn-group btn-group-vertical p-3 order-button" role="group"
+								aria-label="Basic example">
+								<a href="javascript:viewStatus('{{this._id}}');" class="btn btn-success"><i
+										class="fas fa-truck">{{{../t "orderlist.status"}}}</i></a>
+								<a href="javascript:viewCartitems('{{this._id}}');" class="btn btn-info"><i
+										class="fas fa-cart-plus"></i>{{{../t "orderlist.items"}}}</a>
+								{{#if this.Finished}}
+								<a href="javascript:generateBill('{{this._id}}');" class="btn btn-warning"><i
+										class="fas fa-check-circle">{{{../../t "orderlist.receipt"}}}</i></a>
+								{{/if}}
 
-		<table class="table table-striped table-bordered" id="orders">
-			<thead>
-				<tr>
-					<th>{{{t "orderlist.date"}}}</th>
-					<th>{{{t "orderlist.paymentmethod"}}}</th>
-					<th>{{{t "orderlist.store"}}}</th>
-					<th>{{{t "orderlist.orderstatus"}}}</th>
-					<th>{{{t "orderlist.total"}}}</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each orderItems}}
-				<tr>
-					</td>
-					<td>{{#dateTime this.orderDate}}{{/dateTime}}</td>
-					<td>{{this.paymentMethod}}</td>
-					<td>{{this.storename}}[{{this.storecompany}}]</td>
-					<td class="d-inline-block">{{ this.lastStatus.status}} <br><span
-							class="text-muted d-inline-block font-italic font-weight-light">{{#dateTime	this.lastStatus.time}}{{/dateTime}} </span></td>
-					<td>{{this.totalAmount}}</td>
-					<td>
-						<div class="btn-group row p-3 order-button" role="group" aria-label="Basic example">
-							<a href="javascript:viewStatus('{{this._id}}');" class="btn btn-success"><i
-									class="fas fa-truck">{{{../t "orderlist.status"}}}</i></a>
-							<a href="javascript:viewCartitems('{{this._id}}');" class="btn btn-info"><i
-									class="fas fa-cart-plus"></i>{{{../t "orderlist.items"}}}</a>
-							{{#if this.Finished}}
-							<a href="javascript:generateBill('{{this._id}}');" class="btn btn-warning"><i
-									class="fas fa-check-circle">{{{../../t "orderlist.recipt"}}}</i></a>
-							{{/if}}
-
-							{{#elseIf this.lastStatus.status 'Pending'}}<a href="/re-payment/{{../this._id}}"
-								class="btn btn-success">{{{../../t "orderlist.repayment"}}}</a>{{/elseIf}}
-						</div>
-					</td>
-				</tr>
-				{{/each}}
-			</tbody>
-		</table>
+								{{#elseIf this.lastStatus.status 'Pending'}}<a href="/re-payment/{{../this._id}}"
+									class="btn btn-success">{{{../../t "orderlist.repayment"}}}</a>{{/elseIf}}
+							</div>
+						</td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 
@@ -61,11 +64,10 @@
 			</div>
 			<div class="modal-body">
 				<div class="table-responsive">
-
 					<table class="table table-sm table-bordered table-hover">
 						<thead class="thead-dark">
 							<tr class="table-primary">
-				        		<td>{{{t "checkout.item"}}}</td>
+								<td>{{{t "checkout.item"}}}</td>
 								<td>{{{t "checkout.qty"}}}</td>
 								<td>{{{t "checkout.price"}}}</td>
 								<td>{{{t "orderlist.total"}}}</td>
@@ -74,7 +76,6 @@
 						<tbody id="getCode">
 						</tbody>
 					</table>
-
 				</div>
 			</div>
 			<div class="modal-footer justify-content-between">

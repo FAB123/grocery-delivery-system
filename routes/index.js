@@ -291,27 +291,36 @@ router.get(
   "/re-payment/:id",
   commonData(),
   varifyLogin("/re-payment"),
-  (req, res) => {
-    orderTransactions
-      .calculateOrdertotalbyorderID(req.params.id)
-      .then(async (orderTotal) => {
-        let paymentMethods = await paymentHelpers.getPaymentmethods();
-        await orderTransactions.getProductdetailes(req.params.id, (orderdItems) => {
-          res.render("main/re-payment", {
-            orderId: req.params.id,
-            admin: false,
-            paymentMethods,
-            orderdItems,
-            orderTotal,
-            user: req.session.dataTouser,
+  async (req, res) => {
+    let products = await orderTransactions.getProductfromOrder(req.params.id);
+    let lastStatus = getLaststatus(products.orderStatus);
+    if (lastStatus == "Pending" || lastStatus == "Payment Failed") {
+      orderTransactions
+        .calculateOrdertotalbyorderID(req.params.id)
+        .then(async (orderTotal) => {
+          let paymentMethods = await paymentHelpers.getPaymentmethods();
+          await orderTransactions.getProductdetailes(req.params.id, (orderdItems) => {
+            res.render("main/re-payment", {
+              orderId: req.params.id,
+              admin: false,
+              paymentMethods,
+              orderdItems,
+              orderTotal,
+              user: req.session.dataTouser,
+            });
           });
         });
-      });
+    }
+    else{
+      req.session.orderStatus = "Payment Already Done.";
+       res.redirect("/orders");
+    }
   }
 );
 
 //post repayment form
 router.post("/re-payment", async (req, res) => {
+
   if (req.session.loggedIn) {
     let orderId = req.body.orderId;
     let total = await orderTransactions.calculateOrdertotalbyorderID(orderId);
@@ -386,7 +395,9 @@ router.get(
         if (response.status === "paid") {
           orderTransactions
             .updateOrderstatus(req.session.OrderId, "Payment Success")
-            .then(() => {
+            .then(async () => {
+              let products = await orderTransactions.getProductfromOrder(req.session.OrderId);
+              await productHelpers.updateProductqty(products.products, products.dealerID);
               req.session.orderStatus =
                 "Moyasar Payment Compleeted Successfuly";
               res.redirect("/orders");
@@ -490,7 +501,9 @@ router.post("/varify-razorpay", (req, res) => {
       .then(() => {
         orderTransactions
           .updateOrderstatus(req.session.razpayOrderId, "Payment Success")
-          .then(() => {
+          .then(async () => {
+            let products = await orderTransactions.getProductfromOrder(req.session.razpayOrderId);
+            await productHelpers.updateProductqty(products.products, products.dealerID);
             res.json({ login: true, payment: true });
           });
       })
@@ -568,6 +581,11 @@ function varifyLogin(userRoute) {
       res.redirect("/login");
     }
   };
+}
+
+function getLaststatus(status){
+  let index = status.length - 1;
+  return status[index].status;
 }
 
 function commonData() {

@@ -46,7 +46,7 @@
       "total" : "إجمالي",
       "status": "الحالة",
       "items": "العناصر",
-      "recipt": "إيصال",
+      "receipt": "إيصال",
       "repayment":"السداد"
     },
     "checkout":{
