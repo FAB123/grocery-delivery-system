@@ -3,7 +3,7 @@ const state = {
     db: null
 }
 
-const onlineUrl = 'mongodb+srv://fysalkt:Faika123.@cluster0.yqgca.mongodb.net/grocery_delivery_system?retryWrites=true&w=majority'
+const onlineUrl = 'mongodb+srv://fysalkt:pwd@cluster0.yqgca.mongodb.net/grocery_delivery_system?retryWrites=true&w=majority'
 
 module.exports.connect = function (done) {
     const url = 'mongodb://localhost:27017'
