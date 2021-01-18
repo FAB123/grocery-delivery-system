@@ -73,4 +73,20 @@ module.exports = {
         });
     });
   },
+  getAllusers:()=>{
+    return new Promise((resolve, reject)=>{
+      db.get().collection(collections.USER_COLLECTIONS).aggregate([
+        {
+          $project:{
+            first_name:1,
+            last_name:1,
+            username:1,
+            mobile:1
+          }
+        }
+      ]).toArray().then((data)=>{
+        resolve(data);
+      })
+    })
+  }
 };

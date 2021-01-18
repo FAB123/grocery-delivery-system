@@ -141,7 +141,7 @@
 
             <li class="nav-item {{#if employee}}menu-open{{/if}}">
               <a class="nav-link" {{#if employee}}active{{/if}}>
-                <i class="nav-icon fas fa-users"></i>
+                <i class="nav-icon fas fa-hospital-user"></i>
                 <p> Store Employees <i class="fas fa-angle-right right"></i></p>
               </a>
               <ul class="nav nav-treeview">
@@ -163,7 +163,7 @@
             {{#if employee_data.supper_user}}
             <li class="nav-item {{#if store}}menu-open{{/if}}">
               <a class="nav-link {{#if store}}active{{/if}}">
-                <i class="nav-icon fas fa-building"></i>
+                <i class="nav-icon fas fa-store"></i>
                 <p> Stores <i class="fas fa-angle-right right"></i></p>
               </a>
               <ul class="nav nav-treeview">
@@ -190,6 +190,13 @@
               </ul>
             </li>
 
+            <li class="nav-item {{#if users}}menu-open{{/if}}">
+              <a href="/admin/users" class="nav-link {{#if users}}active{{/if}}">
+                <i class="nav-icon fas fa-user-friends"></i>
+                <p> Users </p>
+              </a>
+            </li>
+
             <li class="nav-item">
               <a href="/admin/settings" class="nav-link">
                 <i class="nav-icon fas fa-wrench"></i>
@@ -200,7 +207,7 @@
 
             <li class="nav-item {{#if employee}}menu-open{{/if}}">
               <a href="/admin/employees" class="nav-link" {{#if employee}}active{{/if}}>
-                <i class="nav-icon fas fa-users"></i>
+                <i class="nav-icon fas fa-box-open"></i>
                 <p> Orders <i class="fas fa-angle-right right"></i></p>
               </a>
               <ul class="nav nav-treeview">

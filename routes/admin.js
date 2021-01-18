@@ -11,7 +11,8 @@ var Jimp = require("jimp");
 var fs = require("fs");
 var orderTransactions = require("../helpers/payment/order-transactions");
 const dashboardHelper = require("../helpers/dashboard-helper");
-const handlebardHelper = require("../helpers/handlebarHelper")
+const handlebardHelper = require("../helpers/handlebarHelper");
+const userHelpers = require("../helpers/user-helpers");
 
 var company_data = { name: "Grocery Delivery System" };
 
@@ -770,6 +771,13 @@ router.post("/mark_as_finished", (req, res) => {
     res.json({ login: false });
   }
 });
+
+router.get("/users", varifyLogin("/admin/users"), (req, res)=>{
+  let employee_data = req.session.employee;
+  userHelpers.getAllusers().then(users=>{
+    res.render("admin/view_users", { employee_data, users, admin: true});
+  });
+})
 
 router.get("/settings", varifyLogin("/admin/settings"), (req, res) => {
   let employee_data = req.session.employee;
