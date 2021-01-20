@@ -84,7 +84,7 @@ $(function () {
               messageAlert("Your password Changed Successfully", "info");
             }
             else {
-              messageAlert("Ohh, Some think went Wrong", "Danger")
+              messageAlert("Ohh, Some think went Wrong", "error")
             }
           } else {
             location.replace("/login");
@@ -182,8 +182,10 @@ function validateOtp() {
     success: (response) => {
       if (response.data) {
         $("#otp_validater").modal("hide");
-        messageAlert("User Registration Successfull.");
-        location.replace("/login");
+        messageAlert("User Registration Successfull.").then(()=>{
+          location.replace("/login");
+        });
+        
       } else {
         $("#otp").removeAttr("disabled", "disabled");
         $("#otp").val("");
@@ -249,11 +251,12 @@ $(document).ready(function () {
           if (response.login) {
             if (response.success) {
               //toastr.info(response.message);
-              messageAlert(response.message, "info");
-              $("#add_address").modal("hide");
-              location.reload();
+              messageAlert(response.message, "info").then(()=>{
+                $("#add_address").modal("hide");
+                location.reload();
+              });
             } else {
-              messageAlert(response.message, "danger");
+              messageAlert(response.message, "error");
             }
           } else {
             window.location = "/login";
@@ -288,9 +291,9 @@ $(document).ready(function () {
             } else if (response.method == "cod") {
               window.location = "/orders";
             } else {
-              messageAlert(response.message, "danger");
+              messageAlert(response.message, "error");
             }
-  
+
           } else {
             location.replace("/login");
           }
@@ -298,7 +301,7 @@ $(document).ready(function () {
       });
     },
   });
-  
+
 });
 
 function deleteAddress(addressId) {
@@ -312,10 +315,11 @@ function deleteAddress(addressId) {
       success: function (response) {
         if (response.login) {
           if (response.status) {
-            messageAlert("Address Removed Successfully", "info");
-            location.reload();
+            messageAlert("Address Removed Successfully", "info").then(()=>{
+              location.reload();
+            });
           } else {
-            messageAlert("Error removing address", "danger");
+            messageAlert("Error removing address", "error");
           }
         } else {
           location.replace("/login");
@@ -348,7 +352,7 @@ $("#newproductreview").validate({
             messageAlert("Thank You for Review, Have a nice day", "info");
           }
           else {
-            messageAlert("Ohh, Some think went Wrong", "Danger")
+            messageAlert("Ohh, Some think went Wrong", "error")
           }
         } else {
           location.replace("/login");
@@ -370,7 +374,7 @@ $("#placeorder").validate({
   submitHandler: function (form) {
     var findAddress = $('input[name=address]:checked', '#placeorder').val()
     if (!findAddress) {
-      messageAlert("Shipping Address not Provided, Please update shipping address", "info")
+      messageAlert("Shipping Address not Provided, Please update shipping address", "info");
     } else {
       $.ajax({
         url: "/place_order",
@@ -404,7 +408,7 @@ $("#placeorder").validate({
               } else if (response.method == "cod") {
                 window.location = "/orders";
               } else {
-                messageAlert(response.message, "danger");
+                messageAlert(response.message, "error");
               }
             }
           } else {
@@ -469,10 +473,12 @@ function varifyRazorpayPayment(payment) {
     success: function (response) {
       if (response.login) {
         if (response.payment) {
-          alert("payment success");
-          window.location = "/orders";
+          messageAlert("RazorPay Payment Success", "info").then(()=>{
+            window.location = "/orders";
+          })
+          
         } else {
-          alert("payment failed");
+          messageAlert("RazorPay Payment Failed", "error")
         }
       } else {
         location.replace("/login");
@@ -592,11 +598,14 @@ function addTocart(item_id) {
     url: "/add-to-cart/",
     success: function (response) {
       if (response.status == 401) {
-        loginAlert();
-        window.location = "/login";
+        messageAlert("You must be logged in before adding to cart", "error").then(() => {
+          window.location = "/login";
+        });
       }
-      updateTotalcart(response.total);
-      messageAlert("Adding New Item to cart Successfully", "success");
+      else {
+        updateTotalcart(response.total);
+        messageAlert("Adding New Item to cart Successfully", "success");
+      }
     },
   });
 }
@@ -649,6 +658,8 @@ function loginAlert() {
     Toast.fire({
       icon: "error",
       title: "Please Login First",
+    }).then(() => {
+      resolve();
     });
   });
 }
@@ -743,6 +754,8 @@ function messageAlert(message, type) {
     Toast.fire({
       icon: type,
       title: message,
+    }).then(()=>{
+      resolve();
     });
   });
 }
@@ -757,6 +770,6 @@ function changePassword() {
     .modal({ backdrop: "static" });
 }
 
-function generateBill(orderId){
- alert(orderId)
+function generateBill(orderId) {
+  alert(orderId)
 }

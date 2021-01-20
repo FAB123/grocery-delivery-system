@@ -13,11 +13,14 @@
                     <input type="password" name="password" id="password">
                     <div class="word-in">
                         <a class="forgot" href="#">{{{t "account.forgetpassword"}}}</a>
-                        <input type="submit" value="{{{t "account.login"}}}">
+                        <input type="submit" class="btn btn-sm" value="{{{t "account.login"}}}">
+                        {{!-- <button class="g-signin2 btn btn-sm" data-onsuccess="onSignIn"></button> --}}
                     </div>
+
                     <div id="login-message">
                         <span id="login-status" class="d-flex mt-5 align-self-center"></span>
                     </div>
+
                 </form>
             </div>
             <div class="col-md-6 login-left">
@@ -30,3 +33,12 @@
     </div>
 </div>
 
+<script>
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
+</script>

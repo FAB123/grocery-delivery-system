@@ -566,7 +566,7 @@ router.post("/change_password", (req, res) => {
   else {
     res.json({ login: false })
   }
-})
+});
 
 function varifyLogin(userRoute) {
   return function (req, res, next) {
